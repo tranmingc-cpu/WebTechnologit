@@ -10,6 +10,7 @@ namespace WebApplication10.Controllers
     {
         public ActionResult Index()
         {
+            //Testing git
             return View();
         }
 
@@ -23,7 +24,7 @@ namespace WebApplication10.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
+            
             return View();
         }
     }
