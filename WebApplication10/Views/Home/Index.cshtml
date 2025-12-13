@@ -1,33 +1,47 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<!-- BANNER -->
+<section class="banner">
+    <img src="/images/banner-main.jpg" alt="Banner" />
+</section>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+<!-- CATEGORY -->
+<section class="categories">
+    <div class="category">Laptop Gaming</div>
+    <div class="category">Laptop Văn Phòng</div>
+    <div class="category">PC i5 / i7</div>
+    <div class="category">PC RTX 4060</div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products">
+    <h2>PC Bán Chạy</h2>
+
+    <div class="product-grid">
+        <div class="product-card">
+            <img src="/images/pc1.jpg" />
+            <h3>PC Gaming i5 RTX 4060</h3>
+            <p class="price">19.990.000đ</p>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/pc2.jpg" />
+            <h3>PC Gaming i7 RTX 4070</h3>
+            <p class="price">29.990.000đ</p>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/pc3.jpg" />
+            <h3>PC Office i5</h3>
+            <p class="price">9.990.000đ</p>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/pc4.jpg" />
+            <h3>PC Gaming Ryzen 7</h3>
+            <p class="price">24.990.000đ</p>
+        </div>
     </div>
-</main>
+</section>
