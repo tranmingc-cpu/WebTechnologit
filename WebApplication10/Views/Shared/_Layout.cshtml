@@ -2,14 +2,21 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewData["Title"] - GearVN</title>
+    <title>@ViewBag.Title - GearVN</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- BOOTSTRAP -->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- SITE CSS -->
+    <link href="~/Content/css/site.css" rel="stylesheet" />
+
+    <!-- FONT AWESOME -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
+
     <!-- HEADER -->
     <header class="header">
         <div class="container header-top">
@@ -46,7 +53,8 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <p>© 2025 GearVN Clone - ASP.NET Core MVC</p>
+        <p>© 2025 GearVN Clone - ASP.NET MVC 5</p>
     </footer>
+
 </body>
 </html>
