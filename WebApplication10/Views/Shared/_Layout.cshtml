@@ -1,39 +1,52 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <title>@ViewData["Title"] - GearVN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-top">
+            <div class="logo">
+                <span class="logo-red">GEAR</span><span class="logo-white">VN</span>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Bạn cần tìm gì?" />
+                <button><i class="fa fa-search"></i></button>
+            </div>
+
+            <div class="header-actions">
+                <a href="#"><i class="fa fa-user"></i> Tài khoản</a>
+                <a href="#"><i class="fa fa-cart-shopping"></i> Giỏ hàng</a>
             </div>
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+        <!-- MENU -->
+        <nav class="menu">
+            <a href="#">Laptop Gaming</a>
+            <a href="#">PC Gaming</a>
+            <a href="#">PC Văn Phòng</a>
+            <a href="#">Màn hình</a>
+            <a href="#">Bàn phím</a>
+            <a href="#">Chuột</a>
+        </nav>
+    </header>
+
+    <!-- BODY -->
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2025 GearVN Clone - ASP.NET Core MVC</p>
+    </footer>
 </body>
 </html>
