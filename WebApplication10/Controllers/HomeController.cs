@@ -8,7 +8,7 @@ namespace WebApplication10.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public ActionResult Index()
         {
             //Testing git
             return View();

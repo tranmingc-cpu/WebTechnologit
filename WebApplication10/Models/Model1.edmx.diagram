@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="51cc9f8572a246b79ed64498d70ed0ca" Name="Diagram1">
+        <EntityTypeShape EntityType="TechStoreDBModel.Brands" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Cart" Width="1.5" PointX="5.25" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Categories" Width="1.5" PointX="0.75" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.OrderDetails" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Orders" Width="1.5" PointX="3" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.ProductImages" Width="1.5" PointX="5.25" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Products" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Reviews" Width="1.5" PointX="8.25" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Users" Width="1.5" PointX="0.75" PointY="10.25" IsExpanded="true" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Product_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Cart_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Cart_User" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Product_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_OrderDetail_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_OrderDetail_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Order_User" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Image_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Review_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Review_User" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
