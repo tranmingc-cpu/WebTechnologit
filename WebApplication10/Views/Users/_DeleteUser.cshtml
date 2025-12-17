@@ -1,0 +1,8 @@
+﻿@model WebApplication10.Models.Users
+
+@using (Html.BeginForm("Delete", "Users", FormMethod.Post, new { id = "deleteForm" }))
+{
+    @Html.AntiForgeryToken()
+    <p>Are you sure you want to delete <strong>@Model.Username</strong>?</p>
+    <button type="button" id="confirm-delete" class="btn btn-danger" data-id="@Model.UserId">Delete</button>
+}
