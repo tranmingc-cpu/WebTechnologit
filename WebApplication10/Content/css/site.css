@@ -1,7 +1,9 @@
 ﻿/* =====================
    RESET & BASE
 ===================== */
-* {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -9,8 +11,8 @@
 
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #f5f5f5;
-    color: #222;
+    color: #e0e0e0;
+    background: radial-gradient(circle at top right, rgba(227,0,25,0.18), transparent 40%), radial-gradient(circle at bottom left, rgba(0,0,0,0.4), transparent 40%), linear-gradient(135deg, #121212, #1e1e1e);
 }
 
 a {
@@ -33,8 +35,8 @@ img {
    HEADER
 ===================== */
 .header {
-    background: #000;
-    color: #fff;
+    background-color: #262835;
+    border-bottom: 1px solid #3b3c4f;
 }
 
 .header-top {
@@ -47,10 +49,11 @@ img {
 .logo {
     font-size: 26px;
     font-weight: bold;
+    color: #fff;
 }
 
 .logo-red {
-    color: #e30019;
+    color: #ff5c5c;
 }
 
 .logo-white {
@@ -63,17 +66,26 @@ img {
 .search-box {
     display: flex;
     width: 420px;
+    background: #2e3040;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
     .search-box input {
         flex: 1;
-        padding: 10px;
+        padding: 10px 12px;
         border: none;
         outline: none;
+        background: transparent;
+        color: #e0e0e0;
     }
 
+        .search-box input::placeholder {
+            color: #aaa;
+        }
+
     .search-box button {
-        background: #e30019;
+        background: #ff5c5c;
         border: none;
         color: #fff;
         padding: 0 16px;
@@ -85,9 +97,14 @@ img {
 ===================== */
 .header-actions a {
     margin-left: 18px;
-    color: #fff;
+    color: #ccc;
     font-size: 14px;
+    transition: 0.3s;
 }
+
+    .header-actions a:hover {
+        color: #ff5c5c;
+    }
 
 .header-actions i {
     margin-right: 6px;
@@ -97,7 +114,7 @@ img {
    MENU
 ===================== */
 .menu {
-    background: #e30019;
+    background: #ff5c5c;
     display: flex;
     justify-content: center;
 }
@@ -106,20 +123,22 @@ img {
         padding: 12px 18px;
         color: #fff;
         font-weight: 500;
+        transition: 0.25s;
     }
 
         .menu a:hover {
-            background: rgba(0,0,0,0.15);
+            background: rgba(0,0,0,0.2);
         }
 
-/* =====================
-   BANNER
-===================== */
-.banner img {
+.banner {
     width: 100%;
-    border-radius: 6px;
+    height: 140px;
+    background: url("/Content/images/banner-main.jpg") center center no-repeat;
+    background-size: cover;
+    border-radius: 12px;
     margin: 20px 0;
 }
+
 
 /* =====================
    CATEGORIES
@@ -132,26 +151,38 @@ img {
 }
 
 .category {
-    background: #fff;
+    background: #2e3040;
     padding: 18px;
     text-align: center;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.25s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
 }
 
     .category:hover {
-        background: #e30019;
+        background: #ff5c5c;
         color: #fff;
+        transform: translateY(-3px);
     }
 
 /* =====================
    PRODUCTS
 ===================== */
+.product-image {
+    width: 100%;
+    height: 180px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
 .products h2 {
     margin-bottom: 15px;
     font-size: 22px;
+    color: #fff;
 }
 
 .product-grid {
@@ -161,46 +192,146 @@ img {
 }
 
 .product-card {
-    background: #fff;
+    background: #3b3d54;
     padding: 15px;
-    border-radius: 6px;
+    border-radius: 12px;
     text-align: center;
-    transition: 0.2s;
+    transition: 0.3s;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.55);
 }
 
     .product-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        transform: translateY(-6px);
+        box-shadow: 0 14px 35px rgba(0,0,0,0.8);
     }
 
-    .product-card img {
-        height: 180px;
-        object-fit: contain;
-        margin-bottom: 10px;
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* fills entire top */
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.06);
     }
 
     .product-card h3 {
         font-size: 15px;
         margin-bottom: 8px;
+        color: #fff;
     }
 
 .price {
-    color: #e30019;
+    color: #ff5c5c;
     font-weight: bold;
     font-size: 16px;
 }
 
+.old-price {
+    display: block;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+.new-price {
+    font-size: 16px;
+    color: #ff5c5c;
+}
 /* =====================
-   FOOTER
+   FOOTER (ADMIN COLOR THEME)
 ===================== */
 .footer {
-    margin-top: 40px;
-    padding: 20px 0;
-    background: #000;
+    background-color: #262835;
     color: #ccc;
-    text-align: center;
-    font-size: 14px;
+    font-size: 13px;
+    padding: 25px 0;
+    margin-top: 40px;
+    border-top: 1px solid #3b3c4f;
 }
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-left,
+.footer-center,
+.footer-right {
+    min-width: 220px;
+}
+
+    .footer-left strong {
+        font-size: 16px;
+        color: #e0e0e0;
+    }
+
+.footer a {
+    color: #ff5c5c;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+.footer-center {
+    line-height: 1.8;
+}
+
+.footer-right {
+    text-align: right;
+}
+
+.social-icons a {
+    margin-left: 10px;
+    font-size: 15px;
+    color: #ff5c5c;
+}
+
+    .social-icons a:hover {
+        color: #fff;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-right {
+        text-align: center;
+    }
+
+    .social-icons a {
+        margin: 0 8px;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-right {
+        text-align: center;
+    }
+
+    .social-icons a {
+        margin: 0 8px;
+    }
+}
+
 
 /* =====================
    RESPONSIVE

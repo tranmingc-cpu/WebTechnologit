@@ -1,11 +1,11 @@
-﻿@{
+﻿@model List<WebApplication10.Models.Products>
+
+@{
     ViewBag.Title = "Trang chủ";
 }
 
 <!-- BANNER -->
-<section class="banner">
-    <img src="/images/banner-main.jpg" alt="Banner" />
-</section>
+<section class="banner"></section>
 
 <!-- CATEGORY -->
 <section class="categories">
@@ -20,28 +20,73 @@
     <h2>PC Bán Chạy</h2>
 
     <div class="product-grid">
-        <div class="product-card">
-            <img src="/images/pc1.jpg" />
-            <h3>PC Gaming i5 RTX 4060</h3>
-            <p class="price">19.990.000đ</p>
-        </div>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var p in Model)
+            {
+                <div class="product-card">
 
-        <div class="product-card">
-            <img src="/images/pc2.jpg" />
-            <h3>PC Gaming i7 RTX 4070</h3>
-            <p class="price">29.990.000đ</p>
-        </div>
+                    <!-- IMAGE -->
+                    <div class="product-image">
+                        <img src="@(string.IsNullOrEmpty(p.ImageUrl)
+                                    ? "/Content/images/no-image.png"
+                                    : "/Content/images/" + p.ImageUrl)"
+                             alt="@p.ProductName" />
+                    </div>
 
-        <div class="product-card">
-            <img src="/images/pc3.jpg" />
-            <h3>PC Office i5</h3>
-            <p class="price">9.990.000đ</p>
-        </div>
+                    <!-- NAME -->
+                    <h3 class="product-name">@p.ProductName</h3>
 
-        <div class="product-card">
-            <img src="/images/pc4.jpg" />
-            <h3>PC Gaming Ryzen 7</h3>
-            <p class="price">24.990.000đ</p>
-        </div>
+                    <!-- BRAND + CATEGORY -->
+                    <p class="meta">
+                        <span>
+                            <strong>Brand:</strong>
+                            @(p.Brands != null ? p.Brands.BrandName : "N/A")
+                        </span>
+                        <span class="dot">•</span>
+                        <span>
+                            <strong>Category:</strong>
+                            @(p.Categories != null ? p.Categories.CategoryName : "N/A")
+                        </span>
+                    </p>
+
+                    <!-- PRICE -->
+                    <p class="price">
+                        @if (p.Discount.HasValue && p.Discount > 0)
+                        {
+                            var finalPrice = p.Price - p.Discount.Value;
+                            <span class="old-price">
+                                @String.Format("{0:N0}đ", p.Price)
+                            </span>
+                            <span class="new-price">
+                                @String.Format("{0:N0}đ", finalPrice)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="new-price">
+                                @String.Format("{0:N0}đ", p.Price)
+                            </span>
+                        }
+                    </p>
+
+                    <!-- STOCK + STATUS -->
+                    <p class="stock">
+                        <span>
+                            <strong>Stock:</strong>
+                            @(p.Quantity ?? 0)
+                        </span>
+                        <span class="status @(p.Status == "Available" ? "available" : "unavailable")">
+                            @p.Status
+                        </span>
+                    </p>
+
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted">Không có sản phẩm để hiển thị.</p>
+        }
     </div>
 </section>

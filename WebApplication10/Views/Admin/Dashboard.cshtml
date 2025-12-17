@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<div class="admin-left-panel">
+    <div class="admin-box">
+        <div class="admin-header">
+            <h2>Welcome, @Session["UserName"]!</h2>
+            <p>Here is an overview of your store</p>
+        </div>
+
+        <div class="dashboard-body">
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-icon users-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Users</h3>
+                        <p>@((ViewBag.UserCount ?? 0).ToString("N0"))</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orders-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Orders</h3>
+                        <p>@((ViewBag.OrderCount ?? 0).ToString("N0"))</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon products-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Products</h3>
+                        <p>@((ViewBag.ProductCount ?? 0).ToString("N0"))</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-actions">
+                <ul>
+                    <li>@Html.ActionLink("Manage Users", "Index", "Users", null, new { @class = "action-link" })</li>
+                    <li>@Html.ActionLink("Manage Products", "Index", "Products", null, new { @class = "action-link" })</li>
+                    <li>@Html.ActionLink("Manage Orders", "Index", "Orders", null, new { @class = "action-link" })</li>
+                    <li>@Html.ActionLink("Logout", "Logout", "Account", null, new { @class = "action-link logout-link" })</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

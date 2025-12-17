@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Tech Store Admin</title>
+    <link href="~/Content/css/admin/admin.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+</head>
+<body>
+    <div class="admin-wrapper">
+        <header class="header">
+            <div class="container header-top">
+                <div class="logo">TECH <span class="logo-red">STORE</span></div>
+                @{
+                    string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                    string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+                    Func<string, string, string> isActive = (controller, action) =>
+                    {
+                        return (currentController == controller && (action == null || currentAction == action)) ? "active-link" : "";
+                    };
+                }
+                <nav class="header-actions">
+                    <a href="@Url.Action("Dashboard", "Admin")" class="@isActive("Admin","Dashboard")">Dashboard</a>
+                    <a href="@Url.Action("Index", "Users")" class="@isActive("Users", null)">Users</a>
+                    <a href="@Url.Action("Index", "Products")" class="@isActive("Products", null)">Products</a>
+                    <a href="@Url.Action("Index", "Orders")" class="@isActive("Orders", null)">Orders</a>
+                    <a href="@Url.Action("Logout", "Account")">Logout</a>
+                </nav>
+
+            </div>
+        </header>
+
+        <main class="container">
+            @RenderBody()
+        </main>
+
+        <footer class="footer">
+            <div class="container footer-content">
+                <div class="footer-left">
+                    <strong>Tech Store Admin</strong><br />
+                    123 Tech Street, City, Country<br />
+                    Phone: +1 (234) 567-890 | Email: <a href="mailto:admin@techstore.com">admin@techstore.com</a>
+                </div>
+
+                <div class="footer-center">
+                    <a href="/Dashboard">Dashboard</a> |
+                    <a href="/Users">Manage Users</a> |
+                    <a href="/Products">Manage Products</a> |
+                    <a href="/Orders">Manage Orders</a> |
+                    <a href="/Support">Support</a> |
+                    <a href="/Privacy">Privacy Policy</a>
+                </div>
+
+                <div class="footer-right">
+                    <div>Version 1.0.0</div>
+                    <div class="social-icons">
+                        <a href="https://facebook.com" target="_blank">FB</a>
+                        <a href="https://twitter.com" target="_blank">TW</a>
+                        <a href="https://linkedin.com" target="_blank">IN</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/users/user-management.js"></script>
+</body>
+</html>

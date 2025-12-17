@@ -9,7 +9,7 @@
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- SITE CSS -->
-    <link href="~/Content/css/site.css" rel="stylesheet" />
+    <link href="~/Content/css/site.css?@DateTime.Now.Ticks" rel="stylesheet" />
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
@@ -53,8 +53,36 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <p>© 2025 GearVN Clone - ASP.NET MVC 5</p>
-    </footer>
+        <div class="container footer-content">
+            <!-- LEFT -->
+            <div class="footer-left">
+                <strong>GEAR<span style="color:#ff5c5c;">VN</span></strong><br />
+                Hệ thống bán lẻ thiết bị công nghệ<br />
+                123 Nguyễn Văn Linh, TP.HCM<br />
+                Hotline: <a href="tel:19005301">1900 5301</a><br />
+                Email: <a href="mailto:support@gearvn.com">support@gearvn.com</a>
+            </div>
 
+            <!-- CENTER -->
+            <div class="footer-center">
+                <a href="#">Giới thiệu</a> |
+                <a href="#">Liên hệ</a> |
+                <a href="#">Bảo hành</a> |
+                <a href="#">Đổi trả</a> |
+                <a href="#">Hướng dẫn mua</a> |
+                <a href="#">Điều khoản</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+                <div>© 2025 GearVN Clone</div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
