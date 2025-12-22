@@ -4,89 +4,41 @@
     ViewBag.Title = "Trang chủ";
 }
 
-<!-- BANNER -->
-<section class="banner"></section>
+<section class="banner">
 
-<!-- CATEGORY -->
-<section class="categories">
-    <div class="category">Laptop Gaming</div>
-    <div class="category">Laptop Văn Phòng</div>
-    <div class="category">PC i5 / i7</div>
-    <div class="category">PC RTX 4060</div>
 </section>
 
-<!-- PRODUCTS -->
+<section class="categories">
+    @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
+    {
+        <a class="category"
+           href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })">
+            @c.CategoryName
+        </a>
+    }
+</section>
+
 <section class="products">
-    <h2>PC Bán Chạy</h2>
+    <div class="section-header">
+        <h2>Sản phẩm nổi bật</h2>
+
+        <a class="view-all"
+           href="@Url.Action("Index", "Products")">
+            Xem tất cả →
+        </a>
+    </div>
 
     <div class="product-grid">
-        @if (Model != null && Model.Any())
+        @foreach (var p in Model)
         {
-            foreach (var p in Model)
-            {
-                <div class="product-card">
-
-                    <!-- IMAGE -->
-                    <div class="product-image">
-                        <img src="@(string.IsNullOrEmpty(p.ImageUrl)
-                                    ? "/Content/images/no-image.png"
-                                    : "/Content/images/" + p.ImageUrl)"
-                             alt="@p.ProductName" />
-                    </div>
-
-                    <!-- NAME -->
-                    <h3 class="product-name">@p.ProductName</h3>
-
-                    <!-- BRAND + CATEGORY -->
-                    <p class="meta">
-                        <span>
-                            <strong>Brand:</strong>
-                            @(p.Brands != null ? p.Brands.BrandName : "N/A")
-                        </span>
-                        <span class="dot">•</span>
-                        <span>
-                            <strong>Category:</strong>
-                            @(p.Categories != null ? p.Categories.CategoryName : "N/A")
-                        </span>
-                    </p>
-
-                    <!-- PRICE -->
-                    <p class="price">
-                        @if (p.Discount.HasValue && p.Discount > 0)
-                        {
-                            var finalPrice = p.Price - p.Discount.Value;
-                            <span class="old-price">
-                                @String.Format("{0:N0}đ", p.Price)
-                            </span>
-                            <span class="new-price">
-                                @String.Format("{0:N0}đ", finalPrice)
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="new-price">
-                                @String.Format("{0:N0}đ", p.Price)
-                            </span>
-                        }
-                    </p>
-
-                    <!-- STOCK + STATUS -->
-                    <p class="stock">
-                        <span>
-                            <strong>Stock:</strong>
-                            @(p.Quantity ?? 0)
-                        </span>
-                        <span class="status @(p.Status == "Available" ? "available" : "unavailable")">
-                            @p.Status
-                        </span>
-                    </p>
-
-                </div>
-            }
-        }
-        else
-        {
-            <p class="text-muted">Không có sản phẩm để hiển thị.</p>
+            @Html.Partial("_ProductCard", p)
         }
     </div>
+</section>
+
+<section class="home-info">
+    <div class="info-box">✔ Bảo hành chính hãng</div>
+    <div class="info-box">🚚 Giao hàng toàn quốc</div>
+    <div class="info-box">🔄 Đổi trả 7 ngày</div>
+    <div class="info-box">📞 Hỗ trợ kỹ thuật</div>
 </section>
