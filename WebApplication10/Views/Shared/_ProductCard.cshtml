@@ -1,0 +1,54 @@
+﻿@model WebApplication10.Models.Products
+
+<div class="product-card">
+
+    <div class="product-image">
+        <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+            ? "/Content/images/no-image.png"
+            : "/Content/images/" + Model.ImageUrl)"
+             alt="@Model.ProductName" />
+    </div>
+
+    <h3 class="product-name" title="@Model.ProductName">
+        @Model.ProductName
+    </h3>
+
+    <p class="meta one-line">
+        <span><strong>Brand:</strong> @(Model.Brands?.BrandName ?? "N/A")</span>
+        <span class="dot">•</span>
+        <span><strong>Category:</strong> @(Model.Categories?.CategoryName ?? "N/A")</span>
+    </p>
+
+    <p class="price @(Model.Discount.HasValue && Model.Discount > 0 ? "has-discount" : "no-discount")">
+        @if (Model.Discount.HasValue && Model.Discount > 0)
+        {
+            <span class="old-price">
+                @String.Format("{0:N0}đ", Model.Price)
+            </span>
+            <span class="new-price">
+                @String.Format("{0:N0}đ", Model.Price - Model.Discount.Value)
+            </span>
+        }
+        else
+        {
+            <span class="new-price">
+                @String.Format("{0:N0}đ", Model.Price)
+            </span>
+        }
+    </p>
+
+    <p class="stock">
+        <span><strong>Stock:</strong> @(Model.Quantity ?? 0)</span>
+        <span class="status @(Model.Status == "Available" ? "available" : "unavailable")">
+            @Model.Status
+        </span>
+    </p>
+
+    <div class="card-actions">
+        <a href="@Url.Action("Details", "Products", new { id = Model.ProductId })"
+           class="btn-view">
+            View details
+        </a>
+    </div>
+
+</div>

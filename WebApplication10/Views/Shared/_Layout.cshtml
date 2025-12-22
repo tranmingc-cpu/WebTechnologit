@@ -21,12 +21,23 @@
     <header class="header">
         <div class="container header-top">
             <div class="logo">
-                <span class="logo-red">GEAR</span><span class="logo-white">VN</span>
+                <a href="@Url.Action("Index", "Home")">
+                    <span class="logo-red">GEAR</span><span class="logo-white">VN</span>
+                </a>
             </div>
 
             <div class="search-box">
-                <input type="text" placeholder="Bạn cần tìm gì?" />
-                <button><i class="fa fa-search"></i></button>
+                @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+                {
+                    <input type="text"
+                           name="keyword"
+                           value="@Request.QueryString["keyword"]"
+                           placeholder="Tìm theo tên, hãng, loại..." />
+
+                    <button type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                }
             </div>
 
             <div class="header-actions">
@@ -37,17 +48,18 @@
 
         <!-- MENU -->
         <nav class="menu">
-            <a href="#">Laptop Gaming</a>
-            <a href="#">PC Gaming</a>
-            <a href="#">PC Văn Phòng</a>
-            <a href="#">Màn hình</a>
-            <a href="#">Bàn phím</a>
-            <a href="#">Chuột</a>
+            @foreach (var c in ViewBag.Categories as List<WebApplication10.Models.Categories>)
+            {
+                <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })"
+                   class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
+                    @c.CategoryName
+                </a>
+            }
         </nav>
     </header>
 
     <!-- BODY -->
-    <main class="container">
+    <main class="container page-content">
         @RenderBody()
     </main>
 
