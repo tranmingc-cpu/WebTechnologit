@@ -39,5 +39,25 @@ namespace WebApplication10.Controllers.Products
 
             return View(products.ToList());
         }
+
+        public ActionResult Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var product = db.Products
+                .Include("Brands")
+                .Include("Categories")
+                .FirstOrDefault(p => p.ProductId == id.Value);
+
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(product);
+        }
     }
 }
