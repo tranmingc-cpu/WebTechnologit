@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Tech Store</title>
+    <link href="~/Content/css/auth/auth.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-container">
+            @RenderBody() 
+
+            <div class="auth-right">
+                @RenderSection("RightPanel", required: false)
+            </div>
+        </div>
+    </div>
+</body>
+</html>

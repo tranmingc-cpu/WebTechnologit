@@ -1,47 +1,44 @@
-﻿@{
+﻿@model List<WebApplication10.Models.Products>
+
+@{
     ViewBag.Title = "Trang chủ";
 }
 
-<!-- BANNER -->
 <section class="banner">
-    <img src="/images/banner-main.jpg" alt="Banner" />
+
 </section>
 
-<!-- CATEGORY -->
 <section class="categories">
-    <div class="category">Laptop Gaming</div>
-    <div class="category">Laptop Văn Phòng</div>
-    <div class="category">PC i5 / i7</div>
-    <div class="category">PC RTX 4060</div>
+    @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
+    {
+        <a class="category"
+           href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })">
+            @c.CategoryName
+        </a>
+    }
 </section>
 
-<!-- PRODUCTS -->
 <section class="products">
-    <h2>PC Bán Chạy</h2>
+    <div class="section-header">
+        <h2>Sản phẩm nổi bật</h2>
+
+        <a class="view-all"
+           href="@Url.Action("Index", "Products")">
+            Xem tất cả →
+        </a>
+    </div>
 
     <div class="product-grid">
-        <div class="product-card">
-            <img src="/images/pc1.jpg" />
-            <h3>PC Gaming i5 RTX 4060</h3>
-            <p class="price">19.990.000đ</p>
-        </div>
-
-        <div class="product-card">
-            <img src="/images/pc2.jpg" />
-            <h3>PC Gaming i7 RTX 4070</h3>
-            <p class="price">29.990.000đ</p>
-        </div>
-
-        <div class="product-card">
-            <img src="/images/pc3.jpg" />
-            <h3>PC Office i5</h3>
-            <p class="price">9.990.000đ</p>
-        </div>
-
-        <div class="product-card">
-            <img src="/images/pc4.jpg" />
-            <h3>PC Gaming Ryzen 7</h3>
-            <p class="price">24.990.000đ</p>
-        </div>
+        @foreach (var p in Model)
+        {
+            @Html.Partial("_ProductCard", p)
+        }
     </div>
+</section>
+
+<section class="home-info">
+    <div class="info-box">✔ Bảo hành chính hãng</div>
+    <div class="info-box">🚚 Giao hàng toàn quốc</div>
+    <div class="info-box">🔄 Đổi trả 7 ngày</div>
+    <div class="info-box">📞 Hỗ trợ kỹ thuật</div>
 </section>

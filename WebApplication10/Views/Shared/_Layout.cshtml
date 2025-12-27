@@ -2,14 +2,15 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>@ViewBag.Title - GearVN</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>@ViewBag.Title - TECHSTORE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- BOOTSTRAP -->
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- SITE CSS -->
-    <link href="~/Content/css/site.css" rel="stylesheet" />
+    <link href="~/Content/css/site.css?@DateTime.Now.Ticks" rel="stylesheet" />
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
@@ -21,12 +22,23 @@
     <header class="header">
         <div class="container header-top">
             <div class="logo">
-                <span class="logo-red">GEAR</span><span class="logo-white">VN</span>
+                <a href="@Url.Action("Index", "Home")">
+                    <span class="logo-red">TECH</span><span class="logo-white">STORE</span>
+                </a>
             </div>
 
             <div class="search-box">
-                <input type="text" placeholder="Bạn cần tìm gì?" />
-                <button><i class="fa fa-search"></i></button>
+                @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+                {
+                    <input type="text"
+                           name="keyword"
+                           value="@Request.QueryString["keyword"]"
+                           placeholder="Tìm theo tên, hãng, loại..." />
+
+                    <button type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                }
             </div>
 
             <div class="header-actions">
@@ -37,24 +49,59 @@
 
         <!-- MENU -->
         <nav class="menu">
-            <a href="#">Laptop Gaming</a>
-            <a href="#">PC Gaming</a>
-            <a href="#">PC Văn Phòng</a>
-            <a href="#">Màn hình</a>
-            <a href="#">Bàn phím</a>
-            <a href="#">Chuột</a>
+            @foreach (var c in ViewBag.Categories as List<WebApplication10.Models.Categories>)
+            {
+                <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })"
+                   class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
+                    @c.CategoryName
+                </a>
+            }
         </nav>
     </header>
 
     <!-- BODY -->
-    <main class="container">
+    <main class="container page-content">
         @RenderBody()
     </main>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <p>© 2025 GearVN Clone - ASP.NET MVC 5</p>
+        <div class="container footer-content">
+            <!-- LEFT -->
+            <div class="footer-left">
+                <strong>TECH<span style="color:#ff5c5c;">STORE</span></strong><br />
+                Hệ thống bán lẻ thiết bị công nghệ<br />
+                123 Nguyễn Văn Linh, TP.HCM<br />
+                Hotline: <a href="tel:19005301">1900 5301</a><br />
+                Email: <a href="mailto:support@techstore.com">support@techstore.com</a>
+            </div>
+
+            <!-- CENTER -->
+            <div class="footer-center">
+                <a href="#">Giới thiệu</a> |
+                <a href="#">Liên hệ</a> |
+                <a href="#">Bảo hành</a> |
+                <a href="#">Đổi trả</a> |
+                <a href="#">Hướng dẫn mua</a> |
+                <a href="#">Điều khoản</a>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="footer-right">
+                <div>© 2025 TechStore</div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
     </footer>
 
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
