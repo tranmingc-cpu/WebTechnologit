@@ -1,0 +1,87 @@
+﻿@model WebApplication10.Models.Users
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="account-page">
+    <div class="profile-wrapper">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="profile-sidebar">
+            <div class="avatar">
+                <i class="fa fa-user"></i>
+            </div>
+
+            <h3>@Model.FullName</h3>
+            <p class="email">@Model.Email</p>
+
+            <span class="status @(Model.IsActive == true ? "active" : "inactive")">
+                @(Model.IsActive == true ? "Hoạt động" : "Bị khóa")
+            </span>
+
+            <ul class="profile-menu">
+                <li class="active">
+                    <i class="fa fa-id-card"></i> Hồ sơ
+                </li>
+                <li>
+                    <a href="/Account/Orders">
+                        <i class="fa fa-box"></i> Đơn hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/Account/Logout" class="logout">
+                        <i class="fa fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="profile-content">
+            <h2>Thông tin cá nhân</h2>
+
+            <div class="info-grid">
+                <div>
+                    <label>Họ tên</label>
+                    <span>@Model.FullName</span>
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <span>@Model.Email</span>
+                </div>
+
+                <div>
+                    <label>Số điện thoại</label>
+                    <span>@(Model.Phone ?? "Chưa cập nhật")</span>
+                </div>
+
+                <div>
+                    <label>Địa chỉ</label>
+                    <span>@(Model.Address ?? "Chưa cập nhật")</span>
+                </div>
+
+                <div>
+                    <label>Vai trò</label>
+                    <span class="badge">@Model.Role</span>
+                </div>
+
+                <div>
+                    <label>Ngày tạo</label>
+                    <span>@Model.CreatedAt</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="#" class="btn-primary">
+                    <i class="fa fa-pen"></i> Cập nhật thông tin
+                </a>
+                <a href="#" class="btn-outline">
+                    <i class="fa fa-lock"></i> Đổi mật khẩu
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -229,3 +229,189 @@ SELECT * FROM Users;
 SELECT * FROM Products;
 SELECT * FROM Orders;
 SELECT name FROM sys.databases;
+
+ALTER TABLE Categories
+ALTER COLUMN Description NVARCHAR(MAX);
+
+UPDATE Categories
+SET Description = N'
+<h2>Laptop là gì?</h2>
+<p>
+<strong>Laptop</strong> là dòng máy tính xách tay được thiết kế nhỏ gọn,
+phù hợp cho học tập, làm việc và giải trí.
+</p>
+
+<p>
+Laptop hiện đại được trang bị CPU mạnh mẽ, ổ cứng SSD tốc độ cao
+và màn hình có độ phân giải cao, đáp ứng tốt các nhu cầu từ cơ bản
+đến nâng cao.
+</p>
+
+<h3>Phân loại laptop phổ biến</h3>
+<ul>
+  <li>Laptop văn phòng – tiết kiệm pin</li>
+  <li>Laptop gaming – hiệu năng cao</li>
+  <li>Laptop đồ họa – màn hình chuẩn màu</li>
+</ul>
+
+<figure class="image">
+  <img src="/uploads/categories/laptop.jpg" />
+  <figcaption>Hình ảnh laptop hiện đại</figcaption>
+</figure>
+
+<p>
+Tại <strong>TechStore</strong>, chúng tôi cung cấp đa dạng các dòng laptop
+chính hãng từ Dell, ASUS, HP, MSI với mức giá cạnh tranh.
+</p>
+'
+WHERE CategoryId = 1;
+
+UPDATE Categories
+SET Description = N'
+<h2>PC – Máy tính để bàn là gì?</h2>
+<p>
+<strong>PC (Personal Computer)</strong> hay còn gọi là
+<strong>máy tính để bàn</strong> là thiết bị có hiệu năng cao,
+phù hợp cho làm việc, học tập và giải trí chuyên sâu.
+</p>
+
+<p>
+So với laptop, PC có ưu thế về khả năng nâng cấp linh kiện,
+tản nhiệt tốt và hiệu suất ổn định khi hoạt động trong thời gian dài.
+</p>
+
+<h3>Phân loại PC phổ biến</h3>
+<ul>
+  <li>PC văn phòng – ổn định, tiết kiệm chi phí</li>
+  <li>PC gaming – cấu hình mạnh, xử lý đồ họa cao</li>
+  <li>PC đồ họa – dựng phim, thiết kế 3D</li>
+</ul>
+
+<p>
+Người dùng có thể tùy chọn cấu hình CPU, RAM, SSD, VGA
+phù hợp với nhu cầu sử dụng và ngân sách.
+</p>
+
+<figure class="image">
+  <img src="/uploads/categories/pc.jpg" />
+  <figcaption>Máy tính để bàn hiệu năng cao</figcaption>
+</figure>
+
+<p>
+Tại <strong>TechStore</strong>, chúng tôi cung cấp các dòng PC
+chính hãng, lắp ráp sẵn và build theo yêu cầu với bảo hành uy tín.
+</p>
+'
+WHERE CategoryId = 2;
+
+UPDATE Categories
+SET Description = N'
+<h2>Chuột máy tính là gì?</h2>
+<p>
+<strong>Chuột máy tính</strong> là thiết bị ngoại vi quan trọng,
+giúp người dùng điều khiển và thao tác chính xác trên máy tính.
+</p>
+
+<p>
+Hiện nay, chuột được thiết kế đa dạng về kiểu dáng,
+trọng lượng và cảm biến, phù hợp cho từng đối tượng sử dụng.
+</p>
+
+<h3>Các loại chuột phổ biến</h3>
+<ul>
+  <li>Chuột văn phòng – gọn nhẹ, sử dụng lâu không mỏi tay</li>
+  <li>Chuột gaming – DPI cao, cảm biến chính xác</li>
+  <li>Chuột không dây – tiện lợi, thẩm mỹ</li>
+</ul>
+
+<p>
+Chuột gaming thường được trang bị nút macro,
+RGB và thiết kế công thái học cho game thủ chuyên nghiệp.
+</p>
+
+<figure class="image">
+  <img src="/uploads/categories/mouse.jpg" />
+  <figcaption>Chuột máy tính hiện đại</figcaption>
+</figure>
+
+<p>
+TechStore phân phối chuột chính hãng từ Logitech, ASUS, MSI
+với nhiều mức giá và chế độ bảo hành rõ ràng.
+</p>
+'
+WHERE CategoryId = 3;
+
+UPDATE Categories
+SET Description = N'
+<h2>Bàn phím máy tính</h2>
+<p>
+<strong>Bàn phím</strong> là thiết bị nhập liệu không thể thiếu,
+giúp người dùng thao tác và nhập dữ liệu nhanh chóng.
+</p>
+
+<p>
+Ngày nay, bàn phím không chỉ phục vụ công việc
+mà còn đóng vai trò quan trọng trong trải nghiệm chơi game.
+</p>
+
+<h3>Các loại bàn phím phổ biến</h3>
+<ul>
+  <li>Bàn phím cơ – độ bền cao, cảm giác gõ tốt</li>
+  <li>Bàn phím văn phòng – gõ êm, giá thành hợp lý</li>
+  <li>Bàn phím gaming – RGB, switch chất lượng cao</li>
+</ul>
+
+<p>
+Bàn phím cơ sử dụng switch cơ học với tuổi thọ
+lên đến hàng chục triệu lần nhấn.
+</p>
+
+<figure class="image">
+  <img src="/uploads/categories/keyboard.jpg" />
+  <figcaption>Bàn phím cơ hiện đại</figcaption>
+</figure>
+
+<p>
+TechStore cung cấp đa dạng các mẫu bàn phím từ Logitech,
+ASUS, MSI, Dell đáp ứng mọi nhu cầu sử dụng.
+</p>
+'
+WHERE CategoryId = 4;
+
+UPDATE Categories
+SET Description = N'
+<h2>Linh kiện máy tính</h2>
+<p>
+<strong>Linh kiện máy tính</strong> là các thành phần quan trọng
+quyết định hiệu năng và độ ổn định của hệ thống.
+</p>
+
+<p>
+Việc lựa chọn linh kiện phù hợp giúp máy tính hoạt động
+mượt mà, bền bỉ và đáp ứng đúng nhu cầu sử dụng.
+</p>
+
+<h3>Các loại linh kiện phổ biến</h3>
+<ul>
+  <li>CPU – bộ não xử lý của máy tính</li>
+  <li>RAM – bộ nhớ tạm thời</li>
+  <li>Ổ cứng SSD/HDD – lưu trữ dữ liệu</li>
+  <li>Card đồ họa (VGA) – xử lý hình ảnh</li>
+</ul>
+
+<p>
+Linh kiện chính hãng đảm bảo hiệu năng cao,
+độ bền lâu dài và khả năng tương thích tốt.
+</p>
+
+<figure class="image">
+  <img src="/uploads/categories/components.jpg" />
+  <figcaption>Linh kiện máy tính chính hãng</figcaption>
+</figure>
+
+<p>
+TechStore cam kết cung cấp linh kiện chính hãng từ Intel,
+AMD, Samsung, Corsair, MSI với giá cả cạnh tranh.
+</p>
+'
+WHERE CategoryId = 5;

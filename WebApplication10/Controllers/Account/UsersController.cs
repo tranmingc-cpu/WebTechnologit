@@ -1,74 +1,71 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using WebApplication10.Models;
+using WebApplication10.DAO;
 
 namespace WebApplication10.Controllers
 {
     public class UsersController : Controller
     {
-        private TechStoreDBEntities _context = new TechStoreDBEntities();
+        private readonly UserDao _userDao;
 
-        // GET: Users
+        public UsersController()
+        {
+            _userDao = new UserDao(new TechStoreDBEntities());
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Users Partial List (for AJAX)
         public ActionResult UserListPartial()
         {
-            var users = _context.Users.ToList();
+            var users = _userDao.GetAll();
             return PartialView("_UserList", users);
         }
 
-        // GET: Users/Create
         public ActionResult Create()
         {
             return PartialView("_CreateUser");
         }
 
-        // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Users user)
         {
             if (!ModelState.IsValid)
             {
-                var modelErrors = ModelState.Values
-                                             .SelectMany(v => v.Errors)
-                                             .Select(e => e.ErrorMessage)
-                                             .ToList();
-                return Json(new { success = false, errors = modelErrors });
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors });
             }
 
-            user.CreatedAt = DateTime.Now;
-            user.IsActive = true;
-            if (string.IsNullOrWhiteSpace(user.Role))
-                user.Role = "Customer";
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Json(new { success = true });
+            try
+            {
+                _userDao.Add(user);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errors = new[] { ex.Message } });
+            }
         }
 
-        // GET: Users/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            Users user = _context.Users.Find(id);
+            var user = _userDao.GetById(id.Value);
             if (user == null)
                 return HttpNotFound();
 
             return PartialView("_EditUser", user);
         }
 
-        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Users user)
@@ -77,49 +74,29 @@ namespace WebApplication10.Controllers
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors)
                                               .Select(e => e.ErrorMessage).ToList();
-                return Json(new { success = false, errors = errors });
-            }
-
-            var existingUser = _context.Users.Find(user.UserId);
-            if (existingUser == null)
-                return Json(new { success = false, errors = new[] { "User not found." } });
-
-            existingUser.Username = user.Username;
-            existingUser.FullName = user.FullName;
-            existingUser.Email = user.Email;
-            existingUser.Phone = user.Phone;
-            existingUser.Address = user.Address;
-            existingUser.Role = string.IsNullOrWhiteSpace(user.Role) ? "User" : user.Role;
-
- 
-            if (!string.IsNullOrWhiteSpace(user.Password))
-            {
-                existingUser.Password = user.Password;
+                return Json(new { success = false, errors });
             }
 
             try
             {
-                _context.SaveChanges();
+                _userDao.Update(user);
                 return Json(new { success = true });
             }
-            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            catch (InvalidOperationException ex)
             {
-                var errors = ex.EntityValidationErrors
-                               .SelectMany(eve => eve.ValidationErrors)
-                               .Select(ve => ve.PropertyName + ": " + ve.ErrorMessage)
-                               .ToList();
-                return Json(new { success = false, errors = errors });
+                return Json(new { success = false, errors = new[] { ex.Message } });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errors = new[] { ex.Message } });
             }
         }
-
-
-        // GET: Users/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            Users user = _context.Users.Find(id);
+            var user = _userDao.GetById(id.Value);
             if (user == null)
                 return HttpNotFound();
 
@@ -130,27 +107,11 @@ namespace WebApplication10.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user != null)
+            if (_userDao.Delete(id, out string message))
             {
-                if (user.Orders.Any() || user.Cart.Any() || user.Reviews.Any())
-                {
-                    return Json(new { success = false, message = "Cannot delete user with related data." });
-                }
-
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                return Json(new { success = true });
             }
-            return Json(new { success = true });
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
-            base.Dispose(disposing);
+            return Json(new { success = false, message });
         }
     }
 }

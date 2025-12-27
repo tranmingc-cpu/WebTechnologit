@@ -5,14 +5,14 @@
 }
 
 <section class="banner">
-
 </section>
 
 <section class="categories">
+    <a class="category active" data-id="">Tất cả</a>
+
     @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
     {
-        <a class="category"
-           href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })">
+        <a class="category" data-id="@c.CategoryId">
             @c.CategoryName
         </a>
     }
@@ -22,13 +22,12 @@
     <div class="section-header">
         <h2>Sản phẩm nổi bật</h2>
 
-        <a class="view-all"
-           href="@Url.Action("Index", "Products")">
+        <a class="view-all" href="@Url.Action("Index", "Products")">
             Xem tất cả →
         </a>
     </div>
 
-    <div class="product-grid">
+    <div class="product-grid" id="productGrid">
         @foreach (var p in Model)
         {
             @Html.Partial("_ProductCard", p)
@@ -42,3 +41,21 @@
     <div class="info-box">🔄 Đổi trả 7 ngày</div>
     <div class="info-box">📞 Hỗ trợ kỹ thuật</div>
 </section>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $('.category').click(function () {
+        $('.category').removeClass('active');
+        $(this).addClass('active');
+
+        let categoryId = $(this).data('id');
+
+        $.ajax({
+            url: '/Home/LoadProductsByCategory',
+            data: { categoryId: categoryId },
+            success: function (res) {
+                $('#productGrid').html(res);
+            }
+        });
+    });
+</script>
