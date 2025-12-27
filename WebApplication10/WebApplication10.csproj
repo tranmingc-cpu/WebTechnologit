@@ -140,7 +140,12 @@
     <Compile Include="Controllers\Account\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Products\SearchController.cs" />
     <Compile Include="Controllers\Products\ProductsController.cs" />
+    <Compile Include="DAO\ProductDAO.cs" />
+    <Compile Include="DAO\AdminDAO.cs" />
+    <Compile Include="DAO\UserDAO.cs" />
+    <Compile Include="DAO\IRepoDAO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -190,6 +195,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\account\profile.css" />
     <Content Include="Content\css\admin\admin.css" />
     <Content Include="Content\css\auth\auth.css" />
     <Content Include="Content\css\bootstrap-grid.css" />
@@ -208,6 +214,9 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap.rtl.css" />
     <Content Include="Content\css\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\products.css" />
+    <Content Include="Content\css\product\product-detail.css" />
+    <Content Include="Content\css\product\product-index.css" />
     <Content Include="Content\css\site.css" />
     <Content Include="Database\TechStore.sql" />
     <Content Include="favicon.ico" />
@@ -291,10 +300,13 @@
     <Content Include="Views\Shared\_ProductCard.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Account\Profile.cshtml" />
+    <Content Include="Views\Shared\_HomeProductGrid.cshtml" />
+    <Content Include="Views\Shared\_ProductGrid.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\images\" />
+    <Folder Include="Content\images\payments\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
