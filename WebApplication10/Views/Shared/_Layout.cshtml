@@ -188,14 +188,33 @@
 
         function performSearch() {
             let keyword = $('#headerSearch').val().trim();
-            let container = $('.product-grid').first();
+            if (keyword.length === 0) return;
 
-            if (container.length) {
-                ajaxSearch(keyword, container);
+            let $container = $('.product-grid').first();
+
+            if ($container.length) {
+                $container.addClass('fade-out');
+                $('#ajaxLoader').fadeIn(150);
+
+                $.ajax({
+                    url: '/Search/QuickSearch',
+                    data: { keyword: keyword },
+                    dataType: 'json',
+                    success: function (res) {
+                        $container.html(res.html);
+                        $container.removeClass('fade-out').addClass('fade-in');
+                        $('#ajaxLoader').fadeOut(200);
+                    },
+                    error: function () {
+                        $container.html('<p>Lỗi tải sản phẩm.</p>');
+                        $('#ajaxLoader').fadeOut(200);
+                    }
+                });
             } else {
-                window.location.href = '/Home/Search?keyword=' + encodeURIComponent(keyword);
+                window.location.href = '/Products?keyword=' + encodeURIComponent(keyword);
             }
         }
+
 
         $('#btnSearch').on('click', function (e) {
             e.preventDefault();

@@ -1,11 +1,9 @@
-﻿/* ---------------- Reset ---------------- */
-*, *::before, *::after {
+﻿*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* ---------------- Body ---------------- */
 body {
     font-family: "Segoe UI", Arial, sans-serif;
     color: #e0e0e0;
@@ -28,7 +26,6 @@ img {
     padding: 0 15px;
 }
 
-/* ---------------- Header ---------------- */
 .header {
     width: 100%;
     position: relative;
@@ -120,7 +117,6 @@ img {
             color: #ff5c5c;
         }
 
-/* ---------------- Account Dropdown ---------------- */
 .account-dropdown {
     position: relative;
 }
@@ -180,7 +176,6 @@ img {
     transform: translateY(0);
 }
 
-/* ---------------- Cart ---------------- */
 .cart-btn {
     display: flex;
     align-items: center;
@@ -193,7 +188,6 @@ img {
         color: #ff5c5c;
     }
 
-/* ---------------- Menu ---------------- */
 .menu {
     display: flex;
     justify-content: center;
@@ -312,7 +306,7 @@ img {
             }
 
             .menu a.dropdown-parent .submenu {
-                position: relative; /* không còn sang phải nữa */
+                position: relative;
                 display: none;
                 flex-direction: column;
                 background: #1f2233;

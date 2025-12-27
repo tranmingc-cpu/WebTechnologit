@@ -165,16 +165,9 @@ namespace WebApplication10.Controllers
             if (ModelState.IsValid)
             {
                 _userDao.Update(model);
-                return RedirectToAction("Profile");
+                return Json(new { success = true });
             }
-            return View(model);
-        }
-
-        // CHANGE PASSWORD
-        [HttpGet]
-        public ActionResult ChangePassword()
-        {
-            return View();
+            return Json(new { success = false });
         }
 
         [HttpPost]
@@ -183,9 +176,7 @@ namespace WebApplication10.Controllers
         {
             int userId = (int)Session["UserId"];
             bool success = _userDao.ChangePassword(userId, oldPassword, newPassword);
-
-            ViewBag.Message = success ? "Đổi mật khẩu thành công!" : "Mật khẩu cũ không đúng!";
-            return View();
+            return Json(new { success = success, message = success ? "Đổi mật khẩu thành công!" : "Mật khẩu cũ không đúng!" });
         }
     }
 }

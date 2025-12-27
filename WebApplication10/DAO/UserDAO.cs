@@ -46,17 +46,20 @@ namespace WebApplication10.DAO
             if (existingUser == null)
                 throw new InvalidOperationException("User not found.");
 
-            existingUser.Username = user.Username;
-            existingUser.FullName = user.FullName;
-            existingUser.Email = user.Email;
+            if (!string.IsNullOrWhiteSpace(user.FullName))
+                existingUser.FullName = user.FullName;
+
             existingUser.Phone = user.Phone;
             existingUser.Address = user.Address;
-            existingUser.Role = string.IsNullOrWhiteSpace(user.Role) ? "User" : user.Role;
 
+            if (!string.IsNullOrWhiteSpace(user.Username))
+                existingUser.Username = user.Username;
+            if (!string.IsNullOrWhiteSpace(user.Email))
+                existingUser.Email = user.Email;
             if (!string.IsNullOrWhiteSpace(user.Password))
-            {
                 existingUser.Password = user.Password;
-            }
+
+            existingUser.Role = string.IsNullOrWhiteSpace(user.Role) ? existingUser.Role : user.Role;
 
             _context.SaveChanges();
         }
@@ -86,5 +89,18 @@ namespace WebApplication10.DAO
         {
             return _context.Users.Any(u => u.UserId == id);
         }
+
+        public bool ChangePassword(int userId, string oldPassword, string newPassword)
+        {
+            var user = _context.Users.Find(userId);
+            if (user != null && user.Password == oldPassword)
+            {
+                user.Password = newPassword;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
     }
 }

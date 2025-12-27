@@ -14,6 +14,21 @@ namespace WebApplication10.Controllers.Products
             _productDao = new ProductDao(db);
         }
 
+        public ActionResult Index(string keyword)
+        {
+            if (string.IsNullOrEmpty(keyword))
+            {
+                return View();
+            }
+
+            var products = db.Products
+                             .Where(p => p.ProductName.Contains(keyword))
+                             .ToList();
+
+            ViewBag.Keyword = keyword;
+            return View(products);
+        }
+
         public ActionResult QuickSearch(string keyword)
         {
             var products = _productDao.GetAvailableProducts();

@@ -1,15 +1,14 @@
-﻿/* ===== PROFILE PAGE ===== */
-.account-page {
-    padding: 40px 0;
+﻿.account-page {
+    padding: 80px 0 10px 0;
 }
 
 .profile-wrapper {
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 30px;
+    margin-top: 40px;
 }
 
-/* SIDEBAR */
 .profile-sidebar {
     background: #1f2233;
     border-radius: 14px;
@@ -59,7 +58,6 @@
         color: #ff5252;
     }
 
-/* MENU */
 .profile-menu {
     list-style: none;
     margin-top: 25px;
@@ -71,11 +69,15 @@
         border-radius: 8px;
         margin-bottom: 8px;
         cursor: pointer;
-        transition: .25s;
+        transition: 0.25s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
         .profile-menu li i {
-            margin-right: 8px;
+            width: 20px;
+            text-align: center;
         }
 
         .profile-menu li.active,
@@ -85,14 +87,15 @@
 
     .profile-menu a {
         color: inherit;
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .profile-menu .logout {
         color: #ff7a7a;
     }
 
-/* CONTENT */
 .profile-content {
     background: #1f2233;
     border-radius: 14px;
@@ -104,7 +107,6 @@
         margin-bottom: 20px;
     }
 
-/* INFO GRID */
 .info-grid {
     display: grid;
     grid-template-columns: repeat(2,1fr);
@@ -123,13 +125,21 @@
     }
 
 .badge {
+    display: inline-block;
     background: #ff5c5c;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    max-width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: middle;
+    line-height: 1.4;
 }
 
-/* ACTIONS */
 .profile-actions {
     margin-top: 30px;
     display: flex;
@@ -142,6 +152,9 @@
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
 .btn-outline {
@@ -150,9 +163,134 @@
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
+    transition: 0.2s;
 }
 
-    .btn-primary:hover,
-    .btn-outline:hover {
-        opacity: .9;
+    .btn-primary:hover, .btn-outline:hover {
+        opacity: 0.9;
+    }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+    .modal.show {
+        display: flex;
+    }
+
+.modal-content {
+    background-color: #1f2233;
+    border-radius: 14px;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 12px 30px rgba(0,0,0,.5);
+    color: #fff;
+    position: relative;
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content label {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.modal-content input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #2c2f44;
+    color: #fff;
+    font-size: 14px;
+}
+
+    .modal-content input:focus {
+        outline: none;
+        border-color: #ff5c5c;
+    }
+
+.modal-content button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .modal-content button.btn-primary {
+        background: #ff5c5c;
+        color: #fff;
+    }
+
+        .modal-content button.btn-primary:hover {
+            opacity: 0.9;
+        }
+
+.modal-content .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.2s;
+}
+
+    .modal-content .close:hover {
+        color: #ff5c5c;
+    }
+
+#successModal .modal-content {
+    width: 350px;
+    text-align: center;
+    background-color: #1f2233;
+    color: #fff;
+}
+
+#successModal h3 {
+    color: #00c853;
+    margin-bottom: 10px;
+}
+
+#successModal p {
+    font-size: 14px;
+}
+
+#successModal button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #00c853;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    #successModal button:hover {
+        background: #00e676;
     }
