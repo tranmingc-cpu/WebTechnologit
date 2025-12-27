@@ -290,6 +290,7 @@
     <Content Include="Views\Users\_DeleteUser.cshtml" />
     <Content Include="Views\Shared\_ProductCard.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
