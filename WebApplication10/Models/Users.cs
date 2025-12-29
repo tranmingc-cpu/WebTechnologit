@@ -11,8 +11,7 @@ namespace WebApplication10.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
-
+    
     public partial class Users
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,7 +21,7 @@ namespace WebApplication10.Models
             this.Orders = new HashSet<Orders>();
             this.Reviews = new HashSet<Reviews>();
         }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

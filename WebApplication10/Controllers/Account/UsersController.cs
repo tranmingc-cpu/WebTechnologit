@@ -7,7 +7,7 @@ using WebApplication10.DAO;
 
 namespace WebApplication10.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly UserDao _userDao;
 
@@ -18,14 +18,16 @@ namespace WebApplication10.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View(); 
         }
+
 
         public ActionResult UserListPartial()
         {
             var users = _userDao.GetAll();
-            return PartialView("_UserList", users);
+            return PartialView("_UsersPartial", users);
         }
+
 
         public ActionResult Create()
         {
@@ -113,5 +115,6 @@ namespace WebApplication10.Controllers
             }
             return Json(new { success = false, message });
         }
+
     }
 }

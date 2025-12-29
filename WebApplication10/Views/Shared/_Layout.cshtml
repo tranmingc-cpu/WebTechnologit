@@ -11,6 +11,7 @@
     <link href="~/Content/css/product/product-index.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/product/product-detail.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/account/profile.css?@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/Content/css/pages/info.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
@@ -60,9 +61,16 @@
                             {
                                 <a href="/Account/Profile"><i class="fa fa-id-card"></i> Thông tin tài khoản</a>
                                 <a href="/Account/Orders"><i class="fa fa-box"></i> Đơn hàng của tôi</a>
+
+                                if (Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin")
+                                {
+                                    <a href="/Admin/Dashboard"><i class="fa fa-file-alt"></i> Quản lý trang</a>
+                                }
+
                                 <hr />
                                 <a href="/Account/Logout" class="logout"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
                             }
+
                         </div>
                     </div>
                 </div>
@@ -90,75 +98,9 @@
         @RenderBody()
     </main>
 
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="container footer-features">
-                <div><i class="fa fa-truck-fast"></i><span>Giao hàng nhanh 2h</span></div>
-                <div><i class="fa fa-shield-halved"></i><span>Hàng chính hãng 100%</span></div>
-                <div><i class="fa fa-rotate-left"></i><span>Đổi trả trong 7 ngày</span></div>
-                <div><i class="fa fa-headset"></i><span>Hỗ trợ 24/7</span></div>
-            </div>
-        </div>
-
-        <div class="container footer-content">
-            <div class="footer-col footer-brand">
-                <h3 class="footer-logo">TECH<span>STORE</span></h3>
-                <p class="footer-desc">Hệ thống bán lẻ thiết bị công nghệ chính hãng.<br />Laptop • PC • Gaming Gear • Linh kiện</p>
-                <div class="footer-contact">
-                    <div><i class="fa fa-location-dot"></i> 123 Nguyễn Văn Linh, TP.HCM</div>
-                    <div><i class="fa fa-phone"></i> <a href="tel:19005301">1900 5301</a></div>
-                    <div><i class="fa fa-envelope"></i> <a href="mailto:support@techstore.com">support@techstore.com</a></div>
-                </div>
-            </div>
-
-            <div class="footer-col">
-                <h4>Về TechStore</h4>
-                <ul>
-                    <li><a href="#">Giới thiệu</a></li>
-                    <li><a href="#">Tin công nghệ</a></li>
-                    <li><a href="#">Tuyển dụng</a></li>
-                    <li><a href="#">Liên hệ</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Chính sách</h4>
-                <ul>
-                    <li><a href="#">Bảo hành</a></li>
-                    <li><a href="#">Đổi trả</a></li>
-                    <li><a href="#">Vận chuyển</a></li>
-                    <li><a href="#">Thanh toán</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col footer-newsletter">
-                <h4>Nhận ưu đãi</h4>
-                <p>Đăng ký để nhận thông tin khuyến mãi mới nhất</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Email của bạn" required />
-                    <button type="submit"><i class="fa fa-paper-plane"></i></button>
-                </form>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="container footer-bottom-inner">
-                <span>© 2025 <strong>TechStore</strong>. All rights reserved.</span>
-                <div class="footer-payments">
-                    <img src="/Content/images/payments/visa.jpg" />
-                    <img src="/Content/images/payments/mastercard.png" />
-                    <img src="/Content/images/payments/momo.png" />
-                    <img src="/Content/images/payments/vnpay.jpg" />
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div id="footerContainer">
+        @Html.Partial("_Footer")
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -250,6 +192,40 @@
         });
 
     </script>
+    <script>
+            function highlightFooterLink(slug) {
+                $('#footerContainer a.ajax-link').removeClass('active');
+                if(slug){
+                    $('#footerContainer a.ajax-link').each(function(){
+                        var href = $(this).attr('href');
+                        if(href.includes(slug)){
+                            $(this).addClass('active');
+                        }
+                    });
+                }
+            }
 
+            $(document).ready(function(){
+                highlightFooterLink('@ViewBag.CurrentPageSlug');
+            });
+
+            $(document).on('click', '.ajax-link', function(e){
+                e.preventDefault();
+                var url = $(this).attr('href');
+                var slug = url.split('/').pop();
+
+                $('#ajaxLoader').fadeIn(150);
+                $('.page-content').fadeOut(150);
+
+                $.get(url, function(data){
+                    $('.page-content').html(data).fadeIn(200);
+                    $('#ajaxLoader').fadeOut(200);
+
+                    highlightFooterLink(slug);
+                    history.pushState(null, '', url);
+                });
+            });
+
+    </script>
 </body>
 </html>

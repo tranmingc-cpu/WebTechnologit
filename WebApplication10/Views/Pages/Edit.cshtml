@@ -1,0 +1,91 @@
+﻿@model WebApplication10.Models.InfoPages
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Edit Page";
+}
+
+<div class="admin-page">
+
+    <div class="admin-left-panel" style="width:100%; max-width:none;">
+        <div class="admin-box" style="width:100%;">
+
+            <div class="admin-header">
+                <h2>Edit Page</h2>
+                <p>Chỉnh sửa nội dung trang: @Model.Title</p>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @using (Html.BeginForm("Edit", "Pages", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.InfoPageId)
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Title)
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Content)
+                    @Html.TextAreaFor(m => m.Content, new { @class = "form-control", rows = 12 })
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    💾 Save Changes
+                </button>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+
+<script>
+    CKEDITOR.replace('@Html.IdFor(m => m.Content)', {
+        height: 420,
+        width: '100%',
+        toolbar: 'Full',
+        contentsCss: [
+            'body { background-color:#2e3040; color:#ffffff; font-size:14px; line-height:1.7; }'
+        ]
+    });
+
+    CKEDITOR.on('instanceReady', function () {
+        CKEDITOR.addCss(`
+            .cke_panel {
+                background: #ffffff !important;
+                border: 1px solid #d6d9e6 !important;
+                box-shadow: 0 12px 28px rgba(0,0,0,.25) !important;
+            }
+
+            .cke_panel_list {
+                background: #ffffff !important;
+            }
+
+            .cke_panel_listItem a {
+                background: transparent !important;
+                color: #2c2f3a !important;
+                font-weight: 500;
+            }
+
+            .cke_panel_listItem a:hover,
+            .cke_panel_listItem.cke_selected a {
+                background: #ff5c5c !important;
+                color: #ffffff !important;
+            }
+
+            .cke_panel_listItem .cke_panel_text {
+                color: inherit !important;
+            }
+        `);
+    });
+</script>

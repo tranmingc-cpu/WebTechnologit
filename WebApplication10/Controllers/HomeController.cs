@@ -8,10 +8,12 @@ namespace WebApplication10.Controllers
     public class HomeController : BaseController
     {
         private readonly ProductDao _productDao;
+        private readonly AboutDAO _aboutDao;
 
         public HomeController()
         {
             _productDao = new ProductDao(db);
+            _aboutDao = new AboutDAO(db);
         }
 
         public ActionResult Index()
@@ -31,7 +33,8 @@ namespace WebApplication10.Controllers
 
         public ActionResult About()
         {
-            return View();
+            var model = _aboutDao.GetAbout();
+            return View(model);
         }
 
         public ActionResult Contact()
@@ -53,6 +56,10 @@ namespace WebApplication10.Controllers
                                  .ToList();
 
             return PartialView("_HomeProductGrid", result);
+        }
+        public ActionResult Footer()
+        {
+            return PartialView("_Footer");
         }
     }
 }
