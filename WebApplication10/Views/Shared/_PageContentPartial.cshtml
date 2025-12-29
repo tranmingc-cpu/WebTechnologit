@@ -1,0 +1,12 @@
+﻿@model WebApplication10.Models.InfoPages
+
+<div class="page-inner container">
+    <section class="info-page">
+        <div class="section-header">
+            <h2>@Model.Title</h2>
+        </div>
+        <div class="info-content">
+            @Html.Raw(Model.Content)
+        </div>
+    </section>
+</div>

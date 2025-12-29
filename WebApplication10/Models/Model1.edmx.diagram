@@ -24,6 +24,10 @@
         <AssociationConnector Association="TechStoreDBModel.FK_Image_Product" ManuallyRouted="false" />
         <AssociationConnector Association="TechStoreDBModel.FK_Review_Product" ManuallyRouted="false" />
         <AssociationConnector Association="TechStoreDBModel.FK_Review_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TechStoreDBModel.AboutPage" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="TechStoreDBModel.Contacts" Width="1.5" PointX="9.375" PointY="0.75" />
+        <EntityTypeShape EntityType="TechStoreDBModel.InfoPages" Width="1.5" PointX="7.375" PointY="9.75" />
+        <EntityTypeShape EntityType="TechStoreDBModel.NewsPosts" Width="1.5" PointX="9.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
