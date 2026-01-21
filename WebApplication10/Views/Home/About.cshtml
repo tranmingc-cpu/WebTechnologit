@@ -1,9 +1,15 @@
-﻿@{
-    ViewBag.Title = "About";
-}
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
+﻿@model WebApplication10.Models.AboutPage
 
-    <p>Use this area to provide additional information.</p>
-</main>
+@{
+    ViewBag.Title = Model?.Title ?? "Giới thiệu";
+}
+
+<section class="about-page">
+    <div class="section-header">
+        <h2>@ViewBag.Title</h2>
+    </div>
+
+    <div class="about-content">
+        @Html.Raw(Model?.Description)
+    </div>
+</section>

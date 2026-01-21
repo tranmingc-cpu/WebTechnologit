@@ -5,62 +5,93 @@
 }
 
 <div class="page-header">
-    @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
-    {
-        <h1>
-            Kết quả tìm kiếm cho:
-            <span class="highlight">"@ViewBag.Keyword"</span>
-        </h1>
-        <p class="sub-text">
-            Tìm thấy @Model.Count sản phẩm phù hợp
-        </p>
-    }
-    else if (ViewBag.CurrentCategoryId != null)
-    {
-        <h1>@ViewBag.CurrentCategoryName</h1>
-        <p class="sub-text">
-            Danh sách sản phẩm theo danh mục
-        </p>
-    }
-    else
-    {
-        <h1>Tất cả sản phẩm</h1>
-        <p class="sub-text">
-            Khám phá toàn bộ sản phẩm đang kinh doanh
-        </p>
-    }
+    <h1 id="pageHeaderTitle">
+        @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
+        {
+            @:Kết quả tìm kiếm cho: <span class="highlight">"@ViewBag.Keyword"</span>
+        }
+        else if (ViewBag.CurrentCategoryId != null)
+        {
+            @ViewBag.CurrentCategoryName
+        }
+        else
+        {
+            @:Tất cả sản phẩm
+        }
+    </h1>
+    <p class="sub-text" id="pageHeaderSubText">
+        @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
+        {
+            @:Tìm thấy @Model.Count sản phẩm phù hợp
+        }
+        else if (ViewBag.CurrentCategoryId != null)
+        {
+            @:Danh sách sản phẩm theo danh mục
+        }
+        else
+        {
+            @:Khám phá toàn bộ sản phẩm đang kinh doanh
+        }
+    </p>
 </div>
 
 <section class="category-filter">
-    <a href="@Url.Action("Index", "Products")"
-       class="category @(ViewBag.CurrentCategoryId == null ? "active" : "")">
-        Tất cả
-    </a>
+    <a class="category active" data-id="">Tất cả</a>
 
     @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
     {
-        <a class="category @(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")"
-           href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })">
+        <a class="category" data-id="@c.CategoryId" data-name="@c.CategoryName">
             @c.CategoryName
         </a>
     }
 </section>
 
 <section class="products">
-    <div class="product-grid">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var p in Model)
-            {
-                @Html.Partial("_ProductCard", p)
-            }
-        }
-        else
-        {
-            <div class="empty-state">
-                <i class="fa fa-box-open"></i>
-                <p>Không tìm thấy sản phẩm phù hợp.</p>
-            </div>
-        }
+    <div class="product-grid" id="productGrid">
+        @Html.Partial("_ProductGrid", Model)
     </div>
 </section>
+
+<section class="category-description" id="categoryDescription">
+    @if (ViewBag.CurrentCategoryId != null && !string.IsNullOrWhiteSpace(ViewBag.CurrentCategoryDescription as string))
+    {
+        @Html.Raw(ViewBag.CurrentCategoryDescription)
+    }
+</section>
+
+@section Scripts {
+    <script>
+        $(document).on('click', '.category', function (e) {
+            e.preventDefault();
+
+            $('.category').removeClass('active');
+            $(this).addClass('active');
+
+            let categoryId = $(this).data('id') || '';
+            let categoryName = $(this).data('name') || 'Tất cả sản phẩm';
+
+            let $container = $('#productGrid');
+            $container.addClass('fade-out');
+            $('#ajaxLoader').fadeIn(150);
+
+            $.ajax({
+                url: '/Products/LoadByCategory',
+                data: { categoryId: categoryId },
+                type: 'GET',
+                success: function (res) {
+                    $container.html(res.html);
+                    $container.removeClass('fade-out').addClass('fade-in');
+                    $('#ajaxLoader').fadeOut(200);
+
+                    $('#categoryDescription').html(res.description || '');
+                    $('#pageHeaderTitle').text(categoryName);
+                    $('#pageHeaderSubText').text(categoryId ? 'Danh sách sản phẩm theo danh mục' : 'Khám phá toàn bộ sản phẩm đang kinh doanh');
+                },
+                error: function () {
+                    $container.html('<p>Lỗi tải sản phẩm.</p>');
+                    $('#ajaxLoader').fadeOut(200);
+                }
+            });
+        });
+    </script>
+}

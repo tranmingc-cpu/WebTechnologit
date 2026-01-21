@@ -1,0 +1,200 @@
+﻿@model WebApplication10.Models.Users
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="account-page">
+    <div class="profile-wrapper">
+
+        <div class="profile-sidebar">
+            <div class="avatar">
+                <i class="fa fa-user"></i>
+            </div>
+
+            <h3 id="sidebarFullName">@Model.FullName</h3>
+            <p class="email">@Model.Email</p>
+
+            <span class="status @(Model.IsActive == true ? "active" : "inactive")">
+                @(Model.IsActive == true ? "Hoạt động" : "Bị khóa")
+            </span>
+
+            <ul class="profile-menu">
+                <li class="active">
+                    <i class="fa fa-id-card"></i> Hồ sơ
+                </li>
+                <li>
+                    <a href="/Account/Orders">
+                        <i class="fa fa-box"></i> Đơn hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/Account/Logout" class="logout">
+                        <i class="fa fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="profile-content">
+            <h2>Thông tin cá nhân</h2>
+
+            <div class="info-grid">
+                <div>
+                    <label>Họ tên</label>
+                    <span id="fullnameDisplay">@Model.FullName</span>
+                </div>
+                <div>
+                    <label>Email</label>
+                    <span>@Model.Email</span>
+                </div>
+                <div>
+                    <label>Số điện thoại</label>
+                    <span id="phoneDisplay">@Model.Phone</span>
+                </div>
+                <div>
+                    <label>Địa chỉ</label>
+                    <span id="addressDisplay">@Model.Address</span>
+                </div>
+                <div>
+                    <label>Vai trò</label>
+                    <span class="badge">@Model.Role</span>
+                </div>
+                <div>
+                    <label>Ngày tạo</label>
+                    <span>@Model.CreatedAt</span>
+                </div>
+            </div>
+
+
+            <div class="profile-actions">
+                <a href="#" class="btn btn-primary" id="btnEditProfile">
+                    <i class="fa fa-pen"></i> Cập nhật thông tin
+                </a>
+                <a href="#" class="btn btn-outline" id="btnChangePassword">
+                    <i class="fa fa-lock"></i> Đổi mật khẩu
+                </a>
+            </div>
+
+            <div id="editProfileModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Cập nhật thông tin</h3>
+                    @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editProfileForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="UserId" value="@Model.UserId" />
+
+                        <label>Họ tên</label>
+                        <input type="text" name="FullName" value="@Model.FullName" />
+
+                        <label>Số điện thoại</label>
+                        <input type="text" name="Phone" value="@Model.Phone" />
+
+                        <label>Địa chỉ</label>
+                        <input type="text" name="Address" value="@Model.Address" />
+
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    }
+                </div>
+            </div>
+
+            <div id="changePasswordModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Đổi mật khẩu</h3>
+                    @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post, new { id = "changePasswordForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <label>Mật khẩu cũ</label>
+                        <input type="password" name="oldPassword" />
+
+                        <label>Mật khẩu mới</label>
+                        <input type="password" name="newPassword" />
+
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    }
+                </div>
+            </div>
+
+            <div id="successModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Thành công!</h3>
+                    <p id="successMessage">Thông tin đã được cập nhật thành công.</p>
+                    <button id="btnCloseSuccess">Đóng</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+$(document).ready(function(){
+
+    $("#btnEditProfile").click(function(e){
+        e.preventDefault();
+        $("#editProfileModal").addClass("show");
+    });
+
+    $("#btnChangePassword").click(function(e){
+        e.preventDefault();
+        $("#changePasswordModal").addClass("show");
+    });
+
+    $(".close").click(function(){
+        $(this).closest(".modal").removeClass("show");
+    });
+    $("#btnCloseSuccess").click(function(){
+        $("#successModal").removeClass("show");
+    });
+
+    $("#editProfileForm").submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '@Url.Action("EditProfile", "Account")',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(res){
+                if (res.success) {
+                    var newFullName = $("#editProfileForm input[name='FullName']").val();
+                    $("#sidebarFullName").text(newFullName);
+
+                    $("#fullnameDisplay").text(newFullName);
+                    $("#phoneDisplay").text($("#editProfileForm input[name='Phone']").val() || "Chưa cập nhật");
+                    $("#addressDisplay").text($("#editProfileForm input[name='Address']").val() || "Chưa cập nhật");
+
+                    $("#editProfileModal").removeClass("show");
+                    $("#successMessage").text("Thông tin đã được cập nhật thành công!");
+                    $("#successModal").addClass("show");
+                }
+
+            }
+        });
+    });
+
+    $("#changePasswordForm").submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '@Url.Action("ChangePassword", "Account")',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(res){
+                if(res.success){
+                    $("#changePasswordModal").removeClass("show");
+                    $("#successMessage").text("Mật khẩu đã được thay đổi thành công!");
+                    $("#successModal").addClass("show");
+                } else {
+                    alert(res.message || "Có lỗi xảy ra");
+                }
+            }
+        });
+    });
+
+});
+    </script>
+}

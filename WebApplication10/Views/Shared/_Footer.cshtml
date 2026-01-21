@@ -1,0 +1,110 @@
+﻿<footer class="footer">
+    <div class="footer-top">
+        <div class="container footer-features">
+            <div><i class="fa fa-truck-fast"></i><span>Giao hàng nhanh 2h</span></div>
+            <div><i class="fa fa-shield-halved"></i><span>Hàng chính hãng 100%</span></div>
+            <div><i class="fa fa-rotate-left"></i><span>Đổi trả trong 7 ngày</span></div>
+            <div><i class="fa fa-headset"></i><span>Hỗ trợ 24/7</span></div>
+        </div>
+    </div>
+
+    <div class="container footer-content">
+        <div class="footer-col footer-brand">
+            <h3 class="footer-logo">TECH<span>STORE</span></h3>
+            <p class="footer-desc">Hệ thống bán lẻ thiết bị công nghệ chính hãng.<br />Laptop • PC • Gaming Gear • Linh kiện</p>
+            <div class="footer-contact">
+                <div><i class="fa fa-location-dot"></i> 123 Nguyễn Văn Linh, TP.HCM</div>
+                <div><i class="fa fa-phone"></i> <a href="tel:19005301">1900 5301</a></div>
+                <div><i class="fa fa-envelope"></i> <a href="mailto:support@techstore.com">support@techstore.com</a></div>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Về TechStore</h4>
+            <ul>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "about" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "about" ? "active" : "")">
+                        Giới thiệu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "news" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "news" ? "active" : "")">
+                        Tin công nghệ
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "careers" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "careers" ? "active" : "")">
+                        Tuyển dụng
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ContactPartial", "Pages")"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "contact" ? "active" : "")">
+                        Liên hệ
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="footer-col">
+            <h4>Chính sách</h4>
+            <ul>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "warranty" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "warranty" ? "active" : "")">
+                        Bảo hành
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "returns" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "returns" ? "active" : "")">
+                        Đổi trả
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "shipping" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "shipping" ? "active" : "")">
+                        Vận chuyển
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Pages", new { slug = "payment" })"
+                       class="ajax-link @(ViewBag.CurrentPageSlug == "payment" ? "active" : "")">
+                        Thanh toán
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-col footer-newsletter">
+            <h4>Nhận ưu đãi</h4>
+            <p>Đăng ký để nhận thông tin khuyến mãi mới nhất</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Email của bạn" required />
+                <button type="submit"><i class="fa fa-paper-plane"></i></button>
+            </form>
+            <div class="social-icons">
+                <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.youtube.com"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container footer-bottom-inner">
+            <span>© 2025 <strong>TechStore</strong>. All rights reserved.</span>
+            <div class="footer-payments">
+                <img src="/Content/images/payments/visa.jpg" />
+                <img src="/Content/images/payments/mastercard.png" />
+                <img src="/Content/images/payments/momo.png" />
+                <img src="/Content/images/payments/vnpay.jpg" />
+            </div>
+        </div>
+    </div>
+</footer>

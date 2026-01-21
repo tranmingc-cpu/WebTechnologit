@@ -1,0 +1,15 @@
+﻿@model List<WebApplication10.Models.Products>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var p in Model)
+    {
+        @Html.Partial("_ProductCard", p)
+    }
+}
+else
+{
+    <div class="empty-state">
+        Không tìm thấy sản phẩm phù hợp.
+    </div>
+}
