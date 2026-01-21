@@ -1,0 +1,183 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebApplication10.Models;
+
+namespace WebApplication10.Controllers
+{
+    public class CartController : BaseController
+    {
+        private const string CartSessionKey = "ShoppingCart";
+
+        private List<CartItem> GetCartFromSession()
+        {
+            var cart = Session[CartSessionKey] as List<CartItem>;
+            if (cart == null)
+            {
+                cart = new List<CartItem>();
+                Session[CartSessionKey] = cart;
+            }
+            return cart;
+        }
+
+        private void SaveCartToSession(List<CartItem> cart)
+        {
+            Session[CartSessionKey] = cart;
+        }
+
+        public ActionResult Index()
+        {
+            var cart = GetCartFromSession();
+            return View(cart);
+        }
+
+        [HttpPost]
+        public ActionResult AddToCart(int productId, int quantity = 1)
+        {
+            var product = db.Products.Find(productId);
+            if (product == null || product.Status != "Available")
+            {
+                return Json(new { success = false, message = "Sản phẩm không tồn tại hoặc không khả dụng" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var cart = GetCartFromSession();
+            var existingItem = cart.FirstOrDefault(c => c.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                var newQuantity = existingItem.Quantity + quantity;
+                if (newQuantity > product.Quantity)
+                {
+                    return Json(new { success = false, message = "Số lượng vượt quá tồn kho" }, JsonRequestBehavior.AllowGet);
+                }
+                existingItem.Quantity = newQuantity;
+            }
+            else
+            {
+                if (quantity > product.Quantity)
+                {
+                    return Json(new { success = false, message = "Số lượng vượt quá tồn kho" }, JsonRequestBehavior.AllowGet);
+                }
+
+                cart.Add(new CartItem
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    ImageUrl = product.ImageUrl,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    Quantity = quantity,
+                    Stock = product.Quantity ?? 0
+                });
+            }
+
+            SaveCartToSession(cart);
+
+            return Json(new 
+            { 
+                success = true, 
+                message = "Đã thêm vào giỏ hàng",
+                cartCount = cart.Sum(c => c.Quantity)
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateQuantity(int productId, int quantity)
+        {
+            if (quantity < 1)
+            {
+                return Json(new { success = false, message = "Số lượng phải lớn hơn 0" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var cart = GetCartFromSession();
+            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+
+            if (item == null)
+            {
+                return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var product = db.Products.Find(productId);
+            if (quantity > product.Quantity)
+            {
+                return Json(new { success = false, message = "Số lượng vượt quá tồn kho" }, JsonRequestBehavior.AllowGet);
+            }
+
+            item.Quantity = quantity;
+            SaveCartToSession(cart);
+
+            return Json(new 
+            { 
+                success = true,
+                itemTotal = item.TotalPrice,
+                cartTotal = cart.Sum(c => c.TotalPrice),
+                cartCount = cart.Sum(c => c.Quantity)
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFromCart(int productId)
+        {
+            var cart = GetCartFromSession();
+            var item = cart.FirstOrDefault(c => c.ProductId == productId);
+
+            if (item != null)
+            {
+                cart.Remove(item);
+                SaveCartToSession(cart);
+            }
+
+            return Json(new 
+            { 
+                success = true,
+                cartTotal = cart.Sum(c => c.TotalPrice),
+                cartCount = cart.Sum(c => c.Quantity)
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ClearCart()
+        {
+            Session[CartSessionKey] = new List<CartItem>();
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetCartCount()
+        {
+            var cart = GetCartFromSession();
+            return Json(new { count = cart.Sum(c => c.Quantity) }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Checkout()
+        {
+            var cart = GetCartFromSession();
+            if (cart == null || !cart.Any())
+            {
+                return RedirectToAction("Index");
+            }
+            return View(cart);
+        }
+
+        [HttpPost]
+        public ActionResult ProcessCheckout(string fullName, string phone, string email, 
+                                           string address, string notes, string paymentMethod)
+        {
+            var cart = GetCartFromSession();
+            if (cart == null || !cart.Any())
+            {
+                return RedirectToAction("Index");
+            }
+
+            Session[CartSessionKey] = new List<CartItem>();
+            
+            TempData["SuccessMessage"] = "Đặt hàng thành công! Chúng tôi sẽ liên hệ với bạn sớm.";
+            return RedirectToAction("OrderSuccess");
+        }
+
+        public ActionResult OrderSuccess()
+        {
+            return View();
+        }
+    }
+}

@@ -8,6 +8,12 @@
 
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/css/site.css?@DateTime.Now.Ticks" rel="stylesheet" />
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    @RenderSection("Styles", required: false)
     <link href="~/Content/css/product/product-index.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/product/product-detail.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/account/profile.css?@DateTime.Now.Ticks" rel="stylesheet" />
@@ -67,6 +73,15 @@
                                     <a href="/Admin/Dashboard"><i class="fa fa-file-alt"></i> Quản lý trang</a>
                                 }
 
+            <div class="header-actions">
+                <a href="#"><i class="fa fa-user"></i> Tài khoản</a>
+                <a href="@Url.Action("Index", "Cart")" class="cart-link">
+                    <i class="fa fa-cart-shopping"></i> Giỏ hàng
+                    @if (ViewBag.CartCount > 0)
+                    {
+                        <span class="cart-badge">@ViewBag.CartCount</span>
+                    }
+                </a>
                                 <hr />
                                 <a href="/Account/Logout" class="logout"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
                             }
@@ -104,6 +119,138 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
+    
+    <script>
+        // Global function to handle add to cart
+        $(document).ready(function () {
+            $(document).on('click', '.btn-add-to-cart', function () {
+                var btn = $(this);
+                var productId = btn.data('product-id');
+                
+                btn.prop('disabled', true).text('Đang thêm...');
+                
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function (response) {
+                        if (response.success) {
+                            btn.text('✓ Đã thêm');
+                            
+                            // Update cart badge
+                            var badge = $('.cart-badge');
+                            if (badge.length) {
+                                badge.text(response.cartCount).show();
+                            } else {
+                                $('.cart-link').append('<span class="cart-badge">' + response.cartCount + '</span>');
+                            }
+                            
+                            // Show notification
+                            showNotification(response.message, 'success');
+                            
+                            setTimeout(function () {
+                                btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                            }, 2000);
+                        } else {
+                            btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                            showNotification(response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                        showNotification('Có lỗi xảy ra, vui lòng thử lại', 'error');
+                    }
+                });
+            });
+            
+            function showNotification(message, type) {
+                var bgColor = type === 'success' ? '#4caf50' : '#f44336';
+                var notification = $('<div class="cart-notification">' + message + '</div>');
+                notification.css({
+                    'position': 'fixed',
+                    'top': '20px',
+                    'right': '20px',
+                    'background': bgColor,
+                    'color': 'white',
+                    'padding': '15px 25px',
+                    'border-radius': '4px',
+                    'box-shadow': '0 2px 8px rgba(0,0,0,0.2)',
+                    'z-index': '10000',
+                    'animation': 'slideIn 0.3s ease-out'
+                });
+                
+                $('body').append(notification);
+                
+                setTimeout(function () {
+                    notification.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
+    </script>
+    
+    <style>
+        .cart-link {
+            position: relative;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #ff5c5c;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .btn-add-to-cart {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 8px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-add-to-cart:hover {
+            background: #45a049;
+        }
+        
+        .btn-add-to-cart:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+    
     @RenderSection("Scripts", required: false)
     <script>
         function ajaxSearch(keyword, containerSelector) {
