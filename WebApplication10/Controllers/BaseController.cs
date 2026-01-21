@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using WebApplication10.Models;
 
 public abstract class BaseController : Controller
 {
     protected TechStoreDBEntities db = new TechStoreDBEntities();
+    private const string CartSessionKey = "ShoppingCart";
 
     protected override void OnActionExecuting(ActionExecutingContext filterContext)
     {
@@ -13,6 +15,10 @@ public abstract class BaseController : Controller
                            .ToList();
 
         ViewBag.Categories = categories;
+
+        // Add cart count to ViewBag
+        var cart = Session[CartSessionKey] as List<CartItem>;
+        ViewBag.CartCount = cart?.Sum(c => c.Quantity) ?? 0;
 
         base.OnActionExecuting(filterContext);
     }
