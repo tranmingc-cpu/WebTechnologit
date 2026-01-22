@@ -34,5 +34,9 @@ namespace WebApplication10.Models
         public virtual DbSet<Products> Products { get; set; }
         public virtual DbSet<Reviews> Reviews { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<AboutPage> AboutPage { get; set; }
+        public virtual DbSet<Contacts> Contacts { get; set; }
+        public virtual DbSet<InfoPages> InfoPages { get; set; }
+        public virtual DbSet<NewsPosts> NewsPosts { get; set; }
     }
 }

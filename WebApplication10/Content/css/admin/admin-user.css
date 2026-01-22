@@ -1,0 +1,216 @@
+﻿.users-page {
+    padding: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+    .users-page h4 {
+        font-size: 35px;
+        font-weight: 600;
+        color: #e5e7eb;
+    }
+
+.btn-create-user {
+    background: #ff5c5c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .btn-create-user:hover {
+        background: #ff8181;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,92,92,0.5);
+    }
+
+#users-partial-container {
+    margin-top: 24px;
+}
+
+.user-card {
+    background: #2f3147;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    transition: 0.3s;
+}
+
+    .user-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+    }
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+    .user-info span {
+        font-size: 14px;
+        color: #cfd2dc;
+    }
+
+.user-actions {
+    display: flex;
+    gap: 12px;
+}
+
+    .user-actions a {
+        background: #3a3c55;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.25s;
+    }
+
+        .user-actions a:hover {
+            background: #ff5c5c;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,92,92,0.45);
+        }
+
+@media (max-width: 768px) {
+    .user-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .user-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+}
+
+.edit-user-container {
+    max-width: 90%;
+    margin: 0 auto 32px auto;
+}
+
+.form-title {
+    font-size: 35px;
+    font-weight: 700;
+    color: #e5e7eb;
+    margin-bottom: 22px;
+    border-bottom: 2px solid #3b3c55;
+    padding-bottom: 8px;
+}
+
+.ajax-form {
+    background: #2f3147;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    margin: 0 auto 32px auto;
+    transition: 0.3s;
+}
+
+    .ajax-form:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+    }
+
+.form-label {
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 6px;
+    display: block;
+}
+
+    .form-label.required::after {
+        content: "*";
+        color: #ff5c5c;
+        margin-left: 4px;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #3b3c55;
+    background: #1b1d2b;
+    color: #e5e7eb;
+    transition: 0.25s;
+}
+
+    .form-control::placeholder {
+        color: #8f93a1;
+    }
+
+    .form-control:focus {
+        border-color: #ff5c5c;
+        outline: none;
+        box-shadow: 0 0 8px rgba(255,92,92,0.5);
+    }
+
+.ajax-form .btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.25s;
+}
+
+.ajax-form .btn-primary {
+    background: #ff5c5c;
+    color: #fff;
+    border: none;
+}
+
+    .ajax-form .btn-primary:hover {
+        background: #ff8181;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,92,92,0.45);
+    }
+
+.ajax-form .btn-secondary {
+    background: #3a3c55;
+    color: #e5e7eb;
+    border: none;
+}
+
+    .ajax-form .btn-secondary:hover {
+        background: #50526a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+.ajax-form .btn i {
+    font-size: 16px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+@media (max-width: 768px) {
+    .ajax-form {
+        padding: 24px;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+        .d-flex.justify-content-between .btn {
+            width: 100%;
+            justify-content: center;
+        }
+}

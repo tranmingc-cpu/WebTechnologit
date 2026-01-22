@@ -1,12 +1,21 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using WebApplication10.Models;
-using System.Data.Entity;
+using WebApplication10.DAO;
 
 namespace WebApplication10.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly ProductDao _productDao;
+        private readonly AboutDAO _aboutDao;
+
+        public HomeController()
+        {
+            _productDao = new ProductDao(db);
+            _aboutDao = new AboutDAO(db);
+        }
+
         public ActionResult Index()
         {
             ViewBag.Categories = db.Categories
@@ -14,25 +23,43 @@ namespace WebApplication10.Controllers
                                    .Take(6)
                                    .ToList();
 
-            var featuredProducts = db.Products
-                .Include(p => p.Brands)
-                .Include(p => p.Categories)
-                .Where(p => p.Status == "Available")
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(8)
-                .ToList();
+            var featuredProducts = _productDao.GetAvailableProducts()
+                                              .OrderByDescending(p => p.CreatedAt)
+                                              .Take(8)
+                                              .ToList();
 
             return View(featuredProducts);
         }
 
         public ActionResult About()
         {
-            return View();
+            var model = _aboutDao.GetAbout();
+            return View(model);
         }
 
         public ActionResult Contact()
         {
             return View();
+        }
+
+        public ActionResult LoadProductsByCategory(int? categoryId)
+        {
+            var products = _productDao.GetAvailableProducts();
+
+            if (categoryId.HasValue)
+            {
+                products = _productDao.GetByCategory(categoryId.Value);
+            }
+
+            var result = products.OrderByDescending(p => p.CreatedAt)
+                                 .Take(8)
+                                 .ToList();
+
+            return PartialView("_HomeProductGrid", result);
+        }
+        public ActionResult Footer()
+        {
+            return PartialView("_Footer");
         }
     }
 }

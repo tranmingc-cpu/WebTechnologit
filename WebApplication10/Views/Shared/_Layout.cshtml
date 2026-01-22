@@ -6,102 +6,373 @@
     <title>@ViewBag.Title - TECHSTORE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- BOOTSTRAP -->
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- SITE CSS -->
     <link href="~/Content/css/site.css?@DateTime.Now.Ticks" rel="stylesheet" />
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    @RenderSection("Styles", required: false)
+    <link href="~/Content/css/product/product-index.css?@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/Content/css/product/product-detail.css?@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/Content/css/account/profile.css?@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/Content/css/pages/info.css?@DateTime.Now.Ticks" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
-        <div class="container header-top">
-            <div class="logo">
-                <a href="@Url.Action("Index", "Home")">
-                    <span class="logo-red">TECH</span><span class="logo-white">STORE</span>
-                </a>
-            </div>
+        <div class="header-top">
+            <div class="header-inner">
+                <div class="logo">
+                    <a href="@Url.Action("Index", "Home")">
+                        <span class="logo-red">TECH</span><span class="logo-white">STORE</span>
+                    </a>
+                </div>
 
-            <div class="search-box">
-                @using (Html.BeginForm("Index", "Products", FormMethod.Get))
-                {
-                    <input type="text"
-                           name="keyword"
-                           value="@Request.QueryString["keyword"]"
-                           placeholder="Tìm theo tên, hãng, loại..." />
-
-                    <button type="submit">
+                <div class="search-box">
+                    <input type="text" id="headerSearch" placeholder="Tìm theo tên, hãng, loại..." value="@Request.QueryString["keyword"]" />
+                    <button id="btnSearch">
                         <i class="fa fa-search"></i>
                     </button>
-                }
-            </div>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/Cart" class="cart-btn">
+                        <i class="fa fa-cart-shopping"></i> <span>Giỏ hàng</span>
+                    </a>
+
+                    <div class="account-dropdown">
+                        <button class="account-btn">
+                            <i class="fa fa-user"></i>
+                            @if (Session["UserId"] != null)
+                            {
+                                <span class="account-name">@Session["UserName"]</span>
+                            }
+                            else
+                            {
+                                <span class="account-name">Tài khoản</span>
+                            }
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+
+                        <div class="account-menu">
+                            @if (Session["UserId"] == null)
+                            {
+                                <a href="/Account/Login"><i class="fa fa-right-to-bracket"></i> Đăng nhập</a>
+                                <a href="/Account/Register"><i class="fa fa-user-plus"></i> Đăng ký</a>
+                            }
+                            else
+                            {
+                                <a href="/Account/Profile"><i class="fa fa-id-card"></i> Thông tin tài khoản</a>
+                                <a href="/Account/Orders"><i class="fa fa-box"></i> Đơn hàng của tôi</a>
+
+                                if (Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin")
+                                {
+                                    <a href="/Admin/Dashboard"><i class="fa fa-file-alt"></i> Quản lý trang</a>
+                                }
 
             <div class="header-actions">
                 <a href="#"><i class="fa fa-user"></i> Tài khoản</a>
-                <a href="#"><i class="fa fa-cart-shopping"></i> Giỏ hàng</a>
+                <a href="@Url.Action("Index", "Cart")" class="cart-link">
+                    <i class="fa fa-cart-shopping"></i> Giỏ hàng
+                    @if (ViewBag.CartCount > 0)
+                    {
+                        <span class="cart-badge">@ViewBag.CartCount</span>
+                    }
+                </a>
+                                <hr />
+                                <a href="/Account/Logout" class="logout"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-toggle">
+                    <i class="fa fa-bars"></i>
+                </div>
             </div>
         </div>
 
-        <!-- MENU -->
         <nav class="menu">
             @foreach (var c in ViewBag.Categories as List<WebApplication10.Models.Categories>)
             {
-                <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })"
-                   class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
+                <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })" class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
                     @c.CategoryName
                 </a>
             }
         </nav>
     </header>
 
-    <!-- BODY -->
-    <main class="container page-content">
+    <main class="container page-content" style="position: relative;">
+        <div id="ajaxLoader" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; text-align:center; font-size:2rem; color:#555;">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
         @RenderBody()
     </main>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container footer-content">
-            <!-- LEFT -->
-            <div class="footer-left">
-                <strong>TECH<span style="color:#ff5c5c;">STORE</span></strong><br />
-                Hệ thống bán lẻ thiết bị công nghệ<br />
-                123 Nguyễn Văn Linh, TP.HCM<br />
-                Hotline: <a href="tel:19005301">1900 5301</a><br />
-                Email: <a href="mailto:support@techstore.com">support@techstore.com</a>
-            </div>
+    <div id="footerContainer">
+        @Html.Partial("_Footer")
+    </div>
 
-            <!-- CENTER -->
-            <div class="footer-center">
-                <a href="#">Giới thiệu</a> |
-                <a href="#">Liên hệ</a> |
-                <a href="#">Bảo hành</a> |
-                <a href="#">Đổi trả</a> |
-                <a href="#">Hướng dẫn mua</a> |
-                <a href="#">Điều khoản</a>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="footer-right">
-                <div>© 2025 TechStore</div>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     
+    <script>
+        // Global function to handle add to cart
+        $(document).ready(function () {
+            $(document).on('click', '.btn-add-to-cart', function () {
+                var btn = $(this);
+                var productId = btn.data('product-id');
+                
+                btn.prop('disabled', true).text('Đang thêm...');
+                
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function (response) {
+                        if (response.success) {
+                            btn.text('✓ Đã thêm');
+                            
+                            // Update cart badge
+                            var badge = $('.cart-badge');
+                            if (badge.length) {
+                                badge.text(response.cartCount).show();
+                            } else {
+                                $('.cart-link').append('<span class="cart-badge">' + response.cartCount + '</span>');
+                            }
+                            
+                            // Show notification
+                            showNotification(response.message, 'success');
+                            
+                            setTimeout(function () {
+                                btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                            }, 2000);
+                        } else {
+                            btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                            showNotification(response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        btn.prop('disabled', false).html('🛒 Thêm vào giỏ');
+                        showNotification('Có lỗi xảy ra, vui lòng thử lại', 'error');
+                    }
+                });
+            });
+            
+            function showNotification(message, type) {
+                var bgColor = type === 'success' ? '#4caf50' : '#f44336';
+                var notification = $('<div class="cart-notification">' + message + '</div>');
+                notification.css({
+                    'position': 'fixed',
+                    'top': '20px',
+                    'right': '20px',
+                    'background': bgColor,
+                    'color': 'white',
+                    'padding': '15px 25px',
+                    'border-radius': '4px',
+                    'box-shadow': '0 2px 8px rgba(0,0,0,0.2)',
+                    'z-index': '10000',
+                    'animation': 'slideIn 0.3s ease-out'
+                });
+                
+                $('body').append(notification);
+                
+                setTimeout(function () {
+                    notification.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
+    </script>
+    
+    <style>
+        .cart-link {
+            position: relative;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #ff5c5c;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .btn-add-to-cart {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 8px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-add-to-cart:hover {
+            background: #45a049;
+        }
+        
+        .btn-add-to-cart:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+    
     @RenderSection("Scripts", required: false)
+    <script>
+        function ajaxSearch(keyword, containerSelector) {
+            let $container = $(containerSelector);
+            if (!$container.length) return;
+            $container.addClass('fade-out');
+            $('#ajaxLoader').fadeIn(150);
+
+            $.ajax({
+                url: '/Search/QuickSearch',
+                data: { keyword: keyword },
+                dataType: 'json',
+                success: function (res) {
+                    $container.html(res.html);
+                    $container.removeClass('fade-out').addClass('fade-in');
+                    $('#ajaxLoader').fadeOut(200);
+                },
+                error: function () {
+                    $container.html('<p>Lỗi tải sản phẩm.</p>');
+                    $('#ajaxLoader').fadeOut(200);
+                }
+            });
+        }
+
+        function performSearch() {
+            let keyword = $('#headerSearch').val().trim();
+            if (keyword.length === 0) return;
+
+            let $container = $('.product-grid').first();
+
+            if ($container.length) {
+                $container.addClass('fade-out');
+                $('#ajaxLoader').fadeIn(150);
+
+                $.ajax({
+                    url: '/Search/QuickSearch',
+                    data: { keyword: keyword },
+                    dataType: 'json',
+                    success: function (res) {
+                        $container.html(res.html);
+                        $container.removeClass('fade-out').addClass('fade-in');
+                        $('#ajaxLoader').fadeOut(200);
+                    },
+                    error: function () {
+                        $container.html('<p>Lỗi tải sản phẩm.</p>');
+                        $('#ajaxLoader').fadeOut(200);
+                    }
+                });
+            } else {
+                window.location.href = '/Products?keyword=' + encodeURIComponent(keyword);
+            }
+        }
+
+
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+            performSearch();
+        });
+
+        $('#headerSearch').on('keyup', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        let ticking = false;
+        $(window).on('scroll', function () {
+            if (!ticking) {
+                window.requestAnimationFrame(function () {
+                    const $header = $('.header');
+                    const scrollTop = $(window).scrollTop();
+                    if (scrollTop > 200 && !$header.hasClass('scrolled')) {
+                        $header.addClass('scrolled');
+                    } else if (scrollTop <= 200 && $header.hasClass('scrolled')) {
+                        $header.removeClass('scrolled');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+
+        $('.menu-toggle').on('click', function () {
+            $(this).closest('.header').find('.menu').toggleClass('active');
+        });
+
+    </script>
+    <script>
+            function highlightFooterLink(slug) {
+                $('#footerContainer a.ajax-link').removeClass('active');
+                if(slug){
+                    $('#footerContainer a.ajax-link').each(function(){
+                        var href = $(this).attr('href');
+                        if(href.includes(slug)){
+                            $(this).addClass('active');
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(function(){
+                highlightFooterLink('@ViewBag.CurrentPageSlug');
+            });
+
+            $(document).on('click', '.ajax-link', function(e){
+                e.preventDefault();
+                var url = $(this).attr('href');
+                var slug = url.split('/').pop();
+
+                $('#ajaxLoader').fadeIn(150);
+                $('.page-content').fadeOut(150);
+
+                $.get(url, function(data){
+                    $('.page-content').html(data).fadeIn(200);
+                    $('#ajaxLoader').fadeOut(200);
+
+                    highlightFooterLink(slug);
+                    history.pushState(null, '', url);
+                });
+            });
+
+    </script>
 </body>
 </html>

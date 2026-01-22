@@ -47,8 +47,16 @@
     <div class="card-actions">
         <a href="@Url.Action("Details", "Products", new { id = Model.ProductId })"
            class="btn-view">
-            View details
+            Xem chi tiết
         </a>
+        @if (Model.Status == "Available" && Model.Quantity > 0)
+        {
+            <button type="button" 
+                    class="btn-add-to-cart" 
+                    data-product-id="@Model.ProductId">
+                🛒 Thêm vào giỏ
+            </button>
+        }
     </div>
 
 </div>

@@ -1,0 +1,48 @@
+﻿
+.edit-page-container .page-title {
+    color: #ffff;
+    font-weight: 700;
+}
+
+.theme-input {
+    background: #2f3147;
+    color: #e5e7eb;
+    border-radius: 12px;
+    border: 1px solid #3b3c55;
+    padding: 12px 14px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+    .theme-input:focus {
+        outline: none;
+        border-color: #ff5c5c;
+        box-shadow: 0 0 8px rgba(255,92,92,0.4);
+    }
+
+.form-label.required::after {
+    content: " *";
+    color: #ff5c5c;
+    font-weight: bold;
+}
+
+.theme-btn {
+    background: #ff5c5c;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.25s;
+}
+
+    .theme-btn:hover {
+        background: #ff8181;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,92,92,0.45);
+    }
+.edit-page-container .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
