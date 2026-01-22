@@ -10,6 +10,7 @@ namespace WebApplication10.Controllers
 {
     public class PagesController : BaseController
     {
+        private InfoPagesDAO _dao;
 
         public PagesController()
         {
