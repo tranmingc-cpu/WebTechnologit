@@ -10,11 +10,6 @@ public abstract class BaseController : Controller
     protected TechStoreDBEntities db = new TechStoreDBEntities();
     private const string CartSessionKey = "ShoppingCart";
 
-    public BaseController()
-    {
-        _dao = new InfoPagesDAO(db);
-    }
-
     protected override void OnActionExecuting(ActionExecutingContext filterContext)
     {
         var categories = db.Categories.OrderBy(c => c.CategoryName).ToList();
