@@ -599,3 +599,16 @@ main.page-content {
     color: #ff5c5c;
     font-weight: bold;
 }
+.newsletter-message {
+    font-size: 13px;
+    margin-top: 8px;
+    min-height: 18px;
+}
+
+    .newsletter-message.success {
+        color: #4caf50;
+    }
+
+    .newsletter-message.error {
+        color: #ff6b6b;
+    }

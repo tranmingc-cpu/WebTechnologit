@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="51cc9f8572a246b79ed64498d70ed0ca" Name="Diagram1">
+      <Diagram DiagramId="51cc9f8572a246b79ed64498d70ed0ca" Name="Diagram1" ZoomLevel="83">
         <EntityTypeShape EntityType="TechStoreDBModel.Brands" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="TechStoreDBModel.Cart" Width="1.5" PointX="5.25" PointY="5.875" IsExpanded="true" />
         <EntityTypeShape EntityType="TechStoreDBModel.Categories" Width="1.5" PointX="0.75" PointY="3" IsExpanded="true" />
@@ -28,6 +28,10 @@
         <EntityTypeShape EntityType="TechStoreDBModel.Contacts" Width="1.5" PointX="9.375" PointY="0.75" />
         <EntityTypeShape EntityType="TechStoreDBModel.InfoPages" Width="1.5" PointX="7.375" PointY="9.75" />
         <EntityTypeShape EntityType="TechStoreDBModel.NewsPosts" Width="1.5" PointX="9.375" PointY="9.75" />
+        <EntityTypeShape EntityType="TechStoreDBModel.NewsletterSubscribers" Width="1.5" PointX="3" PointY="14.875" />
+        <AssociationConnector Association="TechStoreDBModel.FK_Newsletter_User" />
+        <EntityTypeShape EntityType="TechStoreDBModel.EmailQueue" Width="1.5" PointX="5.25" PointY="14.625" />
+        <AssociationConnector Association="TechStoreDBModel.FK_EmailQueue_Subscriber" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
