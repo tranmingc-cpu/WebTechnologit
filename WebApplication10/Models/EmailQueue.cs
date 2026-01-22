@@ -12,13 +12,19 @@ namespace WebApplication10.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class InfoPages
+    public partial class EmailQueue
     {
-        public int InfoPageId { get; set; }
-        public string Title { get; set; }
-        public string Slug { get; set; }
-        public string Content { get; set; }
+        public int EmailQueueId { get; set; }
+        public string ToEmail { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public string EmailType { get; set; }
+        public byte Status { get; set; }
+        public int RetryCount { get; set; }
         public Nullable<System.DateTime> CreatedAt { get; set; }
-        public Nullable<System.DateTime> UpdatedAt { get; set; }
+        public Nullable<System.DateTime> SentAt { get; set; }
+        public Nullable<int> SubscriberId { get; set; }
+    
+        public virtual NewsletterSubscribers NewsletterSubscribers { get; set; }
     }
 }

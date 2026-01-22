@@ -20,6 +20,7 @@ namespace WebApplication10.Models
             this.Cart = new HashSet<Cart>();
             this.Orders = new HashSet<Orders>();
             this.Reviews = new HashSet<Reviews>();
+            this.NewsletterSubscribers = new HashSet<NewsletterSubscribers>();
         }
     
         public int UserId { get; set; }
@@ -39,5 +40,7 @@ namespace WebApplication10.Models
         public virtual ICollection<Orders> Orders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Reviews> Reviews { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NewsletterSubscribers> NewsletterSubscribers { get; set; }
     }
 }

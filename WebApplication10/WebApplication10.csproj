@@ -135,6 +135,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Account\NewsletterController.cs" />
     <Compile Include="Controllers\Account\UsersController.cs" />
     <Compile Include="Controllers\Account\AdminController.cs" />
     <Compile Include="Controllers\Account\AccountController.cs" />
@@ -142,8 +143,11 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Products\SearchController.cs" />
-    <Compile Include="Controllers\Products\ProductsController.cs" />
+    <Compile Include="Controllers\ProductsController\AdminProductsController.cs" />
+    <Compile Include="Controllers\ProductsController\SearchController.cs" />
+    <Compile Include="Controllers\ProductsController\ProductsController.cs" />
+    <Compile Include="DAO\EmailQueueDAO.cs" />
+    <Compile Include="DAO\NewsletterDAO.cs" />
     <Compile Include="DAO\InfoPagesDAO.cs" />
     <Compile Include="DAO\AboutDAO.cs" />
     <Compile Include="DAO\ProductDAO.cs" />
@@ -170,6 +174,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ContactsMetadata.cs" />
+    <Compile Include="Models\EmailQueue.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Extensions\Users.Extensions.cs" />
     <Compile Include="Models\InfoPages.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -188,6 +195,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NewsletterSubscribers.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NewsPosts.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -211,6 +221,8 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EmailQueueProcessor.cs" />
+    <Compile Include="Services\EmailSenderService.cs" />
     <Compile Include="ViewModels\AdminActionsViewModel.cs" />
     <Compile Include="ViewModels\ContactPageViewModel.cs" />
   </ItemGroup>
@@ -241,6 +253,7 @@
     <Content Include="Content\css\order-success.css" />
     <Content Include="Content\css\pages\info.css" />
     <Content Include="Content\css\products.css" />
+    <Content Include="Content\css\product\product-cart.css" />
     <Content Include="Content\css\product\product-detail.css" />
     <Content Include="Content\css\product\product-index.css" />
     <Content Include="Content\css\site.css" />
@@ -287,6 +300,7 @@
     <Content Include="Content\css\bootstrap.rtl.css.map" />
     <Content Include="Content\css\bootstrap.rtl.min.css.map" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\common\newsletter.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -340,10 +354,12 @@
     <Content Include="Views\Shared\_AdminActions.cshtml" />
     <Content Include="Views\Shared\_EditPagePartial.cshtml" />
     <Content Include="Views\Users\_UsersPartial.cshtml" />
+    <Content Include="Views\AdminProducts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\images\payments\" />
+    <Folder Include="Scripts\product\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

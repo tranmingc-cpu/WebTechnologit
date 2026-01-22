@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using WebApplication10.DAO;
 using WebApplication10.Models;
+using WebApplication10.Services;
 using WebApplication10.ViewModels;
 
 namespace WebApplication10.Controllers
@@ -9,11 +10,14 @@ namespace WebApplication10.Controllers
     public class AdminController : BaseController
     {
         private readonly AdminDao _adminDao;
+        private readonly EmailQueueProcessor _emailQueueProcessor;
+
 
         public AdminController()
         {
             db = new TechStoreDBEntities();
             _adminDao = new AdminDao(db);
+            _emailQueueProcessor = new EmailQueueProcessor(db);
         }
 
         public ActionResult Dashboard(bool partial = false)
@@ -93,5 +97,11 @@ namespace WebApplication10.Controllers
 
             return PartialView("_AdminActions", model);
         }
+        public ActionResult RunEmailQueue()
+        {
+            _emailQueueProcessor.Process(20);
+            return Content("OK");
+        }
     }
+
 }
