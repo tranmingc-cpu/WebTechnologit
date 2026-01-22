@@ -286,7 +286,6 @@
     <Content Include="Content\css\bootstrap.min.css.map" />
     <Content Include="Content\css\bootstrap.rtl.css.map" />
     <Content Include="Content\css\bootstrap.rtl.min.css.map" />
-    <Content Include="CART_CSS_UPDATE.md" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
