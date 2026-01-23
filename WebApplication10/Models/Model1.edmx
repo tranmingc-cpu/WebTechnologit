@@ -122,6 +122,17 @@
           <Property Name="Status" Type="nvarchar" MaxLength="30" />
           <Property Name="ShippingAddress" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="PasswordResetTokens">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Token" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="ExpiredAt" Type="datetime" Nullable="false" />
+          <Property Name="Used" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="ProductImages">
           <Key>
             <PropertyRef Name="ImageId" />
@@ -328,6 +339,7 @@
           <EntitySet Name="NewsPosts" EntityType="Self.NewsPosts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PasswordResetTokens" EntityType="Self.PasswordResetTokens" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductImages" EntityType="Self.ProductImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
@@ -687,6 +699,7 @@
             <End Role="NewsletterSubscribers" EntitySet="NewsletterSubscribers" />
             <End Role="EmailQueue" EntitySet="EmailQueue" />
           </AssociationSet>
+          <EntitySet Name="PasswordResetTokens" EntityType="TechStoreDBModel.PasswordResetTokens" />
         </EntityContainer>
         <EntityType Name="AboutPage">
           <Key>
@@ -785,6 +798,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PasswordResetTokens">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="ExpiredAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Used" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -970,6 +994,18 @@
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="ToEmail" ColumnName="ToEmail" />
                 <ScalarProperty Name="EmailQueueId" ColumnName="EmailQueueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PasswordResetTokens">
+            <EntityTypeMapping TypeName="TechStoreDBModel.PasswordResetTokens">
+              <MappingFragment StoreEntitySet="PasswordResetTokens">
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Used" ColumnName="Used" />
+                <ScalarProperty Name="ExpiredAt" ColumnName="ExpiredAt" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

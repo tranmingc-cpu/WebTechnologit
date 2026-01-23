@@ -2,8 +2,9 @@
 using System.Web.Mvc;
 using WebApplication10.DAO;
 
-namespace WebApplication10.Controllers
+namespace WebApplication10.Controllers.Account
 {
+    [RoutePrefix("Newsletter")]
     public class NewsletterController : BaseController
     {
         private readonly NewsletterDAO _newsletterDao;
@@ -15,68 +16,67 @@ namespace WebApplication10.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Subscribe(string email)
+        public ActionResult Subscribe()
+        {
+            if (Session["UserId"] == null)
+                return new HttpStatusCodeResult(401);
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+            if (user == null)
+                return new HttpStatusCodeResult(404);
+
+            _newsletterDao.Add(user.Email, user.UserId, "Profile");
+
+            return PartialView("~/Views/Shared/_NewsletterSection.cshtml", true);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Unsubscribe()
+        {
+            if (Session["UserId"] == null)
+                return new HttpStatusCodeResult(401);
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+            if (user == null)
+                return new HttpStatusCodeResult(404);
+
+            _newsletterDao.UnsubscribeByEmail(user.Email);
+
+            return PartialView("~/Views/Shared/_NewsletterSection.cshtml", false);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubscribeFooter(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Email không hợp lệ"
-                });
-            }
+                return Json(new { success = false });
 
-            if (_newsletterDao.Exists(email))
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Email này đã đăng ký newsletter"
-                });
-            }
+            int? userId = Session["UserId"] != null ? (int?)Session["UserId"] : null;
 
-            int? userId = null;
-            if (Session["UserId"] != null)
-            {
-                userId = (int)Session["UserId"];
-            }
+            _newsletterDao.Add(email, userId, "Footer");
 
-            try
-            {
-                _newsletterDao.Add(email, userId, "Footer");
-            }
-            catch (Exception)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "Không thể đăng ký newsletter. Vui lòng thử lại."
-                });
-            }
-
-            return Json(new
-            {
-                success = true,
-                message = "Đăng ký nhận ưu đãi thành công 🎉"
-            });
+            return Json(new { success = true });
         }
 
         [HttpGet]
-        public ActionResult Unsubscribe(string email)
+        public ActionResult FooterStatus()
         {
-            if (string.IsNullOrWhiteSpace(email))
+            bool isSubscribed = false;
+
+            if (Session["UserId"] != null)
             {
-                ViewBag.Message = "Email không hợp lệ";
-                return View("UnsubscribeResult");
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+                if (user != null)
+                    isSubscribed = _newsletterDao.IsSubscribed(user.UserId);
             }
 
-            bool success = _newsletterDao.Unsubscribe(email);
-
-            ViewBag.Message = success
-                ? "Bạn đã hủy đăng ký nhận newsletter thành công."
-                : "Email không tồn tại hoặc đã hủy trước đó.";
-
-            return View("UnsubscribeResult");
+            return PartialView("~/Views/Shared/_NewsletterSection.cshtml", isSubscribed);
         }
     }
 }

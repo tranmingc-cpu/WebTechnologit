@@ -20,26 +20,37 @@ namespace WebApplication10.DAO
                 (x.IsActive == true || x.IsActive == null)
             );
         }
-
         public void Add(string email, int? userId, string source)
         {
-            var entity = new NewsletterSubscribers
-            {
-                Email = email,
-                UserId = userId,
-                Source = source,
-                IsActive = true,
-                CreatedAt = DateTime.Now,
-                UnsubscribedAt = null
-            };
+            var existing = _context.NewsletterSubscribers
+                .FirstOrDefault(x => x.Email == email);
 
-            _context.NewsletterSubscribers.Add(entity);
+            if (existing != null)
+            {
+                existing.IsActive = true;
+                existing.UnsubscribedAt = null;
+                existing.UserId = userId;
+                existing.Source = source;
+            }
+            else
+            {
+                _context.NewsletterSubscribers.Add(new NewsletterSubscribers
+                {
+                    Email = email,
+                    UserId = userId,
+                    Source = source,
+                    IsActive = true,
+                    CreatedAt = DateTime.Now
+                });
+            }
+
             _context.SaveChanges();
         }
+
         public bool Unsubscribe(string email)
         {
             var subscriber = _context.NewsletterSubscribers
-                                .FirstOrDefault(x => x.Email == email && x.IsActive == true);
+                .FirstOrDefault(x => x.Email == email && x.IsActive == true);
 
             if (subscriber == null)
                 return false;
@@ -50,10 +61,31 @@ namespace WebApplication10.DAO
             _context.SaveChanges();
             return true;
         }
+
+        public bool UnsubscribeByEmail(string email)
+        {
+            var subscriber = _context.NewsletterSubscribers
+                .FirstOrDefault(x => x.Email == email && x.IsActive == true);
+
+            if (subscriber == null)
+                return false;
+
+            subscriber.IsActive = false;
+            subscriber.UnsubscribedAt = DateTime.Now;
+            _context.SaveChanges();
+
+            return true;
+        }
+
         public IQueryable<NewsletterSubscribers> GetActiveSubscribers()
         {
             return _context.NewsletterSubscribers
-                      .Where(x => x.IsActive == true);
+                .Where(x => x.IsActive == true);
+        }
+        public bool IsSubscribed(int userId)
+        {
+            return _context.NewsletterSubscribers
+                .Any(x => x.UserId == userId && x.IsActive == true);
         }
     }
 }

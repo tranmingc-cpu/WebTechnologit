@@ -1,20 +1,25 @@
 ﻿@{
     ViewBag.Title = "Users";
-    Layout = null; 
+    Layout = null;
 }
 
 <div class="users-page">
+    <div class="users-header">
+        <div class="users-title">
+            <h3>Người dùng</h3>
+            <span class="users-subtitle">Quản lý tài khoản hệ thống</span>
+        </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Danh sách người dùng</h4>
-
-        <a href="/Users/Create" class="btn btn-primary btn-create-user">
-            ➕ Create User
-        </a>
+        <div class="users-actions">
+            <a href="/Users/Create" class="btn btn-primary btn-create-user">
+                <i class="fa-solid fa-user-plus"></i>
+                Tạo người dùng
+            </a>
+        </div>
     </div>
 
-    <div id="users-partial-container">
-        @Html.Action("UserListPartial")
-    </div>
+        <div id="users-partial-container">
+            @Html.Action("UserListPartial")
+        </div>
 
 </div>

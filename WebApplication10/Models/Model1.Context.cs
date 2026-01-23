@@ -40,5 +40,6 @@ namespace WebApplication10.Models
         public virtual DbSet<NewsPosts> NewsPosts { get; set; }
         public virtual DbSet<NewsletterSubscribers> NewsletterSubscribers { get; set; }
         public virtual DbSet<EmailQueue> EmailQueue { get; set; }
+        public virtual DbSet<PasswordResetTokens> PasswordResetTokens { get; set; }
     }
 }

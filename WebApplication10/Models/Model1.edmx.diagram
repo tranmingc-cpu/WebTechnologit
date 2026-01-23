@@ -32,6 +32,7 @@
         <AssociationConnector Association="TechStoreDBModel.FK_Newsletter_User" />
         <EntityTypeShape EntityType="TechStoreDBModel.EmailQueue" Width="1.5" PointX="5.25" PointY="14.625" />
         <AssociationConnector Association="TechStoreDBModel.FK_EmailQueue_Subscriber" />
+        <EntityTypeShape EntityType="TechStoreDBModel.PasswordResetTokens" Width="1.5" PointX="10.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

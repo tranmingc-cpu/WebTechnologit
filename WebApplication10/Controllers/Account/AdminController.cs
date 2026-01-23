@@ -24,9 +24,14 @@ namespace WebApplication10.Controllers
         {
             ViewBag.IsPartial = partial;
 
-            if (Session["UserRole"]?.ToString() != "Admin")
+            if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "Account");
+            }
+
+            if (Session["UserRole"]?.ToString() != "Admin")
+            {
+                return RedirectToAction("AccessDenied", "Account");
             }
 
             ViewBag.UserCount = _adminDao.GetUserCount();

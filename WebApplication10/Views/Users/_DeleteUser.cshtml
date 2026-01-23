@@ -1,9 +1,36 @@
 ﻿@model WebApplication10.Models.Users
 
-@using (Html.BeginForm("Delete", "Users", FormMethod.Post, new { id = "deleteForm", @class = "ajax-form" }))
+@using (Html.BeginForm("Delete", "Users", FormMethod.Post, new { id = "deleteForm", @class = "ajax-form delete-confirm-form" }))
 {
     @Html.AntiForgeryToken()
-    <p>Are you sure you want to delete <strong>@Model.Username</strong>?</p>
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <button type="button" class="btn btn-secondary" id="btnBackToList">Cancel</button>
+    @Html.HiddenFor(m => m.UserId)
+
+    <div class="delete-box">
+
+        <div class="delete-icon">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <h3 class="delete-title">Xác nhận xóa người dùng</h3>
+
+        <p class="delete-message">
+            Bạn có chắc chắn muốn xóa tài khoản
+            <span class="delete-username">@Model.Username</span> không?
+        </p>
+
+        <p class="delete-warning">
+            Hành động này <strong>không thể hoàn tác</strong>.
+        </p>
+
+        <div class="delete-actions">
+            <button type="submit" class="btn btn-danger btn-delete-confirm">
+                <i class="fa-solid fa-trash"></i> Xóa
+            </button>
+
+            <button type="button" class="btn btn-secondary btn-cancel" id="btnBackToList">
+                Hủy
+            </button>
+        </div>
+
+    </div>
 }

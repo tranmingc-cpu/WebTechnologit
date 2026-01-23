@@ -1,0 +1,26 @@
+﻿@model bool
+
+@if (Model)
+{
+    <div class="newsletter-subscribed">
+        <i class="fa fa-circle-check"></i>
+        <span>Bạn đã đăng ký nhận newsletter</span>
+    </div>
+}
+else
+{
+    <form id="newsletterForm" class="newsletter-form">
+        @Html.AntiForgeryToken()
+
+        <input type="email"
+               id="newsletterEmail"
+               placeholder="Nhập email của bạn"
+               required />
+
+        <button type="submit" title="Đăng ký">
+            <i class="fa fa-paper-plane"></i>
+        </button>
+    </form>
+
+    <div id="newsletterMessage" class="newsletter-message"></div>
+}

@@ -1,38 +1,68 @@
-﻿$(document).on('submit', '#newsletterForm', function (e) {
+﻿$(document).on("click", "#newsletterSection #btnSubscribe", function (e) {
     e.preventDefault();
 
-    var email = $('#newsletterEmail').val().trim();
-    var token = $('input[name="__RequestVerificationToken"]').val();
-    var $msg = $('#newsletterMessage');
-
-    if (!email) {
-        $msg.html('<span style="color:red">Vui lòng nhập email</span>');
-        return;
-    }
+    var $section = $("#newsletterSection");
+    var token = $section.find("input[name='__RequestVerificationToken']").val();
 
     $.ajax({
-        url: '/Newsletter/Subscribe',
-        type: 'POST',
+        url: "/Newsletter/Subscribe",
+        type: "POST",
+        data: { __RequestVerificationToken: token },
+        success: function (html) {
+            $section.replaceWith(html);
+
+            reloadNewsletterFooter();
+        }
+    });
+});
+
+$(document).on("click", "#newsletterSection #btnUnsubscribe", function (e) {
+    e.preventDefault();
+
+    var $section = $("#newsletterSection");
+    var token = $section.find("input[name='__RequestVerificationToken']").val();
+
+    $.ajax({
+        url: "/Newsletter/Unsubscribe",
+        type: "POST",
+        data: { __RequestVerificationToken: token },
+        success: function (html) {
+            $section.replaceWith(html);
+
+            reloadNewsletterFooter();
+        }
+    });
+});
+
+$(document).on("submit", "#newsletterForm", function (e) {
+    e.preventDefault();
+
+    var $form = $(this);
+    var email = $form.find("#newsletterEmail").val().trim();
+    var token = $form.find("input[name='__RequestVerificationToken']").val();
+
+    if (!email) return;
+
+    $.ajax({
+        url: "/Newsletter/SubscribeFooter",
+        type: "POST",
         data: {
             email: email,
             __RequestVerificationToken: token
         },
         success: function (res) {
             if (res.success) {
-                $msg
-                    .removeClass('error')
-                    .addClass('success')
-                    .html('<i class="fa fa-check-circle"></i> ' + res.message);
-                $('#newsletterEmail').val('');
-            } else {
-                $msg
-                    .removeClass('success')
-                    .addClass('error')
-                    .html('<i class="fa fa-circle-exclamation"></i> ' + res.message);
+                reloadNewsletterFooter();
             }
-        },
-        error: function () {
-            $msg.html('<span style="color:red">Có lỗi xảy ra, vui lòng thử lại</span>');
         }
     });
 });
+function reloadNewsletterFooter() {
+    $.ajax({
+        url: "/Newsletter/FooterStatus",
+        type: "GET",
+        success: function (html) {
+            $("#footerNewsletterContent").html(html);
+        }
+    });
+}

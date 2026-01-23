@@ -2,6 +2,8 @@
 using System.Web.Mvc;
 using WebApplication10.Models;
 using UserDao = WebApplication10.DAO.UserDao;
+using WebApplication10.Services;
+using System;
 
 namespace WebApplication10.Controllers
 {
@@ -14,10 +16,10 @@ namespace WebApplication10.Controllers
             _userDao = new UserDao(db);
         }
 
-        // LOGIN
         [HttpGet]
         public ActionResult Login()
         {
+            ViewBag.RightPanel = "AuthPartials/_RightPanel_Login";
             return View();
         }
 
@@ -25,33 +27,62 @@ namespace WebApplication10.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
         {
+            if (string.IsNullOrWhiteSpace(email))
+                ModelState.AddModelError("email", "Email không được để trống");
+
+            if (string.IsNullOrWhiteSpace(password))
+                ModelState.AddModelError("password", "Mật khẩu không được để trống");
+
+            if (!ModelState.IsValid)
+            {
+                if (Request.IsAjaxRequest())
+                    return PartialView("AuthPartials/_LoginPartial");
+
+                return View();
+            }
+
             var user = db.Users.FirstOrDefault(u =>
                 u.Email == email &&
                 u.Password == password &&
                 u.IsActive == true
             );
 
-            if (user != null)
+            if (user == null)
             {
-                Session["UserId"] = user.UserId;
-                Session["UserEmail"] = user.Email;
-                Session["UserName"] = user.FullName;
-                Session["UserRole"] = user.Role;
+                ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
 
-                if (user.Role == "Admin")
-                    return RedirectToAction("Dashboard", "Admin");
+                if (Request.IsAjaxRequest())
+                    return PartialView("AuthPartials/_LoginPartial");
 
-                return RedirectToAction("Index", "Home");
+                return View();
             }
 
-            ViewBag.Error = "Email hoặc mật khẩu không đúng";
-            return View();
+            Session["UserId"] = user.UserId;
+            Session["UserEmail"] = user.Email;
+            Session["UserName"] = user.FullName;
+            Session["UserRole"] = user.Role;
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new
+                {
+                    success = true,
+                    redirect = user.Role == "Admin"
+                        ? Url.Action("Dashboard", "Admin")
+                        : Url.Action("Index", "Home")
+                });
+            }
+
+            return RedirectToAction(
+                user.Role == "Admin" ? "Dashboard" : "Index",
+                user.Role == "Admin" ? "Admin" : "Home"
+            );
         }
 
-        // REGISTER
         [HttpGet]
         public ActionResult Register()
         {
+            ViewBag.RightPanel = "AuthPartials/_RightPanel_Register";
             return View();
         }
 
@@ -59,15 +90,26 @@ namespace WebApplication10.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(string fullName, string email, string password, string confirmPassword)
         {
+            if (string.IsNullOrWhiteSpace(fullName))
+                ModelState.AddModelError("fullName", "Họ tên không được để trống");
+
+            if (string.IsNullOrWhiteSpace(email))
+                ModelState.AddModelError("email", "Email không được để trống");
+
+            if (string.IsNullOrWhiteSpace(password))
+                ModelState.AddModelError("password", "Mật khẩu không được để trống");
+
             if (password != confirmPassword)
-            {
-                ViewBag.Error = "Passwords do not match";
-                return View();
-            }
+                ModelState.AddModelError("confirmPassword", "Mật khẩu xác nhận không khớp");
 
             if (_userDao.GetAll().Any(u => u.Email == email))
+                ModelState.AddModelError("email", "Email đã được đăng ký");
+
+            if (!ModelState.IsValid)
             {
-                ViewBag.Error = "Email already registered";
+                if (Request.IsAjaxRequest())
+                    return PartialView("AuthPartials/_RegisterPartial");
+
                 return View();
             }
 
@@ -82,31 +124,24 @@ namespace WebApplication10.Controllers
                 CreatedAt = System.DateTime.Now
             };
 
-            try
-            {
-                _userDao.Add(newUser);
-            }
-            catch (System.Data.Entity.Validation.DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"{ve.PropertyName}: {ve.ErrorMessage}");
-                    }
-                }
+            _userDao.Add(newUser);
 
-                ViewBag.Error = "Unable to create account. Please check your inputs.";
-                return View();
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new
+                {
+                    success = true,
+                    redirect = Url.Action("Login", "Account")
+                });
             }
 
             return RedirectToAction("Login");
         }
 
-        // FORGOT PASSWORD
         [HttpGet]
         public ActionResult ForgotPassword()
         {
+            ViewBag.RightPanel = "AuthPartials/_RightPanel_ForgotPassword";
             return View();
         }
 
@@ -114,13 +149,80 @@ namespace WebApplication10.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ForgotPassword(string email)
         {
-            var user = _userDao.GetAll().FirstOrDefault(u => u.Email == email);
+            if (string.IsNullOrWhiteSpace(email))
+                ModelState.AddModelError("email", "Vui lòng nhập email");
 
-            ViewBag.Message = "If this email exists, a reset link has been sent.";
+            if (!ModelState.IsValid)
+                return View();
+
+            var user = db.Users.FirstOrDefault(x =>
+                x.Email == email &&
+                x.IsActive == true
+            );
+
+            if (user != null)
+            {
+                var baseUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+
+                var service = new ResetPasswordMailService(db);
+                service.QueueResetPasswordMail(email, baseUrl);
+
+                new EmailQueueProcessor(db).Process();
+            }
+
+            ViewBag.Message = "Nếu email tồn tại, chúng tôi đã gửi liên kết đặt lại mật khẩu.";
             return View();
         }
 
-        // LOGOUT
+        [HttpGet]
+        public ActionResult ResetPassword(string token)
+        {
+            var reset = db.PasswordResetTokens.FirstOrDefault(x =>
+                x.Token == token &&
+                x.Used == false &&
+                x.ExpiredAt > DateTime.Now
+            );
+
+            if (reset == null)
+                return View("ResetPasswordExpired");
+
+            ViewBag.Token = token;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(string token, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                ModelState.AddModelError("newPassword", "Mật khẩu không được để trống");
+                ViewBag.Token = token;
+                return PartialView("AuthPartials/_ResetPasswordPartial");
+            }
+
+            var reset = db.PasswordResetTokens.FirstOrDefault(x =>
+                x.Token == token &&
+                x.Used == false &&
+                x.ExpiredAt > DateTime.Now
+            );
+
+            if (reset == null)
+                return View("ResetPasswordExpired");
+
+            var user = db.Users.FirstOrDefault(x => x.Email == reset.Email);
+            if (user == null)
+                return View("ResetPasswordExpired");
+
+            user.Password = newPassword;
+            reset.Used = true;
+
+            db.SaveChanges();
+
+            TempData["Message"] = "Đổi mật khẩu thành công. Vui lòng đăng nhập.";
+            return RedirectToAction("Login");
+        }
+
         public ActionResult Logout()
         {
             Session.Clear();
@@ -146,10 +248,14 @@ namespace WebApplication10.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            bool isSubscribed = db.NewsletterSubscribers
+                .Any(x => x.Email == user.Email && x.IsActive == true);
+
+            ViewBag.IsNewsletterSubscribed = isSubscribed;
+
             return View(user);
         }
 
-        // EDIT PROFILE
         [HttpGet]
         public ActionResult EditProfile()
         {
@@ -178,5 +284,16 @@ namespace WebApplication10.Controllers
             bool success = _userDao.ChangePassword(userId, oldPassword, newPassword);
             return Json(new { success = success, message = success ? "Đổi mật khẩu thành công!" : "Mật khẩu cũ không đúng!" });
         }
+
+        protected bool IsAjax()
+        {
+            return Request.IsAjaxRequest();
+        }
+
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

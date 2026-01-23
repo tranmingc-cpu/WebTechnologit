@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="auth-box auth-denied">
+    <div class="auth-header">
+        <h2><span>TECH</span> STORE</h2>
+        <p>403 • Access Denied</p>
+    </div>
+
+    <div class="auth-body">
+        <div class="auth-denied-icon">
+            <i class="fa fa-lock"></i>
+        </div>
+
+        <div class="auth-error">
+            <strong>Truy cập bị từ chối</strong>
+            <p>
+                Bạn không có quyền truy cập vào khu vực này.<br />
+                Vui lòng đăng nhập bằng tài khoản phù hợp.
+            </p>
+        </div>
+
+        <div class="auth-actions">
+            <a href="/" class="btn-auth btn-outline">
+                Trang chủ
+            </a>
+
+            <a href="/Account/Login" class="btn-auth btn-primary">
+                Đăng nhập
+            </a>
+        </div>
+    </div>
+</div>

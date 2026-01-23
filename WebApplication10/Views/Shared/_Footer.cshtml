@@ -44,19 +44,14 @@
 
         <div class="footer-col footer-newsletter">
             <h4>Nhận ưu đãi</h4>
-            <p>
-                Đăng ký newsletter để không bỏ lỡ<br />
-                <strong>khuyến mãi & sản phẩm mới</strong>
+
+            <p class="newsletter-desc">
+                Đăng ký email để nhận thông báo khuyến mãi & sản phẩm mới nhất.
             </p>
 
-            <form id="newsletterForm" class="newsletter-form">
-                @Html.AntiForgeryToken()
-                <input type="email" id="newsletterEmail" name="email"
-                       placeholder="Nhập email của bạn" required />
-                <button type="submit"><i class="fa fa-paper-plane"></i></button>
-            </form>
-
-            <div id="newsletterMessage" class="newsletter-message"></div>
+            <div id="footerNewsletterContent">
+                @Html.Action("FooterStatus", "Newsletter")
+            </div>
 
             <div class="social-icons">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
