@@ -74,7 +74,7 @@ namespace WebApplication10.DAO
             var email = _db.EmailQueue.Find(emailQueueId);
             if (email == null) return;
 
-            email.Status = 2;     // Failed
+            email.Status = 2;
             email.RetryCount++;
 
             _db.SaveChanges();

@@ -1,0 +1,38 @@
+﻿@model bool
+
+<div class="newsletter-box" id="newsletterSection">
+    @Html.AntiForgeryToken()
+
+    <div class="newsletter-header">
+        <i class="fa fa-envelope-open-text"></i>
+        <div>
+            <h4>Newsletter</h4>
+            <p>Nhận thông báo khuyến mãi & sản phẩm mới</p>
+        </div>
+    </div>
+
+    <div class="newsletter-body">
+        @if (Model)
+        {
+            <div class="newsletter-status subscribed">
+                <i class="fa fa-circle-check"></i>
+                <span>Bạn đã đăng ký nhận newsletter</span>
+            </div>
+
+            <button id="btnUnsubscribe" class="btn btn-outline">
+                Hủy đăng ký
+            </button>
+        }
+        else
+        {
+            <div class="newsletter-status unsubscribed">
+                <i class="fa fa-circle-xmark"></i>
+                <span>Bạn chưa đăng ký newsletter</span>
+            </div>
+
+            <button id="btnSubscribe" class="btn btn-primary">
+                Đăng ký ngay
+            </button>
+        }
+    </div>
+</div>

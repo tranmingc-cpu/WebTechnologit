@@ -1,0 +1,12 @@
+﻿@model WebApplication10.Models.Categories
+
+@Html.Raw(Model.Description)
+
+@if (Session["UserRole"]?.ToString() == "Admin")
+{
+    <div style="margin-top:20px">
+        <button class="btn btn-sm btn-primary" id="btnEditCategory">
+            ✏️ Chỉnh sửa
+        </button>
+    </div>
+}

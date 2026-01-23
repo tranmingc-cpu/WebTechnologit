@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebApplication10.Models;
+using System.Data.Entity;
 
 namespace WebApplication10.DAO
 {
@@ -67,21 +68,47 @@ namespace WebApplication10.DAO
         public bool Delete(int id, out string message)
         {
             message = null;
-            var user = _context.Users.Find(id);
+
+            var user = _context.Users
+                .Include(u => u.Cart)
+                .Include(u => u.Orders)
+                .Include(u => u.Reviews)
+                .Include(u => u.NewsletterSubscribers)
+                .FirstOrDefault(u => u.UserId == id);
+
             if (user == null)
             {
-                message = "User not found.";
+                message = "Người dùng không tồn tại.";
                 return false;
             }
 
-            if (user.Orders.Any() || user.Cart.Any() || user.Reviews.Any())
+            if (user.Orders.Any())
             {
-                message = "Cannot delete user with related data.";
+                message = "Không thể xóa vì người dùng đang có đơn hàng.";
+                return false;
+            }
+
+            if (user.Cart.Any())
+            {
+                message = "Không thể xóa vì người dùng đang có giỏ hàng.";
+                return false;
+            }
+
+            if (user.Reviews.Any())
+            {
+                message = "Không thể xóa vì người dùng đã có đánh giá.";
+                return false;
+            }
+
+            if (user.NewsletterSubscribers.Any())
+            {
+                message = "Không thể xóa vì người dùng đã đăng ký nhận bản tin.";
                 return false;
             }
 
             _context.Users.Remove(user);
             _context.SaveChanges();
+
             return true;
         }
 
@@ -101,6 +128,22 @@ namespace WebApplication10.DAO
             }
             return false;
         }
+        public bool ExistsByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            return _context.Users.Any(u => u.Email == email);
+        }
+
+        public bool ExistsByEmail(string email, int excludeUserId)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            return _context.Users.Any(u => u.Email == email && u.UserId != excludeUserId);
+        }
+
 
     }
 }

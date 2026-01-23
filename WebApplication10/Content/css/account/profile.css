@@ -1,5 +1,5 @@
 ﻿.account-page {
-    padding: 80px 0 10px 0;
+    padding: 15px 0 10px 0;
 }
 
 .profile-wrapper {
@@ -169,26 +169,23 @@
     .btn-primary:hover, .btn-outline:hover {
         opacity: 0.9;
     }
+/* ===== PROFILE MODAL (CUSTOM – KHÔNG ĐỤNG BOOTSTRAP) ===== */
 
-.modal {
+.profile-modal {
     display: none;
     position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    z-index: 20000;
     background-color: rgba(0,0,0,0.6);
     align-items: center;
     justify-content: center;
-    padding: 0;
 }
 
-    .modal.show {
+    .profile-modal.show {
         display: flex;
     }
 
-.modal-content {
+.profile-modal-content {
     background-color: #1f2233;
     border-radius: 14px;
     padding: 30px;
@@ -202,95 +199,115 @@
     transition: all 0.3s ease;
 }
 
-.modal.show .modal-content {
+.profile-modal.show .profile-modal-content {
     transform: translateY(0);
     opacity: 1;
 }
 
-.modal-content form {
+.profile-modal-content form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.modal-content label {
+.profile-modal-content label {
     font-size: 13px;
     color: #aaa;
 }
 
-.modal-content input {
+.profile-modal-content input {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #555;
     background-color: #2c2f44;
     color: #fff;
-    font-size: 14px;
 }
 
-    .modal-content input:focus {
+    .profile-modal-content input:focus {
         outline: none;
         border-color: #ff5c5c;
     }
 
-.modal-content button {
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-    .modal-content button.btn-primary {
-        background: #ff5c5c;
-        color: #fff;
-    }
-
-        .modal-content button.btn-primary:hover {
-            opacity: 0.9;
-        }
-
-.modal-content .close {
+.profile-close {
     position: absolute;
     top: 15px;
     right: 15px;
     font-size: 20px;
     cursor: pointer;
     color: #fff;
-    transition: 0.2s;
 }
 
-    .modal-content .close:hover {
+    .profile-close:hover {
         color: #ff5c5c;
     }
 
-#successModal .modal-content {
+/* Success modal riêng */
+#successModal .profile-modal-content {
     width: 350px;
     text-align: center;
-    background-color: #1f2233;
-    color: #fff;
 }
 
 #successModal h3 {
     color: #00c853;
-    margin-bottom: 10px;
 }
 
-#successModal p {
+/* ===== NEWSLETTER PROFILE ===== */
+
+.newsletter-box {
+    margin-top: 30px;
+    padding: 20px 22px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #262a40, #1f2233);
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.newsletter-header {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+    .newsletter-header i {
+        font-size: 26px;
+        color: #ff5c5c;
+    }
+
+    .newsletter-header h4 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .newsletter-header p {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: #aaa;
+    }
+
+.newsletter-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.newsletter-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
+    font-weight: 500;
 }
 
-#successModal button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #00c853;
-    color: #fff;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
+    .newsletter-status.subscribed {
+        color: #00c853;
+    }
 
-    #successModal button:hover {
-        background: #00e676;
+    .newsletter-status.unsubscribed {
+        color: #ffb74d;
+    }
+
+    .newsletter-status i {
+        font-size: 18px;
     }

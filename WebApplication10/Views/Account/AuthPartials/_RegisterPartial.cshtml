@@ -1,0 +1,100 @@
+﻿@* KHÔNG Layout *@
+
+<div class="auth-box">
+    <div class="auth-header">
+        <h2><span>TECH</span> STORE</h2>
+        <p>Tạo tài khoản mới</p>
+    </div>
+
+    <div class="auth-body">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @* ERROR TỔNG – CHỈ HIỆN KHI SUBMIT *@
+            if (!ViewData.ModelState.IsValid && ViewData.ModelState.Count > 0)
+            {
+                <div class="auth-error">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text"
+                       name="fullName"
+                       value="@Request["fullName"]"
+                       placeholder="Nguyễn Văn A" />
+
+                @* FULL NAME ERROR *@
+                @if (ViewData.ModelState.ContainsKey("fullName") &&
+                     ViewData.ModelState["fullName"].Errors.Count > 0)
+                {
+                    <div class="field-error">
+                        @ViewData.ModelState["fullName"].Errors[0].ErrorMessage
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email"
+                       name="email"
+                       value="@Request["email"]"
+                       placeholder="you@example.com" />
+
+                @* EMAIL ERROR *@
+                @if (ViewData.ModelState.ContainsKey("email") &&
+                     ViewData.ModelState["email"].Errors.Count > 0)
+                {
+                    <div class="field-error">
+                        @ViewData.ModelState["email"].Errors[0].ErrorMessage
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password"
+                       name="password"
+                       placeholder="••••••••" />
+
+                @* PASSWORD ERROR *@
+                @if (ViewData.ModelState.ContainsKey("password") &&
+                     ViewData.ModelState["password"].Errors.Count > 0)
+                {
+                    <div class="field-error">
+                        @ViewData.ModelState["password"].Errors[0].ErrorMessage
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Xác nhận mật khẩu</label>
+                <input type="password"
+                       name="confirmPassword"
+                       placeholder="••••••••" />
+
+                @* CONFIRM PASSWORD ERROR *@
+                @if (ViewData.ModelState.ContainsKey("confirmPassword") &&
+                     ViewData.ModelState["confirmPassword"].Errors.Count > 0)
+                {
+                    <div class="field-error">
+                        @ViewData.ModelState["confirmPassword"].Errors[0].ErrorMessage
+                    </div>
+                }
+            </div>
+
+            <button type="submit" class="btn-auth">
+                Đăng ký
+            </button>
+        }
+
+        <div class="auth-links">
+            Đã có tài khoản?
+            <a href="/Account/Login" data-auth-link>
+                Đăng nhập
+            </a>
+        </div>
+    </div>
+</div>

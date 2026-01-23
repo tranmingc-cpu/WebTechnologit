@@ -637,3 +637,13 @@ CREATE TABLE EmailQueue (
         FOREIGN KEY (SubscriberId)
         REFERENCES NewsletterSubscribers(SubscriberId)
 );
+
+CREATE TABLE PasswordResetTokens (
+    Id INT IDENTITY PRIMARY KEY,
+    Email NVARCHAR(255) NOT NULL,
+    Token NVARCHAR(64) NOT NULL,
+    ExpiredAt DATETIME NOT NULL,
+    Used BIT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME NOT NULL
+);
+

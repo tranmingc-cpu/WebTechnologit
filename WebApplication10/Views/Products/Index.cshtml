@@ -19,6 +19,7 @@
             @:Tất cả sản phẩm
         }
     </h1>
+
     <p class="sub-text" id="pageHeaderSubText">
         @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
         {
@@ -36,11 +37,17 @@
 </div>
 
 <section class="category-filter">
-    <a class="category active" data-id="">Tất cả</a>
+    <a class="category @(ViewBag.CurrentCategoryId == null ? "active" : "")"
+       data-id=""
+       data-name="Tất cả sản phẩm">
+        Tất cả
+    </a>
 
     @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
     {
-        <a class="category" data-id="@c.CategoryId" data-name="@c.CategoryName">
+        <a class="category @(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")"
+           data-id="@c.CategoryId"
+           data-name="@c.CategoryName">
             @c.CategoryName
         </a>
     }
@@ -52,23 +59,39 @@
     </div>
 </section>
 
-<section class="category-description" id="categoryDescription">
-    @if (ViewBag.CurrentCategoryId != null && !string.IsNullOrWhiteSpace(ViewBag.CurrentCategoryDescription as string))
-    {
-        @Html.Raw(ViewBag.CurrentCategoryDescription)
-    }
+<section class="category-description"
+         id="categoryDescription"
+         data-category-id="@ViewBag.CurrentCategoryId">
 </section>
 
 @section Scripts {
+
+    <script src="~/Scripts/product/category-description.js"></script>
+
     <script>
         $(document).on('click', '.category', function (e) {
             e.preventDefault();
 
-            $('.category').removeClass('active');
-            $(this).addClass('active');
+            let $this = $(this);
 
-            let categoryId = $(this).data('id') || '';
-            let categoryName = $(this).data('name') || 'Tất cả sản phẩm';
+            $('.category').removeClass('active');
+            $this.addClass('active');
+
+            let categoryId = $this.data('id') || '';
+            let categoryName = $this.data('name') || 'Tất cả sản phẩm';
+
+            if (categoryId) {
+                history.pushState(null, '', '/Products?categoryId=' + categoryId);
+            } else {
+                history.pushState(null, '', '/Products');
+            }
+
+            $('.menu a').removeClass('active');
+            if (categoryId) {
+                $('.menu a[href*="categoryId=' + categoryId + '"]').addClass('active');
+            }
+
+            $('#categoryDescription').attr('data-category-id', categoryId);
 
             let $container = $('#productGrid');
             $container.addClass('fade-out');
@@ -83,9 +106,14 @@
                     $container.removeClass('fade-out').addClass('fade-in');
                     $('#ajaxLoader').fadeOut(200);
 
-                    $('#categoryDescription').html(res.description || '');
                     $('#pageHeaderTitle').text(categoryName);
-                    $('#pageHeaderSubText').text(categoryId ? 'Danh sách sản phẩm theo danh mục' : 'Khám phá toàn bộ sản phẩm đang kinh doanh');
+                    $('#pageHeaderSubText').text(
+                        categoryId
+                            ? 'Danh sách sản phẩm theo danh mục'
+                            : 'Khám phá toàn bộ sản phẩm đang kinh doanh'
+                    );
+
+                    $(document).trigger('category:changed', [categoryId]);
                 },
                 error: function () {
                     $container.html('<p>Lỗi tải sản phẩm.</p>');
