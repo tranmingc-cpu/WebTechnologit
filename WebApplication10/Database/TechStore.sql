@@ -1,5 +1,4 @@
-﻿
-CREATE DATABASE TechStoreDB;
+﻿CREATE DATABASE TechStoreDB;
 GO
 USE TechStoreDB;
 GO

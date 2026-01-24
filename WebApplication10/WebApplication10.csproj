@@ -135,6 +135,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Account\AdminContactsController.cs" />
     <Compile Include="Controllers\Account\NewsletterController.cs" />
     <Compile Include="Controllers\Account\UsersController.cs" />
     <Compile Include="Controllers\Account\AdminController.cs" />
@@ -230,6 +231,8 @@
     <Compile Include="Services\ResetPasswordMailService.cs" />
     <Compile Include="Services\EmailQueueProcessor.cs" />
     <Compile Include="Services\EmailSenderService.cs" />
+    <Compile Include="ViewModels\AdminContactListViewModel.cs" />
+    <Compile Include="ViewModels\ContactFormViewModel.cs" />
     <Compile Include="ViewModels\AdminEditUserVM.cs" />
     <Compile Include="ViewModels\AdminCreateUserVM.cs" />
     <Compile Include="ViewModels\AdminActionsViewModel.cs" />
@@ -310,6 +313,7 @@
     <Content Include="Content\css\bootstrap.rtl.css.map" />
     <Content Include="Content\css\bootstrap.rtl.min.css.map" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\common\contact.js" />
     <Content Include="Scripts\common\newsletter.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -379,6 +383,8 @@
     <Content Include="Views\Account\AuthPartials\_ResetPasswordPartial.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\AccessDenied.cshtml" />
+    <Content Include="Views\AdminContacts\Index.cshtml" />
+    <Content Include="Views\AdminContacts\_AdminContactListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

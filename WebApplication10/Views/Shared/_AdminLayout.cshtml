@@ -66,15 +66,16 @@
                         return (currentController == controller && (action == null || currentAction == action)) ? "active-link" : "";
                     };
                 }
-                <nav class="header-actions">
-                    <a href="@Url.Action("Dashboard", "Admin")" class="@((currentController=="Admin" && currentAction=="Dashboard")?"active-link":"")">
-                        Dashboard
-                    </a>
-                    <a href="/Users/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Users") ? "active-link" : "")" data-admin-partial="true">Users</a>
-                    <a href="@Url.Action("Index", "Products")" class="@isActive("Products", null)">Products</a>
-                    <a href="@Url.Action("Index", "Orders")" class="@isActive("Orders", null)">Orders</a>
-                    <a href="@Url.Action("Logout", "Account")">Logout</a>
-                </nav>
+            <nav class="header-actions">
+                <a href="@Url.Action("Dashboard", "Admin")" class="@((currentController=="Admin" && currentAction=="Dashboard")?"active-link":"")">
+                    Dashboard
+                </a>
+                <a href="/Users/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Users") ? "active-link" : "")" data-admin-partial="true">Users</a>
+                <a href="@Url.Action("Index", "Products")" class="@isActive("Products", null)">Products</a>
+                <a href="@Url.Action("Index", "Orders")" class="@isActive("Orders", null)">Orders</a>
+                <a href="@Url.Action("Index", "AdminContacts")" class="@isActive("AdminContacts", null)">Contacts</a>
+                <a href="@Url.Action("Logout", "Account")">Logout</a>
+            </nav>
             </div>
         </header>
 
