@@ -64,6 +64,7 @@ namespace WebApplication10.Controllers.Account
         }
 
         [HttpGet]
+        [ChildActionOnly]
         public ActionResult FooterStatus()
         {
             bool isSubscribed = false;

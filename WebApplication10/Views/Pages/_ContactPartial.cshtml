@@ -11,6 +11,7 @@
     </div>
 
     <div class="contact-form info-content" style="margin-top:2rem;">
+
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">
@@ -18,36 +19,52 @@
             </div>
         }
 
-        @using (Html.BeginForm("Contact", "Pages", FormMethod.Post, new { @class = "form-horizontal" }))
+        @using (Html.BeginForm("Contact", "Pages", FormMethod.Post, new { id = "contactForm", @class = "form-horizontal", role = "form" }))
         {
             @Html.AntiForgeryToken()
 
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
             <div class="form-group">
                 @Html.LabelFor(m => m.ContactForm.FullName)
-                @Html.TextBoxFor(m => m.ContactForm.FullName, new { @class = "form-control", placeholder = "Họ và tên" })
+                @Html.TextBoxFor(
+                    m => m.ContactForm.FullName,
+                    new { @class = "form-control", placeholder = "Họ và tên" }
+                )
                 @Html.ValidationMessageFor(m => m.ContactForm.FullName, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(m => m.ContactForm.Email)
-                @Html.TextBoxFor(m => m.ContactForm.Email, new { @class = "form-control", placeholder = "Email" })
+                @Html.TextBoxFor(
+                    m => m.ContactForm.Email,
+                    new { @class = "form-control", placeholder = "Email", type = "email" }
+                )
                 @Html.ValidationMessageFor(m => m.ContactForm.Email, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(m => m.ContactForm.Phone)
-                @Html.TextBoxFor(m => m.ContactForm.Phone, new { @class = "form-control", placeholder = "Số điện thoại" })
+                @Html.TextBoxFor(
+                    m => m.ContactForm.Phone,
+                    new { @class = "form-control", placeholder = "Số điện thoại" }
+                )
                 @Html.ValidationMessageFor(m => m.ContactForm.Phone, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(m => m.ContactForm.Message)
-                @Html.TextAreaFor(m => m.ContactForm.Message, new { @class = "form-control", rows = 6, placeholder = "Nội dung liên hệ" })
+                @Html.TextAreaFor(
+                    m => m.ContactForm.Message,
+                    new { @class = "form-control", rows = 6, placeholder = "Nội dung liên hệ" }
+                )
                 @Html.ValidationMessageFor(m => m.ContactForm.Message, "", new { @class = "text-danger" })
             </div>
 
             <div class="form-group text-right">
-                <button type="submit" class="btn btn-primary btn-lg">Gửi liên hệ</button>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Gửi liên hệ
+                </button>
             </div>
         }
     </div>

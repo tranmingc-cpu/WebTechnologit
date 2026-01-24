@@ -5,6 +5,7 @@ namespace WebApplication10.ViewModels
     public class ContactPageViewModel
     {
         public InfoPages PageContent { get; set; }
-        public Contacts ContactForm { get; set; }
+
+        public ContactFormViewModel ContactForm { get; set; }
     }
 }

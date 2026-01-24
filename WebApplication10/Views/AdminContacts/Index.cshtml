@@ -1,0 +1,68 @@
+﻿@model WebApplication10.ViewModels.AdminContactListViewModel
+@using System.Web
+
+@{
+    ViewBag.Title = "Contacts";
+    Layout = null;
+}
+
+<div class="users-page">
+    <div class="users-header">
+        <div class="users-title">
+            <h3>Liên hệ</h3>
+            <span class="users-subtitle">
+                Danh sách tin nhắn người dùng gửi từ form liên hệ
+            </span>
+        </div>
+    </div>
+
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Điện thoại</th>
+                    <th>Nội dung</th>
+                    <th>Thời gian gửi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Contacts != null && Model.Contacts.Any())
+                {
+                    foreach (var item in Model.Contacts)
+                    {
+                        <tr>
+                            <td>@item.FullName</td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+
+                            <td>
+                                <div class="message-cell">
+                                    @Html.Raw(
+                                        System.Web.HttpUtility.HtmlEncode(item.Message)
+                                            .Replace("\n", "<br />")
+                                    )
+                                </div>
+                            </td>
+
+                            <td>
+                                @(item.CreatedAt.HasValue
+                                ? item.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                : "")
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            Chưa có liên hệ nào
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
