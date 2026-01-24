@@ -1,50 +1,68 @@
-﻿@model WebApplication10.Models.Users
+﻿@model WebApplication10.ViewModels.AdminEditUserVM
 
 <div class="edit-user-container">
-    <h3 class="form-title">Edit User</h3>
+    <h3 class="form-title">Chỉnh sửa người dùng</h3>
 
-    @using (Html.BeginForm("Edit", "Users", FormMethod.Post, new { id = "editUserForm", @class = "ajax-form", data_reload_target = "/Users/UserListPartial" }))
+    @using (Html.BeginForm("Edit", "Users", FormMethod.Post,
+        new { id = "editUserForm", @class = "ajax-form", data_reload_target = "/Users/UserListPartial" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.UserId)
 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.Username, htmlAttributes: new { @class = "form-label required" })
-            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Enter username" })
+            @Html.LabelFor(m => m.Username, new { @class = "form-label required" })
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger small" })
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "form-label text-light" })
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Leave blank to keep current password" })
+            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+            @Html.PasswordFor(m => m.Password, new
+            {
+                @class = "form-control",
+                placeholder = "Để trống nếu không đổi mật khẩu"
+            })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.FullName, htmlAttributes: new { @class = "form-label required" })
-            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Enter full name" })
+            @Html.LabelFor(m => m.FullName, new { @class = "form-label required" })
+            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "form-label required" })
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter email" })
+            @Html.LabelFor(m => m.Email, new { @class = "form-label required" })
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.Phone, htmlAttributes: new { @class = "form-label text-light" })
-            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", placeholder = "Enter phone (optional)" })
+            @Html.LabelFor(m => m.Phone, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger small" })
         </div>
 
         <div class="form-group mb-3">
-            @Html.LabelFor(m => m.Role, htmlAttributes: new { @class = "form-label text-light" })
-            @Html.DropDownListFor(m => m.Role, new SelectList(new[] { "Customer", "Admin" }), "Select role", new { @class = "form-control" })
+            @Html.LabelFor(m => m.Role, new { @class = "form-label required" })
+            @Html.DropDownListFor(
+                m => m.Role,
+                new SelectList(new[] { "Customer", "Admin" }, Model.Role),
+                "-- Chọn vai trò --",
+                new { @class = "form-control" }
+            )
+            @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger small" })
         </div>
 
         <div class="d-flex justify-content-between mt-3">
             <button type="button" class="btn btn-secondary" id="btnBackToList">
-                <i class="bi bi-arrow-left"></i> Back to List
+                <i class="bi bi-arrow-left"></i> Quay lại
             </button>
 
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-pencil-fill"></i> Update
+                <i class="bi bi-pencil-fill"></i> Cập nhật
             </button>
         </div>
     }

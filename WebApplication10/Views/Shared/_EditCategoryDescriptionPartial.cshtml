@@ -1,0 +1,28 @@
+﻿@model WebApplication10.Models.Categories
+
+<form id="editCategoryForm" class="category-edit-card">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="CategoryId" value="@Model.CategoryId" />
+
+    <h3 class="edit-title">
+        Chỉnh sửa mô tả danh mục
+    </h3>
+
+    <div class="editor-wrapper">
+        <textarea class="category-editor"
+                  data-category-id="@Model.CategoryId"
+                  name="Description">
+            @Html.Raw(Model.Description)
+        </textarea>
+    </div>
+
+    <div class="edit-actions">
+        <button type="submit" class="btn-save">
+            Lưu thay đổi
+        </button>
+        <button type="button" id="btnCancelEdit" class="btn-cancel">
+            Hủy
+        </button>
+    </div>
+</form>

@@ -74,5 +74,61 @@ namespace WebApplication10.DAO
         {
             return products.Count();
         }
+
+        public int Insert(Products product)
+        {
+            product.CreatedAt = DateTime.Now;
+            product.Status = product.Status ?? "Available";
+
+            _context.Products.Add(product);
+            _context.SaveChanges();
+
+            return product.ProductId;
+        }
+
+        public bool Update(Products product)
+        {
+            var existing = _context.Products.Find(product.ProductId);
+            if (existing == null)
+                return false;
+
+            existing.ProductName = product.ProductName;
+            existing.CategoryId = product.CategoryId;
+            existing.BrandId = product.BrandId;
+            existing.Price = product.Price;
+            existing.Discount = product.Discount;
+            existing.Quantity = product.Quantity;
+            existing.Description = product.Description;
+            existing.ImageUrl = product.ImageUrl;
+            existing.Status = product.Status;
+
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool Delete(int productId)
+        {
+            var product = _context.Products.Find(productId);
+            if (product == null)
+                return false;
+
+            product.Status = "Deleted";
+            _context.SaveChanges();
+            return true;
+        }
+        public IQueryable<Products> GetAll()
+        {
+            return _context.Products
+                           .Include(p => p.Brands)
+                           .Include(p => p.Categories);
+        }
+        public Products GetByIdAdmin(int id)
+        {
+            return _context.Products
+                           .Include(p => p.Brands)
+                           .Include(p => p.Categories)
+                           .FirstOrDefault(p => p.ProductId == id);
+        }
+
     }
 }

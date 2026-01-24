@@ -66,6 +66,10 @@
                 </div>
             </div>
 
+            @Html.Partial(
+                "~/Views/Shared/_NewsletterSection.cshtml",
+                (bool)(ViewBag.IsNewsletterSubscribed ?? false)
+            )
 
             <div class="profile-actions">
                 <a href="#" class="btn btn-primary" id="btnEditProfile">
@@ -76,14 +80,13 @@
                 </a>
             </div>
 
-            <div id="editProfileModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
+            <div id="editProfileModal" class="profile-modal">
+                <div class="profile-modal-content">
+                    <span class="profile-close">&times;</span>
                     <h3>Cập nhật thông tin</h3>
                     @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { id = "editProfileForm" }))
                     {
                         @Html.AntiForgeryToken()
-
                         <input type="hidden" name="UserId" value="@Model.UserId" />
 
                         <label>Họ tên</label>
@@ -100,9 +103,9 @@
                 </div>
             </div>
 
-            <div id="changePasswordModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
+            <div id="changePasswordModal" class="profile-modal">
+                <div class="profile-modal-content">
+                    <span class="profile-close">&times;</span>
                     <h3>Đổi mật khẩu</h3>
                     @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post, new { id = "changePasswordForm" }))
                     {
@@ -119,15 +122,14 @@
                 </div>
             </div>
 
-            <div id="successModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
+            <div id="successModal" class="profile-modal">
+                <div class="profile-modal-content success">
+                    <span class="profile-close">&times;</span>
                     <h3>Thành công!</h3>
-                    <p id="successMessage">Thông tin đã được cập nhật thành công.</p>
-                    <button id="btnCloseSuccess">Đóng</button>
+                    <p id="successMessage"></p>
+                    <button id="btnCloseSuccess" class="btn btn-primary">Đóng</button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -146,8 +148,8 @@ $(document).ready(function(){
         $("#changePasswordModal").addClass("show");
     });
 
-    $(".close").click(function(){
-        $(this).closest(".modal").removeClass("show");
+    $(".profile-close").click(function () {
+        $(this).closest(".profile-modal").removeClass("show");
     });
     $("#btnCloseSuccess").click(function(){
         $("#successModal").removeClass("show");

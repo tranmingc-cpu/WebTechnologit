@@ -11,14 +11,12 @@ namespace WebApplication10.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Web.Mvc;
-
+    
     public partial class InfoPages
     {
         public int InfoPageId { get; set; }
         public string Title { get; set; }
         public string Slug { get; set; }
-        [AllowHtml]
         public string Content { get; set; }
         public Nullable<System.DateTime> CreatedAt { get; set; }
         public Nullable<System.DateTime> UpdatedAt { get; set; }

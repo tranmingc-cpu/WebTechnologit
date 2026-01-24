@@ -23,12 +23,14 @@
                         <td>@user.Phone</td>
                         <td>@user.Role</td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-info btn-edit me-1" data-id="@user.UserId">
-                                <i class="bi bi-pencil-fill"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="@user.UserId">
-                                <i class="bi bi-trash-fill"></i> Delete
-                            </button>
+                            <div class="user-table-actions">
+                                <button class="btn btn-sm btn-info btn-edit" data-id="@user.UserId">
+                                    <i class="bi bi-pencil-fill"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger btn-delete" data-id="@user.UserId">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 }

@@ -52,6 +52,21 @@
           <Property Name="Message" Type="nvarchar(max)" />
           <Property Name="CreatedAt" Type="datetime" />
         </EntityType>
+        <EntityType Name="EmailQueue">
+          <Key>
+            <PropertyRef Name="EmailQueueId" />
+          </Key>
+          <Property Name="EmailQueueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ToEmail" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Status" Type="tinyint" Nullable="false" />
+          <Property Name="RetryCount" Type="int" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="SentAt" Type="datetime" />
+          <Property Name="SubscriberId" Type="int" />
+        </EntityType>
         <EntityType Name="InfoPages">
           <Key>
             <PropertyRef Name="InfoPageId" />
@@ -62,6 +77,18 @@
           <Property Name="Content" Type="nvarchar(max)" />
           <Property Name="CreatedAt" Type="datetime" />
           <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="NewsletterSubscribers">
+          <Key>
+            <PropertyRef Name="SubscriberId" />
+          </Key>
+          <Property Name="SubscriberId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Source" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="UnsubscribedAt" Type="datetime" />
         </EntityType>
         <EntityType Name="NewsPosts">
           <Key>
@@ -94,6 +121,17 @@
           <Property Name="TotalAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Status" Type="nvarchar" MaxLength="30" />
           <Property Name="ShippingAddress" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="PasswordResetTokens">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Token" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="ExpiredAt" Type="datetime" Nullable="false" />
+          <Property Name="Used" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductImages">
           <Key>
@@ -169,6 +207,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EmailQueue_Subscriber">
+          <End Role="NewsletterSubscribers" Type="Self.NewsletterSubscribers" Multiplicity="0..1" />
+          <End Role="EmailQueue" Type="Self.EmailQueue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NewsletterSubscribers">
+              <PropertyRef Name="SubscriberId" />
+            </Principal>
+            <Dependent Role="EmailQueue">
+              <PropertyRef Name="SubscriberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Image_Product">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="ProductImages" Type="Self.ProductImages" Multiplicity="*" />
@@ -178,6 +228,18 @@
             </Principal>
             <Dependent Role="ProductImages">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Newsletter_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="NewsletterSubscribers" Type="Self.NewsletterSubscribers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="NewsletterSubscribers">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -271,10 +333,13 @@
           <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailQueue" EntityType="Self.EmailQueue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoPages" EntityType="Self.InfoPages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NewsletterSubscribers" EntityType="Self.NewsletterSubscribers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NewsPosts" EntityType="Self.NewsPosts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PasswordResetTokens" EntityType="Self.PasswordResetTokens" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductImages" EntityType="Self.ProductImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reviews" EntityType="Self.Reviews" Schema="dbo" store:Type="Tables" />
@@ -287,9 +352,17 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Cart" EntitySet="Cart" />
           </AssociationSet>
+          <AssociationSet Name="FK_EmailQueue_Subscriber" Association="Self.FK_EmailQueue_Subscriber">
+            <End Role="NewsletterSubscribers" EntitySet="NewsletterSubscribers" />
+            <End Role="EmailQueue" EntitySet="EmailQueue" />
+          </AssociationSet>
           <AssociationSet Name="FK_Image_Product" Association="Self.FK_Image_Product">
             <End Role="Products" EntitySet="Products" />
             <End Role="ProductImages" EntitySet="ProductImages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Newsletter_User" Association="Self.FK_Newsletter_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="NewsletterSubscribers" EntitySet="NewsletterSubscribers" />
           </AssociationSet>
           <AssociationSet Name="FK_Order_User" Association="Self.FK_Order_User">
             <End Role="Users" EntitySet="Users" />
@@ -440,6 +513,7 @@
           <NavigationProperty Name="Cart" Relationship="Self.FK_Cart_User" FromRole="Users" ToRole="Cart" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Order_User" FromRole="Users" ToRole="Orders" />
           <NavigationProperty Name="Reviews" Relationship="Self.FK_Review_User" FromRole="Users" ToRole="Reviews" />
+          <NavigationProperty Name="NewsletterSubscribers" Relationship="TechStoreDBModel.FK_Newsletter_User" FromRole="Users" ToRole="NewsletterSubscribers" />
         </EntityType>
         <Association Name="FK_Product_Brand">
           <End Role="Brands" Type="Self.Brands" Multiplicity="0..1" />
@@ -615,6 +689,17 @@
           <EntitySet Name="Contacts" EntityType="TechStoreDBModel.Contacts" />
           <EntitySet Name="InfoPages" EntityType="TechStoreDBModel.InfoPages" />
           <EntitySet Name="NewsPosts" EntityType="TechStoreDBModel.NewsPosts" />
+          <EntitySet Name="NewsletterSubscribers" EntityType="TechStoreDBModel.NewsletterSubscribers" />
+          <AssociationSet Name="FK_Newsletter_User" Association="TechStoreDBModel.FK_Newsletter_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="NewsletterSubscribers" EntitySet="NewsletterSubscribers" />
+          </AssociationSet>
+          <EntitySet Name="EmailQueue" EntityType="TechStoreDBModel.EmailQueue" />
+          <AssociationSet Name="FK_EmailQueue_Subscriber" Association="TechStoreDBModel.FK_EmailQueue_Subscriber">
+            <End Role="NewsletterSubscribers" EntitySet="NewsletterSubscribers" />
+            <End Role="EmailQueue" EntitySet="EmailQueue" />
+          </AssociationSet>
+          <EntitySet Name="PasswordResetTokens" EntityType="TechStoreDBModel.PasswordResetTokens" />
         </EntityContainer>
         <EntityType Name="AboutPage">
           <Key>
@@ -658,6 +743,71 @@
           <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Precision="3" />
           <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="NewsletterSubscribers">
+          <Key>
+            <PropertyRef Name="SubscriberId" />
+          </Key>
+          <Property Name="SubscriberId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="UnsubscribedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="TechStoreDBModel.FK_Newsletter_User" FromRole="NewsletterSubscribers" ToRole="Users" />
+          <NavigationProperty Name="EmailQueue" Relationship="TechStoreDBModel.FK_EmailQueue_Subscriber" FromRole="NewsletterSubscribers" ToRole="EmailQueue" />
+        </EntityType>
+        <Association Name="FK_Newsletter_User">
+          <End Type="TechStoreDBModel.Users" Role="Users" Multiplicity="0..1" />
+          <End Type="TechStoreDBModel.NewsletterSubscribers" Role="NewsletterSubscribers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="NewsletterSubscribers">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EmailQueue">
+          <Key>
+            <PropertyRef Name="EmailQueueId" />
+          </Key>
+          <Property Name="EmailQueueId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ToEmail" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Byte" Nullable="false" />
+          <Property Name="RetryCount" Type="Int32" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="SentAt" Type="DateTime" Precision="3" />
+          <Property Name="SubscriberId" Type="Int32" />
+          <NavigationProperty Name="NewsletterSubscribers" Relationship="TechStoreDBModel.FK_EmailQueue_Subscriber" FromRole="EmailQueue" ToRole="NewsletterSubscribers" />
+        </EntityType>
+        <Association Name="FK_EmailQueue_Subscriber">
+          <End Type="TechStoreDBModel.NewsletterSubscribers" Role="NewsletterSubscribers" Multiplicity="0..1" />
+          <End Type="TechStoreDBModel.EmailQueue" Role="EmailQueue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NewsletterSubscribers">
+              <PropertyRef Name="SubscriberId" />
+            </Principal>
+            <Dependent Role="EmailQueue">
+              <PropertyRef Name="SubscriberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PasswordResetTokens">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="ExpiredAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Used" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -815,6 +965,47 @@
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="NewsId" ColumnName="NewsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NewsletterSubscribers">
+            <EntityTypeMapping TypeName="TechStoreDBModel.NewsletterSubscribers">
+              <MappingFragment StoreEntitySet="NewsletterSubscribers">
+                <ScalarProperty Name="UnsubscribedAt" ColumnName="UnsubscribedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SubscriberId" ColumnName="SubscriberId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailQueue">
+            <EntityTypeMapping TypeName="TechStoreDBModel.EmailQueue">
+              <MappingFragment StoreEntitySet="EmailQueue">
+                <ScalarProperty Name="SubscriberId" ColumnName="SubscriberId" />
+                <ScalarProperty Name="SentAt" ColumnName="SentAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="RetryCount" ColumnName="RetryCount" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EmailType" ColumnName="EmailType" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="ToEmail" ColumnName="ToEmail" />
+                <ScalarProperty Name="EmailQueueId" ColumnName="EmailQueueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PasswordResetTokens">
+            <EntityTypeMapping TypeName="TechStoreDBModel.PasswordResetTokens">
+              <MappingFragment StoreEntitySet="PasswordResetTokens">
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Used" ColumnName="Used" />
+                <ScalarProperty Name="ExpiredAt" ColumnName="ExpiredAt" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

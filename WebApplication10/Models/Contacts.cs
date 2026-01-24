@@ -15,7 +15,6 @@ namespace WebApplication10.Models
     public partial class Contacts
     {
         public int ContactId { get; set; }
-
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }

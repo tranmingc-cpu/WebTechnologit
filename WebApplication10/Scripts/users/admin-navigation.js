@@ -29,17 +29,33 @@ $(function () {
         });
     }
 
+    function bindValidation(container) {
+        if (!$.validator || !$.validator.unobtrusive) return;
+
+        const $form = $(container).find('form');
+
+        // ✅ FIX: clear validator cũ
+        $form.removeData('validator');
+        $form.removeData('unobtrusiveValidation');
+
+        $.validator.unobtrusive.parse($form);
+    }
+
     function loadMain(url) {
         console.log('➡️ LOAD:', url);
+
         if (url.includes("/Admin/Dashboard") && !url.includes("partial=true")) {
             url += (url.includes("?") ? "&" : "?") + "partial=true";
         }
+
         currentAdminUrl = url;
 
         $.get(url)
             .done(function (html) {
                 $('#mainContent').html(html);
+
                 initCKEditor();
+                bindValidation('#mainContent');
                 highlightActiveMenu(url);
                 scrollToTop();
             })
@@ -47,12 +63,27 @@ $(function () {
                 console.error('AJAX FAIL:', url, xhr.status);
             });
     }
+    function showGlobalModal(type, title, message) {
+        const $modal = $('#globalAlertModal');
 
-    function showSuccess(message) {
-        $('#globalAlertModalBody').text(message || 'Thay đổi thành công!');
-        new bootstrap.Modal(
-            document.getElementById('globalAlertModal')
-        ).show();
+        if (!$modal.parent().is('body')) {
+            $('body').append($modal);
+        }
+
+        const $content = $modal.find('.global-modal');
+        $content.removeClass('success error warning info')
+            .addClass(type);
+
+        let iconHtml = '<i class="fa-solid fa-circle-check"></i>';
+        if (type === 'error') iconHtml = '<i class="fa-solid fa-circle-xmark"></i>';
+        if (type === 'warning') iconHtml = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        if (type === 'info') iconHtml = '<i class="fa-solid fa-circle-info"></i>';
+
+        $modal.find('.modal-icon').html(iconHtml);
+        $('#globalAlertModalLabel').text(title || '');
+        $('#globalAlertModalBody').text(message || '');
+
+        bootstrap.Modal.getOrCreateInstance($modal[0]).show();
     }
 
     function highlightActiveMenu(url) {
@@ -80,8 +111,7 @@ $(function () {
     $(document).on('click', 'a[data-admin-partial]', function (e) {
         e.preventDefault();
         const url = $(this).attr('href');
-        if (!url) return;
-        loadMain(url);
+        if (url) loadMain(url);
     });
 
     $(document).on('click', 'nav.header-actions a', function (e) {
@@ -111,11 +141,15 @@ $(function () {
         loadMain('/Users/Index');
     });
 
+
     $(document).on('submit', 'form.ajax-form', function (e) {
-        e.preventDefault();
+        e.preventDefault(); 
 
         const $form = $(this);
-        const action = $form.attr('action');
+
+        if (!$form.valid()) {
+            return;
+        }
 
         if (typeof CKEDITOR !== 'undefined') {
             for (let i in CKEDITOR.instances) {
@@ -123,44 +157,38 @@ $(function () {
             }
         }
 
-        $.post(action, $form.serialize())
-            .done(function (res) {
-                if (res.success) {
-                    showSuccess(res.message);
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            success: function (res) {
 
-                    if (action.includes('/Users')) {
-                        loadMain('/Users/Index');
-                    }
-
-                    if (action.includes('/Pages')) {
-                        loadMain(currentAdminUrl);
-                    }
-
-                } else if (res.errors) {
-                    alert(res.errors.join('\n'));
+                if (typeof res === "string") {
+                    $('#mainContent').html(res);
+                    initCKEditor();
+                    bindValidation('#mainContent');
+                    scrollToTop();
+                    return;
                 }
-            })
-            .fail(function () {
-                alert('Thất bại!');
-            });
-    });
 
-    $(document).on('submit', 'form#deleteForm.ajax-form', function (e) {
-        e.preventDefault();
-        const $form = $(this);
-        const action = $form.attr('action');
-
-        $.post(action, $form.serialize())
-            .done(function (res) {
                 if (res.success) {
-                    showSuccess(res.message || 'Xóa thành công!');
+                    showGlobalModal(
+                        'success',
+                        'Thành công',
+                        res.message || 'Thao tác thành công!'
+                    );
                     loadMain('/Users/Index');
-                } else if (res.errors) {
-                    alert(res.errors.join('\n'));
+                    return;
                 }
-            })
-            .fail(function () {
-                alert('Xóa thất bại!');
-            });
+
+                if (res.success === false) {
+                    showGlobalModal(
+                        'error',
+                        'Không thể thực hiện',
+                        res.message || 'Có lỗi xảy ra!'
+                    );
+                }
+            }
+        });
     });
 });

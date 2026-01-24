@@ -610,5 +610,40 @@ CREATE TABLE Contacts (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
+CREATE TABLE NewsletterSubscribers (
+    SubscriberId INT IDENTITY PRIMARY KEY,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    UserId INT NULL, 
+    IsActive BIT DEFAULT 1,
+    Source NVARCHAR(50) DEFAULT 'Footer',
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UnsubscribedAt DATETIME NULL,
+    CONSTRAINT FK_Newsletter_User
+        FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
 
+CREATE TABLE EmailQueue (
+    EmailQueueId INT IDENTITY PRIMARY KEY,
+    ToEmail NVARCHAR(100) NOT NULL,       
+    Subject NVARCHAR(255) NOT NULL,       
+    Body NVARCHAR(MAX) NOT NULL,         
+    EmailType NVARCHAR(50) NOT NULL,    
+    Status TINYINT NOT NULL DEFAULT 0,     
+    RetryCount INT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    SentAt DATETIME NULL,
+    SubscriberId INT NULL,
+    CONSTRAINT FK_EmailQueue_Subscriber
+        FOREIGN KEY (SubscriberId)
+        REFERENCES NewsletterSubscribers(SubscriberId)
+);
+
+CREATE TABLE PasswordResetTokens (
+    Id INT IDENTITY PRIMARY KEY,
+    Email NVARCHAR(255) NOT NULL,
+    Token NVARCHAR(64) NOT NULL,
+    ExpiredAt DATETIME NOT NULL,
+    Used BIT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME NOT NULL
+);
 

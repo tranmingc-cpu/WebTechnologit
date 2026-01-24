@@ -330,28 +330,33 @@
 
 .category-filter {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 25px;
 }
 
     .category-filter .category {
-        padding: 8px 16px;
-        border-radius: 20px;
+        padding: 8px 18px;
+        border-radius: 999px;
         background: #2e3040;
         font-size: 14px;
         font-weight: 500;
+        color: #ddd;
+        cursor: pointer;
         box-shadow: none;
+        transform: none;
+        transition: background .25s, color .25s, box-shadow .25s;
     }
 
         .category-filter .category:hover {
-            background: #ff5c5c;
-            transform: none;
+            background: #3a3d52;
+            color: #fff;
         }
 
         .category-filter .category.active {
-            background: #ff5c5c;
+            background: linear-gradient(135deg, #ff6b6b, #e34b4b);
             color: #fff;
+            box-shadow: 0 6px 16px rgba(255,92,92,.45);
         }
 
 .products {
@@ -495,4 +500,86 @@
 .fade-in {
     opacity: 1;
     transition: opacity 0.3s;
+}
+
+.category-edit-card {
+    margin-top: 10px;
+    padding: 26px;
+    background: linear-gradient(180deg, #2e3040, #262835);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.55);
+}
+
+    .category-edit-card .edit-title {
+        margin-bottom: 18px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+.editor-wrapper {
+    margin-bottom: 22px;
+}
+
+    .editor-wrapper .cke {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+    }
+
+    .editor-wrapper .cke_bottom {
+        border-top: 1px solid #333;
+    }
+
+.edit-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+    border: none;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #ff6b6b, #e34b4b);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(255,92,92,.45);
+}
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #e85c5c, #c94343);
+    }
+
+.btn-cancel {
+    background: #3a3d52;
+    color: #ddd;
+}
+
+    .btn-cancel:hover {
+        background: #4a4d68;
+        color: #fff;
+    }
+
+@media (max-width: 768px) {
+    .category-edit-card {
+        padding: 20px;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        width: 100%;
+    }
 }

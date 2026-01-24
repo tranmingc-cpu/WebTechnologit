@@ -214,3 +214,34 @@
             justify-content: center;
         }
 }
+
+.user-table-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+    .user-table-actions .btn {
+        display: block !important;
+        width: 100%;
+        min-width: 90px;
+        line-height: 1.4 !important;
+        padding: 6px 10px !important;
+        margin: 0 !important;
+    }
+
+.table td {
+    vertical-align: middle !important;
+}
+
+@media (max-width: 576px) {
+    .user-table-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+        .user-table-actions .btn {
+            width: 100%;
+        }
+}

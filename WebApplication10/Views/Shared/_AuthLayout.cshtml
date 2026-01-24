@@ -9,12 +9,19 @@
 <body>
     <div class="auth-wrapper">
         <div class="auth-container">
-            @RenderBody() 
 
-            <div class="auth-right">
+            <div class="auth-left" id="auth-left-container">
+                @RenderBody()
+            </div>
+
+            <div class="auth-right" id="auth-right-container">
                 @RenderSection("RightPanel", required: false)
             </div>
+
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/auth/auth-navigation.js"></script>
 </body>
 </html>

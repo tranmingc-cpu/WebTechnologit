@@ -30,4 +30,25 @@ public abstract class BaseController : Controller
         }
         base.Dispose(disposing);
     }
+    protected void LoadAdminActions()
+    {
+        ViewBag.AdminActions = new AdminActionsViewModel
+        {
+            About = db.InfoPages.FirstOrDefault(p => p.Slug == "about"),
+            Contact = db.InfoPages.FirstOrDefault(p => p.Slug == "contact"),
+            Warranty = db.InfoPages.FirstOrDefault(p => p.Slug == "warranty"),
+            News = db.InfoPages.FirstOrDefault(p => p.Slug == "news"),
+            Careers = db.InfoPages.FirstOrDefault(p => p.Slug == "careers"),
+            Returns = db.InfoPages.FirstOrDefault(p => p.Slug == "returns"),
+            Shipping = db.InfoPages.FirstOrDefault(p => p.Slug == "shipping"),
+            Payment = db.InfoPages.FirstOrDefault(p => p.Slug == "payment"),
+            OtherPages = db.InfoPages
+                .Where(p => !new[] {
+                "about","contact","warranty","news",
+                "careers","returns","shipping","payment"
+                }.Contains(p.Slug))
+                .ToList()
+        };
+    }
+
 }
