@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -166,13 +167,61 @@ namespace WebApplication10.Controllers
             var cart = GetCartFromSession();
             if (cart == null || !cart.Any())
             {
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "Giỏ hàng của bạn đang trống" }, JsonRequestBehavior.AllowGet);
             }
 
-            Session[CartSessionKey] = new List<CartItem>();
-            
-            TempData["SuccessMessage"] = "Đặt hàng thành công! Chúng tôi sẽ liên hệ với bạn sớm.";
-            return RedirectToAction("OrderSuccess");
+            try
+            {
+                // Tạo đơn hàng mới
+                var order = new Orders
+                {
+                    UserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0,
+                    OrderDate = DateTime.Now,
+                    TotalAmount = cart.Sum(c => c.TotalPrice),
+                    Status = "Pending",
+                    ShippingAddress = address
+                };
+
+                db.Orders.Add(order);
+                db.SaveChanges();
+
+                // Tạo chi tiết đơn hàng
+                foreach (var item in cart)
+                {
+                    var orderDetail = new OrderDetails
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice
+                    };
+                    db.OrderDetails.Add(orderDetail);
+
+                    // Cập nhật số lượng tồn kho
+                    var product = db.Products.Find(item.ProductId);
+                    if (product != null)
+                    {
+                        product.Quantity = (product.Quantity ?? 0) - item.Quantity;
+                    }
+                }
+
+                db.SaveChanges();
+
+                // Xóa giỏ hàng
+                Session[CartSessionKey] = new List<CartItem>();
+                
+                // Trả về JSON response cho AJAX
+                return Json(new 
+                { 
+                    success = true, 
+                    message = "Cảm ơn bạn đã đặt hàng! Chúng tôi sẽ liên hệ với bạn sớm.",
+                    orderId = order.OrderId
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult OrderSuccess()

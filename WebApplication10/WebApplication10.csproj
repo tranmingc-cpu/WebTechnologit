@@ -237,8 +237,11 @@
     <Compile Include="ViewModels\AdminCreateUserVM.cs" />
     <Compile Include="ViewModels\AdminActionsViewModel.cs" />
     <Compile Include="ViewModels\ContactPageViewModel.cs" />
+    <Compile Include="ViewModels\OrderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\account\order-detail.css" />
+    <Content Include="Content\css\account\orders.css" />
     <Content Include="Content\css\account\profile.css" />
     <Content Include="Content\css\admin\admin-editUser.css" />
     <Content Include="Content\css\admin\admin-user.css" />
@@ -385,6 +388,8 @@
     <Content Include="Views\Account\AccessDenied.cshtml" />
     <Content Include="Views\AdminContacts\Index.cshtml" />
     <Content Include="Views\AdminContacts\_AdminContactListPartial.cshtml" />
+    <Content Include="Views\Account\Orders.cshtml" />
+    <Content Include="Views\Account\OrderDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

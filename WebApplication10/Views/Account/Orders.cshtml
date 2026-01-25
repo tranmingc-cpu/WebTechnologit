@@ -1,0 +1,158 @@
+﻿@model List<WebApplication10.ViewModels.OrderViewModel>
+
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="~/Content/css/account/orders.css" rel="stylesheet" />
+}
+
+<div class="orders-page">
+    <div class="orders-container">
+        <h1>Đơn hàng của tôi</h1>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-orders">
+                <i class="fa fa-shopping-bag"></i>
+                <p>Bạn chưa có đơn hàng nào</p>
+                <a href="@Url.Action("Index", "Products")" class="btn btn-primary">
+                    Mua sắm ngay
+                </a>    
+            </div>
+        }
+        else
+        {
+            <div class="orders-list">
+                @foreach (var order in Model)
+                {
+                    var statusClass = "";
+                    var statusText = "";
+                    switch (order.Status)
+                    {
+                        case "Pending":
+                            statusClass = "pending";
+                            statusText = "Chờ xử lý";
+                            break;
+                        case "Processing":
+                            statusClass = "processing";
+                            statusText = "Đang xử lý";
+                            break;
+                        case "Shipping":
+                            statusClass = "shipping";
+                            statusText = "Đang giao hàng";
+                            break;
+                        case "Completed":
+                            statusClass = "completed";
+                            statusText = "Hoàn thành";
+                            break;
+                        case "Cancelled":
+                            statusClass = "cancelled";
+                            statusText = "Đã hủy";
+                            break;
+                        default:
+                            statusClass = "pending";
+                            statusText = order.Status;
+                            break;
+                    }
+
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <h3>Đơn hàng #@order.OrderId</h3>
+                                <p class="order-date">
+                                    <i class="fa fa-calendar"></i>
+                                    @order.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                            </div>
+                            <div class="order-status @statusClass">
+                                @statusText
+                            </div>
+                        </div>
+
+                        <div class="order-products">
+                            @foreach (var item in order.OrderDetails.Take(3))
+                            {
+                                <div class="product-item">
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/Content/images/no-image.png" : "/Content/images/" + item.ImageUrl)" 
+                                         alt="@item.ProductName" />
+                                    <div class="product-info">
+                                        <h4>@item.ProductName</h4>
+                                        <p>Số lượng: @item.Quantity × @String.Format("{0:N0}đ", item.UnitPrice)</p>
+                                    </div>
+                                    <div class="product-price">
+                                        @String.Format("{0:N0}đ", item.TotalPrice)
+                                    </div>
+                                </div>
+                            }
+                            @if (order.OrderDetails.Count > 3)
+                            {
+                                <p class="more-products">
+                                    và @(order.OrderDetails.Count - 3) sản phẩm khác...
+                                </p>
+                            }
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-total">
+                                <span>Tổng tiền:</span>
+                                <strong>@String.Format("{0:N0}đ", order.TotalAmount)</strong>
+                            </div>
+                            <div class="order-actions">
+                                <a href="@Url.Action("OrderDetail", "Account", new { id = order.OrderId })" 
+                                   class="btn btn-outline">
+                                    Xem chi tiết
+                                </a>
+                                @if (order.Status == "Pending")
+                                {
+                                    <button class="btn btn-danger btn-cancel" 
+                                            data-order-id="@order.OrderId">
+                                        Hủy đơn
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-cancel').on('click', function () {
+                var btn = $(this);
+                var orderId = btn.data('order-id');
+                
+                if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                    return;
+                }
+                
+                btn.prop('disabled', true).text('Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("CancelOrder", "Account")',
+                    type: 'POST',
+                    data: { orderId: orderId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                            btn.prop('disabled', false).text('Hủy đơn');
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra, vui lòng thử lại');
+                        btn.prop('disabled', false).text('Hủy đơn');
+                    }
+                });
+            });
+        });
+    </script>
+}
