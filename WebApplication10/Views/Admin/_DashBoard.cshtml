@@ -1,0 +1,50 @@
+﻿@model WebApplication10.ViewModels.DashboardViewModel
+@{
+    Layout = null;
+}
+
+<div class="admin-box">
+    <div class="admin-header">
+        <h2>👋 Welcome, @Session["UserName"]!</h2>
+        <p>Overview of your Tech Store system</p>
+    </div>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <h3>Users</h3>
+            <p>@Model.UserCount.ToString("N0")</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <h3>Orders</h3>
+            <p>@Model.OrderCount.ToString("N0")</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <h3>Products</h3>
+            <p>@Model.ProductCount.ToString("N0")</p>
+        </div>
+
+        <div class="stat-card revenue">
+            <div class="stat-icon">💰</div>
+            <h3>Revenue (Tháng @DateTime.Now.Month)</h3>
+            <p>@Model.CurrentMonthRevenue.ToString("N0") ₫</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4 style="color:black;">Doanh thu các tháng</h4>
+        </div>
+
+        <div class="card-body">
+            <canvas id="revenueChart"
+                    data-labels='@Html.Raw(Json.Encode(Model.Months.Select(m => "Tháng " + m)))'
+                    data-revenues='@Html.Raw(Json.Encode(Model.Revenues))'>
+            </canvas>
+        </div>
+    </div>
+</div>

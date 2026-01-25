@@ -1,6 +1,7 @@
 ﻿@model WebApplication10.Models.Products
 
 @{
+    Layout = null;
     ViewBag.Title = Model.ProductName;
     var finalPrice = Model.Price - (Model.Discount ?? 0);
     var discountPercent = Model.Discount.HasValue && Model.Price > 0 ? (int)((Model.Discount.Value / Model.Price) * 100) : 0;

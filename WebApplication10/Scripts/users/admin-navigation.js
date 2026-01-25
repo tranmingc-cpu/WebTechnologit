@@ -1,6 +1,14 @@
 ﻿let currentAdminUrl = null;
 
 $(function () {
+    const isDashboardPage =
+        window.location.pathname === '/Admin/Dashboard'
+        || window.location.pathname === '/Admin';
+
+    if (isDashboardPage) {
+        loadMain('/Admin/Dashboard');
+    }
+});
 
     function initCKEditor() {
         if (typeof CKEDITOR === 'undefined') return;
@@ -34,17 +42,18 @@ $(function () {
 
         const $form = $(container).find('form');
 
-        // ✅ FIX: clear validator cũ
+        //  FIX: clear validator cũ
         $form.removeData('validator');
         $form.removeData('unobtrusiveValidation');
 
         $.validator.unobtrusive.parse($form);
     }
 
-    function loadMain(url) {
+    /*function loadMain(url) {
         console.log('➡️ LOAD:', url);
 
-        if (url.includes("/Admin/Dashboard") && !url.includes("partial=true")) {
+        // MỌI TRANG ADMIN ĐỀU LÀ PARTIAL
+        if (!url.includes("partial=true")) {
             url += (url.includes("?") ? "&" : "?") + "partial=true";
         }
 
@@ -54,15 +63,55 @@ $(function () {
             .done(function (html) {
                 $('#mainContent').html(html);
 
+                // chỉ init chart nếu có
+                setTimeout(initDashboardChart, 0);
+
                 initCKEditor();
                 bindValidation('#mainContent');
                 highlightActiveMenu(url);
                 scrollToTop();
             })
             .fail(function (xhr) {
-                console.error('AJAX FAIL:', url, xhr.status);
+                console.error('AJAX FAIL:', url, xhr.status, xhr.responseText);
             });
+    } */
+function loadMain(url) {
+    console.log('➡️ LOAD:', url);
+
+    // luôn gọi partial
+    let ajaxUrl = url;
+    if (!ajaxUrl.includes("partial=true")) {
+        ajaxUrl += (ajaxUrl.includes("?") ? "&" : "?") + "partial=true";
     }
+
+    // 🔒 GIẤU URL – LUÔN LÀ /Admin
+    history.pushState(
+        { adminUrl: url },
+        '',
+        '/Admin'
+    );
+
+    currentAdminUrl = url;
+
+    $.get(ajaxUrl)
+        .done(function (html) {
+            $('#mainContent').html(html);
+
+            if (url.startsWith('/Admin/Dashboard')) {
+                setTimeout(initDashboardChart, 0);
+            }
+
+            initCKEditor();
+            bindValidation('#mainContent');
+            highlightActiveMenu(url);
+            scrollToTop();
+        })
+        .fail(function (xhr) {
+            console.error('AJAX FAIL:', ajaxUrl, xhr.status);
+        });
+}
+
+
     function showGlobalModal(type, title, message) {
         const $modal = $('#globalAlertModal');
 
@@ -191,4 +240,102 @@ $(function () {
             }
         });
     });
-});
+function initDashboardChart() {
+    const canvas = document.getElementById('revenueChart');
+    if (!canvas) {
+        console.warn('❌ Không tìm thấy canvas');
+        return;
+    }
+
+    const labels = JSON.parse(canvas.dataset.labels || '[]');
+    const revenues = JSON.parse(canvas.dataset.revenues || '[]');
+
+    console.log('📊 labels:', labels);
+    console.log('💰 revenues:', revenues);
+
+    //  HỦY CHART CŨ (NẾU CÓ)
+    if (window.revenueChartInstance) {
+        window.revenueChartInstance.destroy();
+        window.revenueChartInstance = null;
+    }
+    const ctx = canvas.getContext('2d');
+
+   
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, 'rgba(59,130,246,0.95)');
+    gradient.addColorStop(1, 'rgba(59,130,246,0.35)');
+
+    const shadowPlugin = {
+        id: 'shadow',
+        beforeDraw(chart) {
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.25)';
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetY = 6;
+        },
+        afterDraw(chart) {
+            chart.ctx.restore();
+        }
+    };
+  
+    window.revenueChartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data: revenues,
+                borderRadius: 12,
+                borderSkipped: false,
+                backgroundColor: gradient,
+                hoverBackgroundColor: 'rgba(59,130,246,1)',
+                barPercentage: 0.6,
+                categoryPercentage: 0.7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1200,
+                easing: 'easeOutExpo'
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#0F172A',
+                    cornerRadius: 10,
+                    padding: 14,
+                    titleFont: { size: 13, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    callbacks: {
+                        label(ctx) {
+                            return ' ' + ctx.raw.toLocaleString('vi-VN') + ' ₫';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#CBD5E1',
+                        font: { size: 12 }
+                    }
+                },
+                y: {
+                    grid: {
+                        color: 'rgba(255,255,255,0.06)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#CBD5E1',
+                        font: { size: 12 },
+                        callback: v => v.toLocaleString('vi-VN') + ' ₫'
+                    }
+                }
+            }
+        },
+        plugins: [shadowPlugin]
+    });
+}

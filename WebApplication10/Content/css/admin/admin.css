@@ -371,6 +371,7 @@ body {
     }
 }
 
+
 .delete-confirm-form {
     max-width: 520px;
     margin: 0 auto;
@@ -460,11 +461,23 @@ body {
 }
 
 .users-header {
+
+.admin-chart-box {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-top: 40px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.chart-header {
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
 }
+
 
 .users-title h3 {
     margin: 0;
@@ -500,6 +513,21 @@ body {
         width: 100%;
         justify-content: center;
     }
+
+    .chart-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .chart-header span {
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+.chart-wrapper {
+    height: 380px; /* 🔥 BẮT BUỘC */
+    position: relative;
+
 }
 .admin-table-wrapper {
     overflow-x: auto;

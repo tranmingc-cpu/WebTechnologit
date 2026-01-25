@@ -234,7 +234,7 @@ namespace WebApplication10.Controllers
 
         // PROFILE
         [HttpGet]
-        public ActionResult Profile()
+        public ActionResult UserProfile()
         {
             if (Session["UserId"] == null)
             {
