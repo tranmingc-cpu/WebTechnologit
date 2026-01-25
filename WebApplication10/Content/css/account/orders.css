@@ -101,38 +101,45 @@
     margin-right: 6px;
 }
 
-/* Order Status */
+/* Order Status - Màu n?n ð?m, ch? tr?ng n?i b?t */
 .order-status {
-    padding: 8px 16px;
+    padding: 8px 18px;
     border-radius: 20px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
 }
 
 .order-status.pending {
-    background: rgba(255, 193, 7, 0.2);
-    color: #ffc107;
+    background: #ff9800;
+    color: #fff;
 }
 
 .order-status.processing {
-    background: rgba(33, 150, 243, 0.2);
-    color: #2196f3;
+    background: #2196f3;
+    color: #fff;
 }
 
 .order-status.shipping {
-    background: rgba(156, 39, 176, 0.2);
-    color: #9c27b0;
+    background: #9c27b0;
+    color: #fff;
 }
 
 .order-status.completed {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4caf50;
+    background: #4caf50;
+    color: #fff;
+}
+
+.order-status.paid {
+    background: #4caf50;
+    color: #fff;
 }
 
 .order-status.cancelled {
-    background: rgba(244, 67, 54, 0.2);
-    color: #f44336;
+    background: #f44336;
+    color: #fff;
 }
 
 /* Order Products */

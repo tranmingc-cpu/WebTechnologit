@@ -391,6 +391,7 @@
     <Content Include="Views\AdminContacts\_AdminContactListPartial.cshtml" />
     <Content Include="Views\Account\Orders.cshtml" />
     <Content Include="Views\Account\OrderDetail.cshtml" />
+    <Content Include="Views\Account\_OrderDetailPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

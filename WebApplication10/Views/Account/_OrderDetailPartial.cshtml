@@ -1,0 +1,264 @@
+﻿@model WebApplication10.ViewModels.OrderViewModel
+
+@{
+    var statusClass = "pending";
+    var statusText = "Chờ xử lý";
+    
+    if (!string.IsNullOrEmpty(Model.Status))
+    {
+        switch (Model.Status)
+        {
+            case "Pending":
+                statusClass = "pending";
+                statusText = "Chờ xử lý";
+                break;
+            case "Processing":
+                statusClass = "processing";
+                statusText = "Đang xử lý";
+                break;
+            case "Shipping":
+                statusClass = "shipping";
+                statusText = "Đang giao hàng";
+                break;
+            case "Completed":
+                statusClass = "completed";
+                statusText = "Hoàn thành";
+                break;
+            case "Cancelled":
+                statusClass = "cancelled";
+                statusText = "Đã hủy";
+                break;
+            default:
+                statusClass = "pending";
+                statusText = Model.Status ?? "N/A";
+                break;
+        }
+    }
+}
+
+<div class="order-detail-wrapper">
+    <div class="order-detail-header-modal">
+        <h2>Đơn hàng #@Model.OrderId</h2>
+        <div class="order-status @statusClass">
+            @statusText
+        </div>
+    </div>
+
+    <div class="order-detail-body">
+        <div class="section order-info-section">
+            <h3>Thông tin đơn hàng</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Ngày đặt:</label>
+                    <span>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="info-item">
+                    <label>Trạng thái:</label>
+                    <span class="status-badge @statusClass">@statusText</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>Địa chỉ giao hàng:</label>
+                    <span>@(Model.ShippingAddress ?? "Chưa có")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section products-section">
+            <h3>Sản phẩm đã đặt</h3>
+            <div class="products-list">
+                @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                {
+                    foreach (var item in Model.OrderDetails)
+                    {
+                        <div class="product-item">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/Content/images/no-image.png" : "/Content/images/" + item.ImageUrl)" 
+                                 alt="@(item.ProductName ?? "Sản phẩm")" />
+                            <div class="product-info">
+                                <h4>@(item.ProductName ?? "Sản phẩm không xác định")</h4>
+                                <p>Số lượng: @item.Quantity × @String.Format("{0:N0}đ", item.UnitPrice)</p>
+                            </div>
+                            <div class="product-total">
+                                @String.Format("{0:N0}đ", item.TotalPrice)
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="color: #999; text-align: center;">Không có sản phẩm</p>
+                }
+            </div>
+        </div>
+
+        <div class="section summary-section">
+            <h3>Tổng kết</h3>
+            <div class="summary-rows">
+                <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <span>@String.Format("{0:N0}đ", Model.TotalAmount)</span>
+                </div>
+                <div class="summary-row">
+                    <span>Phí vận chuyển:</span>
+                    <span>Miễn phí</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Tổng cộng:</span>
+                    <strong>@String.Format("{0:N0}đ", Model.TotalAmount)</strong>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Status == "Pending")
+        {
+            <div class="order-actions-modal">
+                <button class="btn btn-danger btn-cancel-order" data-order-id="@Model.OrderId">
+                    <i class="fa fa-times"></i>
+                    Hủy đơn hàng
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .order-detail-wrapper {
+        padding: 30px;
+        color: #fff;
+    }
+
+    .order-detail-header-modal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid rgba(255,255,255,.1);
+    }
+
+    .order-detail-header-modal h2 {
+        color: #fff;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .order-status {
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .order-status.pending { background: #ff9800; color: #fff; }
+    .order-status.processing { background: #2196f3; color: #fff; }
+    .order-status.shipping { background: #9c27b0; color: #fff; }
+    .order-status.completed { background: #4caf50; color: #fff; }
+    .order-status.cancelled { background: #f44336; color: #fff; }
+
+    .order-detail-body .section {
+        background: rgba(255,255,255,.03);
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .order-detail-body h3 {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #ff5c5c;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .info-item { display: flex; flex-direction: column; }
+    .info-item.full-width { grid-column: 1 / -1; }
+    .info-item label { color: #999; font-size: 13px; margin-bottom: 5px; }
+    .info-item span { color: #fff; font-size: 15px; }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .products-list { display: flex; flex-direction: column; gap: 15px; }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: rgba(255,255,255,.02);
+        border-radius: 8px;
+    }
+
+    .product-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .product-info { flex: 1; }
+    .product-info h4 { color: #fff; font-size: 16px; font-weight: 600; margin: 0 0 8px 0; }
+    .product-info p { color: #999; font-size: 14px; margin: 0; }
+    .product-total { color: #ff5c5c; font-size: 18px; font-weight: 700; }
+
+    .summary-rows { display: flex; flex-direction: column; gap: 12px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 15px; color: #ddd; }
+    .summary-row.total {
+        font-size: 20px;
+        color: #fff;
+        padding-top: 12px;
+        margin-top: 12px;
+        border-top: 2px solid rgba(255,255,255,.1);
+    }
+    .summary-row.total strong { color: #ff5c5c; }
+
+    .order-actions-modal { margin-top: 25px; text-align: center; }
+
+    .btn-cancel-order {
+        padding: 12px 30px;
+        background: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .btn-cancel-order:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244,67,54,.4);
+    }
+
+    .btn-cancel-order:disabled {
+        background: #999;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-cancel-order i {
+        margin-right: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .order-detail-wrapper { padding: 20px; }
+        .order-detail-header-modal { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .info-grid { grid-template-columns: 1fr; }
+        .product-item { flex-direction: column; text-align: center; }
+        .product-total { font-size: 16px; }
+    }
+</style>

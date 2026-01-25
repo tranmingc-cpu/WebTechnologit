@@ -26,45 +26,44 @@
             <div class="checkout-form">
                 <h2>Thông tin giao hàng</h2>
                 
-                @using (Html.BeginForm("ProcessCheckout", "Cart", FormMethod.Post))
-                {
+                <form id="checkoutForm">
                     <div class="form-group">
                         <label>Họ và tên *</label>
-                        <input type="text" name="FullName" class="form-control" required placeholder="Nhập họ và tên" />
+                        <input type="text" name="fullName" class="form-control" required placeholder="Nhập họ và tên" />
                     </div>
 
                     <div class="form-group">
                         <label>Số điện thoại *</label>
-                        <input type="tel" name="Phone" class="form-control" required placeholder="Nhập số điện thoại" />
+                        <input type="tel" name="phone" class="form-control" required placeholder="Nhập số điện thoại" />
                     </div>
 
                     <div class="form-group">
                         <label>Email *</label>
-                        <input type="email" name="Email" class="form-control" required placeholder="Nhập email" />
+                        <input type="email" name="email" class="form-control" required placeholder="Nhập email" />
                     </div>
 
                     <div class="form-group">
                         <label>Địa chỉ giao hàng *</label>
-                        <textarea name="Address" class="form-control" rows="3" required placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        <textarea name="address" class="form-control" rows="3" required placeholder="Nhập địa chỉ đầy đủ"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Ghi chú</label>
-                        <textarea name="Notes" class="form-control" rows="2" placeholder="Ghi chú thêm (không bắt buộc)"></textarea>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="Ghi chú thêm (không bắt buộc)"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Phương thức thanh toán</label>
-                        <select name="PaymentMethod" class="form-control">
+                        <select name="paymentMethod" class="form-control">
                             <option value="COD">Thanh toán khi nhận hàng (COD)</option>
                             <option value="Bank">Chuyển khoản ngân hàng</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-checkout">
+                    <button type="submit" class="btn btn-checkout" id="btnCheckout">
                         Đặt hàng
                     </button>
-                }
+                </form>
             </div>
 
             <div class="order-summary">
@@ -108,3 +107,326 @@
         </div>
     }
 </div>
+
+<!-- Success Modal -->
+<div id="successModal" class="success-modal" style="display:none;">
+    <div class="success-modal-content">
+        <div class="success-icon">
+            <i class="fa fa-check-circle"></i>
+        </div>
+        <h2>Đặt hàng thành công!</h2>
+        <p id="successMessage"></p>
+        <p class="order-id">Mã đơn hàng: <strong id="orderIdDisplay"></strong></p>
+        <div class="success-actions">
+            <button class="btn btn-primary" id="btnViewOrder">
+                <i class="fa fa-list"></i> Xem đơn hàng
+            </button>
+            <button class="btn btn-secondary" id="btnContinueShopping">
+                <i class="fa fa-shopping-bag"></i> Tiếp tục mua sắm
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div id="orderDetailModal" class="order-modal" style="display:none;">
+    <div class="order-modal-content">
+        <span class="order-close">&times;</span>
+        <div id="orderDetailContent">
+            <!-- AJAX content here -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var currentOrderId = null;
+
+            $('#checkoutForm').on('submit', function (e) {
+                e.preventDefault();
+                
+                var btn = $('#btnCheckout');
+                var originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("ProcessCheckout", "Cart")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            currentOrderId = response.orderId;
+                            $('#successMessage').text(response.message);
+                            $('#orderIdDisplay').text('#' + response.orderId);
+                            $('#checkoutModal').fadeOut(300, function() {
+                                $('#successModal').fadeIn(300);
+                            });
+                            
+                            // Update cart badge
+                            $('.cart-badge').text('0').hide();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra, vui lòng thử lại');
+                            btn.prop('disabled', false).html(originalHtml);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Response:', xhr.responseText);
+                        alert('Có lỗi xảy ra, vui lòng thử lại');
+                        btn.prop('disabled', false).html(originalHtml);
+                    }
+                });
+            });
+
+            // View Order Details (AJAX)
+            $('#btnViewOrder').on('click', function() {
+                if (!currentOrderId) return;
+                
+                loadOrderDetail(currentOrderId);
+                $('#successModal').fadeOut(300, function() {
+                    $('#orderDetailModal').fadeIn(300);
+                });
+            });
+
+            // Continue Shopping (AJAX)
+            $('#btnContinueShopping').on('click', function() {
+                $('#successModal').fadeOut(300);
+                // Clear cart and reload page to show empty cart
+                window.location.href = '@Url.Action("Index", "Products")';
+            });
+
+            // Close order detail modal
+            $('.order-close').on('click', function() {
+                $('#orderDetailModal').fadeOut(300);
+            });
+
+            // Load order detail via AJAX
+            function loadOrderDetail(orderId) {
+                $.ajax({
+                    url: '@Url.Action("OrderDetail", "Account")',
+                    type: 'GET',
+                    data: { id: orderId },
+                    success: function(html) {
+                        $('#orderDetailContent').html(html);
+                        
+                        // Bind cancel button
+                        bindCancelOrderButton();
+                    },
+                    error: function() {
+                        alert('Không thể tải thông tin đơn hàng');
+                    }
+                });
+            }
+
+            // Bind cancel order button in modal
+            function bindCancelOrderButton() {
+                $('#orderDetailContent').on('click', '.btn-cancel-order', function() {
+                    var orderId = $(this).data('order-id');
+                    
+                    if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                        return;
+                    }
+                    
+                    $.ajax({
+                        url: '@Url.Action("CancelOrder", "Account")',
+                        type: 'POST',
+                        data: { orderId: orderId },
+                        success: function(response) {
+                            if (response.success) {
+                                showNotification(response.message, 'success');
+                                // Reload order detail
+                                loadOrderDetail(orderId);
+                            } else {
+                                showNotification(response.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            showNotification('Có lỗi xảy ra', 'error');
+                        }
+                    });
+                });
+            }
+
+            function showNotification(message, type) {
+                var bgColor = type === 'success' ? '#4caf50' : '#f44336';
+                var notification = $('<div class="cart-notification">' + message + '</div>');
+                notification.css({
+                    'position': 'fixed',
+                    'top': '20px',
+                    'right': '20px',
+                    'background': bgColor,
+                    'color': 'white',
+                    'padding': '15px 25px',
+                    'border-radius': '8px',
+                    'box-shadow': '0 4px 12px rgba(0,0,0,0.3)',
+                    'z-index': '10002',
+                    'animation': 'slideInRight 0.3s ease-out'
+                });
+                
+                $('body').append(notification);
+                
+                setTimeout(function () {
+                    notification.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
+    </script>
+    
+    <style>
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal-content {
+            background: linear-gradient(135deg, #3b3d54, #32344a);
+            padding: 50px 40px;
+            border-radius: 14px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .success-modal-content h2 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+        }
+
+        .success-modal-content p {
+            color: #ddd;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .order-id {
+            color: #4caf50;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .success-actions .btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: .3s;
+        }
+
+        .success-actions .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #e34b4b);
+            color: #fff;
+        }
+
+        .success-actions .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(227,75,75,.5);
+        }
+
+        .success-actions .btn-secondary {
+            background: #2e3040;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.1);
+        }
+
+        .success-actions .btn-secondary:hover {
+            background: #3b3d54;
+            transform: translateY(-2px);
+        }
+
+        /* Order Detail Modal */
+        .order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .order-modal-content {
+            background: linear-gradient(135deg, #3b3d54, #32344a);
+            padding: 0;
+            border-radius: 14px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            position: relative;
+            margin: 20px;
+        }
+
+        .order-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 32px;
+            color: #fff;
+            cursor: pointer;
+            line-height: 1;
+            transition: .3s;
+            z-index: 10;
+        }
+
+        .order-close:hover {
+            color: #ff5c5c;
+            transform: rotate(90deg);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Success modal button styles */
+        .success-actions button {
+            cursor: pointer;
+            border: none;
+        }
+
+        .success-actions button i {
+            margin-right: 8px;
+        }
+    </style>
+}
