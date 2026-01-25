@@ -180,10 +180,13 @@ namespace WebApplication10.Controllers
 
             try
             {
+                // Lấy UserId nếu đã đăng nhập, không thì để null
+                int? userId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : (int?)null;
+
                 // Tạo đơn hàng mới
                 var order = new Orders
                 {
-                    UserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0,
+                    UserId = userId ?? 0,
                     OrderDate = DateTime.Now,
                     TotalAmount = cart.Sum(c => c.TotalPrice),
                     Status = "Pending",
@@ -192,6 +195,19 @@ namespace WebApplication10.Controllers
 
                 db.Orders.Add(order);
                 db.SaveChanges();
+
+                // Lưu order ID vào session cho guest user
+                if (userId == null || userId == 0)
+                {
+                    var guestOrders = Session["GuestOrders"] as List<int> ?? new List<int>();
+                    guestOrders.Add(order.OrderId);
+                    Session["GuestOrders"] = guestOrders;
+                    
+                    // Lưu thông tin khách
+                    Session["GuestName"] = fullName;
+                    Session["GuestEmail"] = email;
+                    Session["GuestPhone"] = phone;
+                }
 
                 // Tạo chi tiết đơn hàng
                 var orderItems = new List<OrderEmailItemViewModel>();
@@ -262,6 +278,8 @@ namespace WebApplication10.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Checkout Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
