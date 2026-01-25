@@ -38,14 +38,16 @@ namespace WebApplication10.Controllers
                 return HttpNotFound();
 
             ViewBag.CurrentPageSlug = "contact";
+
             var model = new ContactPageViewModel
             {
                 PageContent = pageContent,
-                ContactForm = new Contacts()
+                ContactForm = new ContactFormViewModel()
             };
 
-            ViewBag.Title = pageContent.Title ?? "Liên hệ với chúng tôi";
+            AutoFillContactEmail(model.ContactForm);
 
+            ViewBag.Title = pageContent.Title ?? "Liên hệ với chúng tôi";
             return View(model);
         }
 
@@ -53,18 +55,59 @@ namespace WebApplication10.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Contact(ContactPageViewModel model)
         {
-            if (ModelState.IsValid)
+            AutoFillContactEmail(model.ContactForm);
+
+            if (Request.IsAjaxRequest())
             {
-                model.ContactForm.CreatedAt = DateTime.Now;
-                db.Contacts.Add(model.ContactForm);
+                if (!ModelState.IsValid)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Vui lòng kiểm tra lại thông tin."
+                    });
+                }
+
+                var contact = new Contacts
+                {
+                    FullName = model.ContactForm.FullName,
+                    Email = model.ContactForm.Email,
+                    Phone = model.ContactForm.Phone,
+                    Message = model.ContactForm.Message,
+                    CreatedAt = DateTime.Now
+                };
+
+                db.Contacts.Add(contact);
                 db.SaveChanges();
 
-                TempData["Success"] = "Cảm ơn bạn đã gửi liên hệ!";
-                return RedirectToAction("Contact");
+                return Json(new
+                {
+                    success = true,
+                    message = "Cảm ơn bạn đã gửi liên hệ! Chúng tôi sẽ phản hồi sớm."
+                });
             }
 
-            model.PageContent = _dao.GetBySlug("contact");
-            return View(model);
+            if (!ModelState.IsValid)
+            {
+                model.PageContent = _dao.GetBySlug("contact");
+                AutoFillContactEmail(model.ContactForm);
+                return View(model);
+            }
+
+            var normalContact = new Contacts
+            {
+                FullName = model.ContactForm.FullName,
+                Email = model.ContactForm.Email,
+                Phone = model.ContactForm.Phone,
+                Message = model.ContactForm.Message,
+                CreatedAt = DateTime.Now
+            };
+
+            db.Contacts.Add(normalContact);
+            db.SaveChanges();
+
+            TempData["Success"] = "Cảm ơn bạn đã gửi liên hệ!";
+            return RedirectToAction("Contact");
         }
 
         public ActionResult ContactPartial()
@@ -76,12 +119,13 @@ namespace WebApplication10.Controllers
             var model = new ContactPageViewModel
             {
                 PageContent = pageContent,
-                ContactForm = new Contacts()
+                ContactForm = new ContactFormViewModel()
             };
+
+            AutoFillContactEmail(model.ContactForm);
 
             return PartialView("_ContactPartial", model);
         }
-
 
         public ActionResult Edit(int? id, string slug)
         {
@@ -134,7 +178,7 @@ namespace WebApplication10.Controllers
                 return Json(new
                 {
                     success = true,
-                    message = $"✅ Cập nhật trang '{model.Title}' thành công!"
+                    message = $"Cập nhật trang '{model.Title}' thành công!"
                 });
             }
             catch (Exception ex)
@@ -163,5 +207,13 @@ namespace WebApplication10.Controllers
         {
             return db.InfoPages.OrderBy(p => p.Title).ToList();
         }
+        private void AutoFillContactEmail(ContactFormViewModel form)
+        {
+            if (Session["UserEmail"] != null && string.IsNullOrEmpty(form.Email))
+            {
+                form.Email = Session["UserEmail"].ToString();
+            }
+        }
+
     }
 }

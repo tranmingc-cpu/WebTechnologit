@@ -4,6 +4,8 @@ using WebApplication10.Models;
 using UserDao = WebApplication10.DAO.UserDao;
 using WebApplication10.Services;
 using System;
+using System.Collections.Generic;
+using WebApplication10.ViewModels;
 
 namespace WebApplication10.Controllers
 {
@@ -295,5 +297,120 @@ namespace WebApplication10.Controllers
             return View();
         }
 
+        // ORDERS - Lịch sử đơn hàng
+        [HttpGet]
+        public ActionResult Orders()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = (int)Session["UserId"];
+            
+            var orders = db.Orders
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderViewModel
+                {
+                    OrderId = o.OrderId,
+                    OrderDate = o.OrderDate ?? DateTime.Now,
+                    TotalAmount = o.TotalAmount ?? 0,
+                    Status = o.Status,
+                    ShippingAddress = o.ShippingAddress,
+                    OrderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                    {
+                        ProductId = od.ProductId,
+                        ProductName = od.Products.ProductName,
+                        ImageUrl = od.Products.ImageUrl,
+                        Quantity = od.Quantity,
+                        UnitPrice = od.UnitPrice,
+                        TotalPrice = od.Quantity * od.UnitPrice
+                    }).ToList()
+                })
+                .ToList();
+
+            return View(orders);
+        }
+
+        // Chi tiết đơn hàng
+        [HttpGet]
+        public ActionResult OrderDetail(int id)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = (int)Session["UserId"];
+            
+            var order = db.Orders
+                .Where(o => o.OrderId == id && o.UserId == userId)
+                .Select(o => new OrderViewModel
+                {
+                    OrderId = o.OrderId,
+                    OrderDate = o.OrderDate ?? DateTime.Now,
+                    TotalAmount = o.TotalAmount ?? 0,
+                    Status = o.Status,
+                    ShippingAddress = o.ShippingAddress,
+                    OrderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                    {
+                        ProductId = od.ProductId,
+                        ProductName = od.Products.ProductName,
+                        ImageUrl = od.Products.ImageUrl,
+                        Quantity = od.Quantity,
+                        UnitPrice = od.UnitPrice,
+                        TotalPrice = od.Quantity * od.UnitPrice
+                    }).ToList()
+                })
+                .FirstOrDefault();
+
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(order);
+        }
+
+        // Hủy đơn hàng
+        [HttpPost]
+        public ActionResult CancelOrder(int orderId)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập" });
+            }
+
+            int userId = (int)Session["UserId"];
+            
+            var order = db.Orders.FirstOrDefault(o => o.OrderId == orderId && o.UserId == userId);
+            
+            if (order == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy đơn hàng" });
+            }
+
+            if (order.Status != "Pending")
+            {
+                return Json(new { success = false, message = "Chỉ có thể hủy đơn hàng đang chờ xử lý" });
+            }
+
+            order.Status = "Cancelled";
+            
+            // Hoàn lại số lượng sản phẩm
+            foreach (var detail in order.OrderDetails)
+            {
+                var product = db.Products.Find(detail.ProductId);
+                if (product != null)
+                {
+                    product.Quantity = (product.Quantity ?? 0) + detail.Quantity;
+                }
+            }
+
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "Đã hủy đơn hàng thành công" });
+        }
     }
 }

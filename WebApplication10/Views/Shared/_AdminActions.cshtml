@@ -33,6 +33,13 @@
             <div class="action-icon">🧾</div>
             <div class="action-text">Manage Orders</div>
         </a>
+        <a href="@Url.Action("Index","AdminContacts")"
+           class="action-card @isActive("AdminContacts","Index")"
+           data-admin-partial="true">
+
+            <div class="action-icon">📩</div>
+            <div class="action-text">Contact Messages</div>
+        </a>
     </div>
 
     <h3 class="section-title">✏️ Edit Pages</h3>
