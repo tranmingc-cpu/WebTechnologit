@@ -48,6 +48,10 @@
                             statusClass = "completed";
                             statusText = "Hoàn thành";
                             break;
+                        case "Paid":
+                            statusClass = "paid";
+                            statusText = "Đã hoàn thành";
+                            break;
                         case "Cancelled":
                             statusClass = "cancelled";
                             statusText = "Đã hủy";
@@ -101,10 +105,9 @@
                                 <strong>@String.Format("{0:N0}đ", order.TotalAmount)</strong>
                             </div>
                             <div class="order-actions">
-                                <a href="@Url.Action("OrderDetail", "Account", new { id = order.OrderId })" 
-                                   class="btn btn-outline">
+                                <button type="button" class="btn btn-outline btn-view-detail" data-order-id="@order.OrderId">
                                     Xem chi tiết
-                                </a>
+                                </button>
                                 @if (order.Status == "Pending")
                                 {
                                     <button class="btn btn-danger btn-cancel" 
@@ -121,9 +124,20 @@
     </div>
 </div>
 
+<!-- Order Detail Modal -->
+<div id="orderDetailModal" class="order-modal" style="display:none;">
+    <div class="order-modal-content">
+        <span class="order-close">&times;</span>
+        <div id="orderDetailContent">
+            <!-- AJAX content here -->
+        </div>
+    </div>
+</div>
+
 @section scripts {
     <script>
         $(document).ready(function () {
+            // Cancel order with AJAX
             $('.btn-cancel').on('click', function () {
                 var btn = $(this);
                 var orderId = btn.data('order-id');
@@ -132,7 +146,8 @@
                     return;
                 }
                 
-                btn.prop('disabled', true).text('Đang xử lý...');
+                var originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Đang xử lý...');
                 
                 $.ajax({
                     url: '@Url.Action("CancelOrder", "Account")',
@@ -140,19 +155,356 @@
                     data: { orderId: orderId },
                     success: function (response) {
                         if (response.success) {
-                            alert(response.message);
-                            location.reload();
+                            showNotification(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
                         } else {
-                            alert(response.message);
-                            btn.prop('disabled', false).text('Hủy đơn');
+                            showNotification(response.message, 'error');
+                            btn.prop('disabled', false).html(originalHtml);
                         }
                     },
                     error: function () {
-                        alert('Có lỗi xảy ra, vui lòng thử lại');
-                        btn.prop('disabled', false).text('Hủy đơn');
+                        showNotification('Có lỗi xảy ra, vui lòng thử lại', 'error');
+                        btn.prop('disabled', false).html(originalHtml);
                     }
                 });
             });
+
+            // View order detail with AJAX
+            $('.btn-view-detail').on('click', function(e) {
+                e.preventDefault();
+                var orderId = $(this).data('order-id');
+                console.log('View detail clicked, orderId:', orderId);
+                
+                if (orderId) {
+                    loadOrderDetail(orderId);
+                } else {
+                    alert('Không thể xác định mã đơn hàng');
+                }
+            });
+
+            // Close order detail modal
+            $('.order-close').on('click', function() {
+                $('#orderDetailModal').fadeOut(300);
+            });
+
+            // Close modal on outside click
+            $(window).on('click', function(e) {
+                if ($(e.target).is('#orderDetailModal')) {
+                    $('#orderDetailModal').fadeOut(300);
+                }
+            });
+
+            // Load order detail via AJAX - trả về JSON và render client-side
+            function loadOrderDetail(orderId) {
+                console.log('Loading order detail for ID:', orderId);
+                
+                $('#orderDetailContent').html('<div class="loading-spinner"><i class="fa fa-spinner fa-spin"></i> Đang tải...</div>');
+                $('#orderDetailModal').fadeIn(300);
+                
+                $.ajax({
+                    url: '@Url.Action("OrderDetail", "Account")',
+                    type: 'GET',
+                    data: { id: orderId },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Response:', response);
+                        
+                        if (response.success) {
+                            var html = renderOrderDetail(response.order);
+                            $('#orderDetailContent').html(html);
+                            bindCancelOrderButton();
+                        } else {
+                            $('#orderDetailContent').html(
+                                '<div class="error-message">' +
+                                '<i class="fa fa-exclamation-triangle"></i>' +
+                                '<p>' + (response.message || 'Không thể tải thông tin đơn hàng') + '</p>' +
+                                '</div>'
+                            );
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.status, error);
+                        $('#orderDetailContent').html(
+                            '<div class="error-message">' +
+                            '<i class="fa fa-exclamation-triangle"></i>' +
+                            '<p>Không thể tải thông tin đơn hàng</p>' +
+                            '<p style="font-size: 14px; color: #999;">Mã lỗi: ' + xhr.status + '</p>' +
+                            '</div>'
+                        );
+                    }
+                });
+            }
+
+            // Render order detail HTML from JSON
+            function renderOrderDetail(order) {
+                var statusClass = 'pending';
+                var statusText = 'Chờ xử lý';
+                
+                switch (order.status) {
+                    case 'Pending': statusClass = 'pending'; statusText = 'Chờ xử lý'; break;
+                    case 'Processing': statusClass = 'processing'; statusText = 'Đang xử lý'; break;
+                    case 'Shipping': statusClass = 'shipping'; statusText = 'Đang giao hàng'; break;
+                    case 'Completed': statusClass = 'completed'; statusText = 'Hoàn thành'; break;
+                    case 'Paid': statusClass = 'paid'; statusText = 'Đã hoàn thành'; break;
+                    case 'Cancelled': statusClass = 'cancelled'; statusText = 'Đã hủy'; break;
+                }
+
+                var productsHtml = '';
+                if (order.orderDetails && order.orderDetails.length > 0) {
+                    order.orderDetails.forEach(function(item) {
+                        productsHtml += '<div class="product-item">' +
+                            '<img src="' + item.imageUrl + '" alt="' + item.productName + '" />' +
+                            '<div class="product-info">' +
+                            '<h4>' + item.productName + '</h4>' +
+                            '<p>Số lượng: ' + item.quantity + ' × ' + formatCurrency(item.unitPrice) + '</p>' +
+                            '</div>' +
+                            '<div class="product-total">' + formatCurrency(item.totalPrice) + '</div>' +
+                            '</div>';
+                    });
+                } else {
+                    productsHtml = '<p style="color: #999; text-align: center;">Không có sản phẩm</p>';
+                }
+
+                var cancelBtn = '';
+                if (order.status === 'Pending') {
+                    cancelBtn = '<div class="order-actions-modal">' +
+                        '<button class="btn btn-danger btn-cancel-order" data-order-id="' + order.orderId + '">' +
+                        '<i class="fa fa-times"></i> Hủy đơn hàng' +
+                        '</button></div>';
+                }
+
+                // Bỏ status badge ở header, chỉ giữ lại ở phần thông tin đơn hàng
+                return '<div class="order-detail-wrapper">' +
+                    '<div class="order-detail-header-modal">' +
+                    '<h2>Đơn hàng #' + order.orderId + '</h2>' +
+                    '</div>' +
+                    '<div class="order-detail-body">' +
+                    '<div class="section order-info-section">' +
+                    '<h3>Thông tin đơn hàng</h3>' +
+                    '<div class="info-grid">' +
+                    '<div class="info-item"><label>Ngày đặt:</label><span>' + order.orderDate + '</span></div>' +
+                    '<div class="info-item"><label>Trạng thái:</label><span class="status-badge ' + statusClass + '">' + statusText + '</span></div>' +
+                    '<div class="info-item full-width"><label>Địa chỉ giao hàng:</label><span>' + (order.shippingAddress || 'Chưa có') + '</span></div>' +
+                    '</div></div>' +
+                    '<div class="section products-section">' +
+                    '<h3>Sản phẩm đã đặt</h3>' +
+                    '<div class="products-list">' + productsHtml + '</div></div>' +
+                    '<div class="section summary-section">' +
+                    '<h3>Tổng kết</h3>' +
+                    '<div class="summary-rows">' +
+                    '<div class="summary-row"><span>Tạm tính:</span><span>' + formatCurrency(order.totalAmount) + '</span></div>' +
+                    '<div class="summary-row"><span>Phí vận chuyển:</span><span>Miễn phí</span></div>' +
+                    '<div class="summary-row total"><span>Tổng cộng:</span><strong>' + formatCurrency(order.totalAmount) + '</strong></div>' +
+                    '</div></div>' +
+                    cancelBtn +
+                    '</div></div>';
+            }
+
+            function formatCurrency(amount) {
+                return amount.toLocaleString('vi-VN') + 'đ';
+            }
+
+            // Bind cancel order button in modal
+            function bindCancelOrderButton() {
+                $('#orderDetailContent .btn-cancel-order').off('click').on('click', function() {
+                    var btn = $(this);
+                    var orderId = btn.data('order-id');
+                    
+                    if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                        return;
+                    }
+                    
+                    var originalHtml = btn.html();
+                    btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Đang hủy...');
+                    
+                    $.ajax({
+                        url: '@Url.Action("CancelOrder", "Account")',
+                        type: 'POST',
+                        data: { orderId: orderId },
+                        success: function(response) {
+                            if (response.success) {
+                                showNotification(response.message, 'success');
+                                setTimeout(function() {
+                                    $('#orderDetailModal').fadeOut(300);
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                showNotification(response.message, 'error');
+                                btn.prop('disabled', false).html(originalHtml);
+                            }
+                        },
+                        error: function() {
+                            showNotification('Có lỗi xảy ra', 'error');
+                            btn.prop('disabled', false).html(originalHtml);
+                        }
+                    });
+                });
+            }
+
+            function showNotification(message, type) {
+                var bgColor = type === 'success' ? '#4caf50' : '#f44336';
+                var notification = $('<div class="notification-toast">' + message + '</div>');
+                notification.css({
+                    'position': 'fixed',
+                    'top': '20px',
+                    'right': '20px',
+                    'background': bgColor,
+                    'color': 'white',
+                    'padding': '15px 25px',
+                    'border-radius': '8px',
+                    'box-shadow': '0 4px 12px rgba(0,0,0,0.3)',
+                    'z-index': '10002'
+                });
+                
+                $('body').append(notification);
+                
+                setTimeout(function () {
+                    notification.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
         });
     </script>
+
+    <style>
+        /* Order Detail Modal */
+        .order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .order-modal-content {
+            background: linear-gradient(135deg, #3b3d54, #32344a);
+            border-radius: 14px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            position: relative;
+            margin: 20px;
+        }
+
+        .order-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 32px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .order-close:hover { color: #ff5c5c; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 50px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .loading-spinner i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 50px;
+            color: #f44336;
+            font-size: 18px;
+        }
+
+        .error-message i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* Order Detail Styles */
+        .order-detail-wrapper { padding: 30px; color: #fff; }
+        .order-detail-header-modal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,.1);
+        }
+        .order-detail-header-modal h2 { color: #fff; font-size: 24px; font-weight: 700; margin: 0; }
+        
+        /* Status Badge Styles - Màu chữ trắng nổi bật */
+        .order-status { 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            font-weight: 700;
+            color: #fff !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .order-status.pending { background: #ff9800; color: #fff !important; }
+        .order-status.processing { background: #2196f3; color: #fff !important; }
+        .order-status.shipping { background: #9c27b0; color: #fff !important; }
+        .order-status.completed { background: #4caf50; color: #fff !important; }
+        .order-status.paid { background: #4caf50; color: #fff !important; }
+        .order-status.cancelled { background: #f44336; color: #fff !important; }
+        
+        .order-detail-body .section { background: rgba(255,255,255,.03); padding: 25px; border-radius: 10px; margin-bottom: 20px; }
+        .order-detail_body h3 { color: #fff; font-size: 18px; font-weight: 700; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid #ff5c5c; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-item.full-width { grid-column: 1 / -1; }
+        .info-item label { color: #999; font-size: 13px; margin-bottom: 5px; }
+        .info-item span { color: #fff; font-size: 15px; }
+        
+        /* Status Badge trong info - Thu hẹp chiều ngang */
+        .status-badge { 
+            display: inline-block !important; 
+            padding: 5px 14px !important; 
+            border-radius: 15px !important; 
+            font-size: 12px !important; 
+            font-weight: 700 !important;
+            color: #fff !important;
+            text-transform: uppercase !important;
+            width: fit-content !important;
+            max-width: fit-content !important;
+        }
+        .status-badge.pending { background: #ff9800 !important; }
+        .status-badge.processing { background: #2196f3 !important; }
+        .status-badge.shipping { background: #9c27b0 !important; }
+        .status-badge.completed { background: #4caf50 !important; }
+        .status-badge.paid { background: #4caf50 !important; }
+        .status-badge.cancelled { background: #f44336 !important; }
+        
+        .products-list { display: flex; flex-direction: column; gap: 15px; }
+        .product-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,.02); border-radius: 8px; }
+        .product-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .product-info { flex: 1; }
+        .product-info h4 { color: #fff; font-size: 16px; font-weight: 600; margin: 0 0 8px 0; }
+        .product-info p { color: #999; font-size: 14px; margin: 0; }
+        .product-total { color: #ff5c5c; font-size: 18px; font-weight: 700; }
+        .summary-rows { display: flex; flex-direction: column; gap: 12px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 15px; color: #ddd; }
+        .summary-row.total { font-size: 20px; color: #fff; padding-top: 12px; margin-top: 12px; border-top: 2px solid rgba(255,255,255,.1); }
+        .summary-row.total strong { color: #ff5c5c; }
+        .order-actions-modal { margin-top: 25px; text-align: center; }
+        .btn-cancel-order { padding: 12px 30px; background: #f44336; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-cancel-order:hover { background: #d32f2f; }
+        .btn-cancel-order i { margin-right: 8px; }
+    </style>
 }

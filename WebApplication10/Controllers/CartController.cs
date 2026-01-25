@@ -4,12 +4,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication10.Models;
+using WebApplication10.Services;
+using WebApplication10.ViewModels;
 
 namespace WebApplication10.Controllers
 {
     public class CartController : BaseController
     {
         private const string CartSessionKey = "ShoppingCart";
+        private readonly EmailService _emailService;
+
+        public CartController()
+        {
+            _emailService = new EmailService();
+        }
 
         private List<CartItem> GetCartFromSession()
         {
@@ -172,10 +180,13 @@ namespace WebApplication10.Controllers
 
             try
             {
+                // Lấy UserId nếu đã đăng nhập, không thì để null
+                int? userId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : (int?)null;
+
                 // Tạo đơn hàng mới
                 var order = new Orders
                 {
-                    UserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0,
+                    UserId = userId ?? 0,
                     OrderDate = DateTime.Now,
                     TotalAmount = cart.Sum(c => c.TotalPrice),
                     Status = "Pending",
@@ -185,7 +196,21 @@ namespace WebApplication10.Controllers
                 db.Orders.Add(order);
                 db.SaveChanges();
 
+                // Lưu order ID vào session cho guest user
+                if (userId == null || userId == 0)
+                {
+                    var guestOrders = Session["GuestOrders"] as List<int> ?? new List<int>();
+                    guestOrders.Add(order.OrderId);
+                    Session["GuestOrders"] = guestOrders;
+                    
+                    // Lưu thông tin khách
+                    Session["GuestName"] = fullName;
+                    Session["GuestEmail"] = email;
+                    Session["GuestPhone"] = phone;
+                }
+
                 // Tạo chi tiết đơn hàng
+                var orderItems = new List<OrderEmailItemViewModel>();
                 foreach (var item in cart)
                 {
                     var orderDetail = new OrderDetails
@@ -203,9 +228,42 @@ namespace WebApplication10.Controllers
                     {
                         product.Quantity = (product.Quantity ?? 0) - item.Quantity;
                     }
+
+                    // Thêm vào danh sách để gửi email
+                    orderItems.Add(new OrderEmailItemViewModel
+                    {
+                        ProductName = item.ProductName,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice,
+                        TotalPrice = item.TotalPrice
+                    });
                 }
 
                 db.SaveChanges();
+
+                // Gửi email xác nhận đơn hàng
+                try
+                {
+                    var orderEmailInfo = new OrderEmailViewModel
+                    {
+                        OrderId = order.OrderId,
+                        OrderDate = order.OrderDate ?? DateTime.Now,
+                        CustomerName = fullName,
+                        CustomerEmail = email,
+                        CustomerPhone = phone,
+                        ShippingAddress = address,
+                        TotalAmount = order.TotalAmount ?? 0,
+                        OrderItems = orderItems
+                    };
+
+                    // Gửi email (không chặn luồng chính nếu email fail)
+                    _emailService.SendOrderConfirmationEmail(orderEmailInfo);
+                }
+                catch (Exception emailEx)
+                {
+                    // Log email error nhưng không ảnh hưởng đến đơn hàng
+                    System.Diagnostics.Debug.WriteLine($"Email sending failed: {emailEx.Message}");
+                }
 
                 // Xóa giỏ hàng
                 Session[CartSessionKey] = new List<CartItem>();
@@ -214,12 +272,14 @@ namespace WebApplication10.Controllers
                 return Json(new 
                 { 
                     success = true, 
-                    message = "Cảm ơn bạn đã đặt hàng! Chúng tôi sẽ liên hệ với bạn sớm.",
+                    message = "Cảm ơn bạn đã đặt hàng! Chúng tôi đã gửi email xác nhận đến " + email,
                     orderId = order.OrderId
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Checkout Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }

@@ -58,7 +58,7 @@
                 <input type="hidden" id="productId" value="@Model.ProductId" />
                 
                 <div class="quantity-selector">
-                    <label>Số lượng:</label>
+                    <label>Sơ lượng:</label>
                     <div class="quantity-controls">
                         <button type="button" class="qty-btn" id="decreaseQty">-</button>
                         <input type="number" id="quantityInput" value="1" min="1" max="@(Model.Quantity ?? 1)" />
@@ -214,8 +214,31 @@
         });
 
         function buyNow(productId) {
-            var quantity = $('#quantityInput').val();
-            window.location.href = '@Url.Action("Checkout", "Order")' + '?productId=' + productId + '&quantity=' + quantity;
+            var quantity = parseInt($('#quantityInput').val()) || 1;
+            var maxQty = @(Model.Quantity ?? 1);
+            
+            if (quantity < 1 || quantity > maxQty) {
+                showNotification('Số lượng không hợp lệ', 'error');
+                return;
+            }
+            
+            // Add to cart first
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: { productId: productId, quantity: quantity },
+                success: function (response) {
+                    if (response.success) {
+                        // Redirect to checkout
+                        window.location.href = '@Url.Action("Checkout", "Cart")';
+                    } else {
+                        showNotification(response.message, 'error');
+                    }
+                },
+                error: function () {
+                    showNotification('Có lỗi xảy ra, vui lòng thử lại', 'error');
+                }
+            });
         }
     </script>
 }
