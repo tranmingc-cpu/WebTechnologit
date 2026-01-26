@@ -95,13 +95,16 @@
         </div>
 
         <nav class="menu">
-            @foreach (var c in ViewBag.Categories as List<WebApplication10.Models.Categories>)
+            @if (ViewBag.Categories != null)
             {
-                <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })" class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
-                    @c.CategoryName
-                </a>
+                foreach (var c in ViewBag.Categories as List<WebApplication10.Models.Categories>)
+                {
+                    <a href="@Url.Action("Index", "Products", new { categoryId = c.CategoryId })" class="@(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")">
+                        @c.CategoryName
+                    </a>
+                }
             }
-        </nav>
+            </nav>
     </header>
 
     <main class="container page-content" style="position: relative;">

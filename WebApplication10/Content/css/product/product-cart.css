@@ -46,7 +46,7 @@
     gap: 8px;
 }
 
-@@keyframes slideIn {
+@keyframes slideIn {
     from {
         transform: translateX(100%);
         opacity: 0;

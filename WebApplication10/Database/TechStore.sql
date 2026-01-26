@@ -645,4 +645,3 @@ CREATE TABLE PasswordResetTokens (
     Used BIT NOT NULL DEFAULT 0,
     CreatedAt DATETIME NOT NULL
 );
-

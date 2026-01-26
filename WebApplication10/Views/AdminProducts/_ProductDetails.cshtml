@@ -1,0 +1,33 @@
+﻿@model WebApplication10.ViewModels.ProductListVM
+
+<div class="modal-header">
+    <h5 class="modal-title">Chi tiết sản phẩm</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="@Model.ImageUrl" class="img-fluid rounded" />
+        </div>
+
+        <div class="col-md-8">
+            <p><strong>Tên sản phẩm:</strong> @Model.ProductName</p>
+            <p><strong>Danh mục:</strong> @Model.CategoryName</p>
+            <p><strong>Thương hiệu:</strong> @Model.BrandName</p>
+            <p><strong>Giá:</strong> @Model.Price.ToString("N0") đ</p>
+            <p><strong>Giảm giá:</strong> @Model.Discount %</p>
+            <p><strong>Số lượng:</strong> @Model.Quantity</p>
+            <p><strong>Trạng thái:</strong> @Model.Status</p>
+            <p>
+                <strong>Ngày tạo:</strong>   @(Model.CreatedAt.HasValue
+        ? Model.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+        : "—")
+            </p>
+        </div>
+    </div>
+
+    <hr />
+    <p><strong>Mô tả:</strong></p>
+    <div>@Html.Raw(Model.Description)</div>
+</div>
