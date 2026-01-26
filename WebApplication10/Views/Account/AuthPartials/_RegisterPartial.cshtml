@@ -1,6 +1,4 @@
-﻿@* KHÔNG Layout *@
-
-<div class="auth-box">
+﻿<div class="auth-box">
     <div class="auth-header">
         <h2><span>TECH</span> STORE</h2>
         <p>Tạo tài khoản mới</p>
@@ -11,7 +9,6 @@
         {
             @Html.AntiForgeryToken()
 
-            @* ERROR TỔNG – CHỈ HIỆN KHI SUBMIT *@
             if (!ViewData.ModelState.IsValid && ViewData.ModelState.Count > 0)
             {
                 <div class="auth-error">
@@ -26,7 +23,6 @@
                        value="@Request["fullName"]"
                        placeholder="Nguyễn Văn A" />
 
-                @* FULL NAME ERROR *@
                 @if (ViewData.ModelState.ContainsKey("fullName") &&
                      ViewData.ModelState["fullName"].Errors.Count > 0)
                 {
@@ -43,7 +39,6 @@
                        value="@Request["email"]"
                        placeholder="you@example.com" />
 
-                @* EMAIL ERROR *@
                 @if (ViewData.ModelState.ContainsKey("email") &&
                      ViewData.ModelState["email"].Errors.Count > 0)
                 {
@@ -59,7 +54,6 @@
                        name="password"
                        placeholder="••••••••" />
 
-                @* PASSWORD ERROR *@
                 @if (ViewData.ModelState.ContainsKey("password") &&
                      ViewData.ModelState["password"].Errors.Count > 0)
                 {
@@ -75,7 +69,6 @@
                        name="confirmPassword"
                        placeholder="••••••••" />
 
-                @* CONFIRM PASSWORD ERROR *@
                 @if (ViewData.ModelState.ContainsKey("confirmPassword") &&
                      ViewData.ModelState["confirmPassword"].Errors.Count > 0)
                 {

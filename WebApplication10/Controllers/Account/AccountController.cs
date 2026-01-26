@@ -84,7 +84,7 @@ namespace WebApplication10.Controllers
         [HttpGet]
         public ActionResult Register()
         {
-            ViewBag.RightPanel = "AuthPartials/_RightPanel_Register";
+            ViewBag.RightPanel = "AuthPartials/_RegisterRight";
             return View();
         }
 
@@ -231,13 +231,14 @@ namespace WebApplication10.Controllers
             Session.Abandon();
             return RedirectToAction("Login", "Account");
         }
-
-        // PROFILE
         [HttpGet]
         public ActionResult Profile()
         {
             if (Session["UserId"] == null)
             {
+                if (Request.IsAjaxRequest())
+                    return Json(new { redirect = Url.Action("Login", "Account") }, JsonRequestBehavior.AllowGet);
+
                 return RedirectToAction("Login", "Account");
             }
 
@@ -254,6 +255,9 @@ namespace WebApplication10.Controllers
                 .Any(x => x.Email == user.Email && x.IsActive == true);
 
             ViewBag.IsNewsletterSubscribed = isSubscribed;
+
+            if (Request.IsAjaxRequest())
+                return PartialView("Profile/_ProfileContent", user);
 
             return View(user);
         }
@@ -280,11 +284,44 @@ namespace WebApplication10.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ChangePassword(string oldPassword, string newPassword)
+        public ActionResult ChangePassword(ChangePasswordVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            k => k.Key,
+                            v => v.Value.Errors.First().ErrorMessage
+                        )
+                });
+            }
+
             int userId = (int)Session["UserId"];
-            bool success = _userDao.ChangePassword(userId, oldPassword, newPassword);
-            return Json(new { success = success, message = success ? "Đổi mật khẩu thành công!" : "Mật khẩu cũ không đúng!" });
+
+            bool success = _userDao.ChangePassword(
+                userId,
+                model.OldPassword,
+                model.NewPassword
+            );
+
+            if (!success)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Mật khẩu cũ không đúng"
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                message = "Đổi mật khẩu thành công!"
+            });
         }
 
         protected bool IsAjax()
@@ -571,6 +608,53 @@ namespace WebApplication10.Controllers
             db.SaveChanges();
 
             return Json(new { success = true, message = "Đã hủy đơn hàng thành công" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProfileAjax(Users model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("Profile/_EditProfileModal", model);
+            }
+
+            _userDao.Update(model);
+
+            return Json(new { success = true });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePasswordAjax(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(
+                    "Profile/_ChangePasswordModal",
+                    model
+                );
+            }
+
+            int userId = (int)Session["UserId"];
+
+            bool success = _userDao.ChangePassword(
+                userId,
+                model.OldPassword,
+                model.NewPassword
+            );
+
+            if (!success)
+            {
+                ModelState.AddModelError(
+                    "OldPassword",
+                    "Mật khẩu cũ không đúng"
+                );
+
+                return PartialView("Profile/_ChangePasswordModal", model);
+            }
+            return Json(new { success = true });
         }
     }
 }

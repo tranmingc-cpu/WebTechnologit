@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using WebApplication10.DAO;
+using WebApplication10.Filters;
 using WebApplication10.Models;
 using WebApplication10.Services;
 using WebApplication10.ViewModels;
 
 namespace WebApplication10.Controllers
 {
+    [RoleAuthorize("Admin")]
     public class AdminController : BaseController
     {
         private readonly AdminDao _adminDao;
@@ -23,16 +25,6 @@ namespace WebApplication10.Controllers
         public ActionResult Dashboard(bool partial = false)
         {
             ViewBag.IsPartial = partial;
-
-            if (Session["UserId"] == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            if (Session["UserRole"]?.ToString() != "Admin")
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
 
             ViewBag.UserCount = _adminDao.GetUserCount();
             ViewBag.OrderCount = _adminDao.GetOrderCount();
@@ -71,8 +63,6 @@ namespace WebApplication10.Controllers
 
         public ActionResult AdminActionsPartial()
         {
-            if (Session["UserRole"]?.ToString() != "Admin")
-                return new HttpUnauthorizedResult();
 
             var about = db.InfoPages.FirstOrDefault(p => p.Slug == "about");
             var contact = db.InfoPages.FirstOrDefault(p => p.Slug == "contact");
@@ -108,5 +98,4 @@ namespace WebApplication10.Controllers
             return Content("OK");
         }
     }
-
 }

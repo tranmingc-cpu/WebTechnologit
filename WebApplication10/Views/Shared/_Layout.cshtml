@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -19,6 +20,7 @@
     <link href="~/Content/css/product/product-cart.css" rel="stylesheet" />
     <link href="~/Content/css/account/profile.css?@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/pages/info.css?@DateTime.Now.Ticks" rel="stylesheet" />
+
 </head>
 <body>
 
@@ -69,7 +71,9 @@
                             }
                             else
                             {
-                                <a href="/Account/Profile"><i class="fa fa-id-card"></i> Thông tin tài khoản</a>
+                                <a href="/Account/Profile" class="ajax-link">
+                                    <i class="fa fa-id-card"></i> Thông tin tài khoản
+                                </a>
                                 <a href="/Account/Orders"><i class="fa fa-box"></i> Đơn hàng của tôi</a>
 
                                 if (Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin")
@@ -115,6 +119,7 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/common/newsletter.js"></script>
     <script src="~/Scripts/common/contact.js"></script>
+    <script src="~/Scripts/account/profile.js"></script>
     <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
     <script>
         // Global function to handle add to cart
@@ -298,13 +303,14 @@
             $('#ajaxLoader').fadeIn(150);
             $('.page-content').fadeOut(150);
 
-            $.get(url, function(data){
+            $.get(url, function (data) {
                 $('.page-content').html(data).fadeIn(200);
                 $('#ajaxLoader').fadeOut(200);
 
                 highlightFooterLink(slug);
                 history.pushState(null, '', url);
             });
+
         });
 
     </script>

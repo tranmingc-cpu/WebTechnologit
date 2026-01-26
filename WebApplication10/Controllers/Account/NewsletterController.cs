@@ -64,7 +64,6 @@ namespace WebApplication10.Controllers.Account
         }
 
         [HttpGet]
-        [ChildActionOnly]
         public ActionResult FooterStatus()
         {
             bool isSubscribed = false;
@@ -76,8 +75,7 @@ namespace WebApplication10.Controllers.Account
                 if (user != null)
                     isSubscribed = _newsletterDao.IsSubscribed(user.UserId);
             }
-
-            return PartialView("~/Views/Shared/_NewsletterSection.cshtml", isSubscribed);
+            return PartialView("~/Views/Shared/_NewsLetterSection.cshtml", isSubscribed);
         }
     }
 }
