@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = null ;
+    Layout = null;
     ViewBag.Title = "Manage Orders";
 }
 
@@ -8,7 +8,7 @@
 <div id="orders-container">
     @Html.Action("OrdersListPartial")
 </div>
-
+<!--demooo -->
 <script>
     function loadOrderDetails(id) {
         $.get('/Orders/Details/' + id, function (html) {

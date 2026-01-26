@@ -12,7 +12,7 @@ namespace WebApplication10.ViewModels
         [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
+        // Chart
         [Required(ErrorMessage = "Vui lòng nhập họ và tên")]
         public string FullName { get; set; }
 

@@ -20,7 +20,7 @@ namespace WebApplication10.ViewModels
 
         [Required]
         public int CategoryId { get; set; }
-
+        // Chart
         public int? BrandId { get; set; }
 
         [Required]

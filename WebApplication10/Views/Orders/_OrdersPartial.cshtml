@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WebApplication10.Models.Orders>
-    @{ 
-        Layout = null;
-    }
+@{
+    Layout = null;
+}
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -37,14 +37,14 @@
     </tbody>
 </table>
 <script>
-function loadOrderDetails(orderId) {
-    $.get('/Orders/Details', { id: orderId, partial: true })
-        .done(function (html) {
-            $('#mainContent').html(html);
-        })
-        .fail(function () {
-            alert('Load order details failed');
-        });
-}
+    function loadOrderDetails(orderId) {
+        $.get('/Orders/Details', { id: orderId, partial: true })
+            .done(function (html) {
+                $('#mainContent').html(html);
+            })
+            .fail(function () {
+                alert('Load order details failed');
+            });
+    }
 </script>
-
+<!--demooo -->

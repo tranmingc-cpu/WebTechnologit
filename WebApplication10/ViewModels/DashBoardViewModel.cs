@@ -14,6 +14,7 @@ namespace WebApplication10.ViewModels
         public int ProductCount { get; set; }
 
         public decimal CurrentMonthRevenue { get; set; }
+        // Chart
 
         public int Month { get; set; }
         // Chart

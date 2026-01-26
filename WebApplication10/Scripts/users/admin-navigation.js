@@ -208,7 +208,7 @@ function initDashboardChart() {
         console.warn('❌ Không tìm thấy canvas');
         return;
     }
-
+    //demooo
     const labels = JSON.parse(canvas.dataset.labels || '[]');
     const revenues = JSON.parse(canvas.dataset.revenues || '[]');
 

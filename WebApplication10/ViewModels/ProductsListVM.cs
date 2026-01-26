@@ -12,7 +12,7 @@ namespace WebApplication10.ViewModels
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-
+        //demo
         public string CategoryName { get; set; }
         public int? BrandId { get; set; }
         public string BrandName { get; set; }
