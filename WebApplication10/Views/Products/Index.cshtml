@@ -1,0 +1,125 @@
+﻿﻿@model List<WebApplication10.Models.Products>
+
+@{
+    ViewBag.Title = "Sản phẩm";
+}
+
+<div class="page-header">
+    <h1 id="pageHeaderTitle">
+        @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
+        {
+            @:Kết quả tìm kiếm cho: <span class="highlight">"@ViewBag.Keyword"</span>
+        }
+        else if (ViewBag.CurrentCategoryId != null)
+        {
+            @ViewBag.CurrentCategoryName
+        }
+        else
+        {
+            @:Tất cả sản phẩm
+        }
+    </h1>
+
+    <p class="sub-text" id="pageHeaderSubText">
+        @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
+        {
+            @:Tìm thấy @Model.Count sản phẩm phù hợp
+        }
+        else if (ViewBag.CurrentCategoryId != null)
+        {
+            @:Danh sách sản phẩm theo danh mục
+        }
+        else
+        {
+            @:Khám phá toàn bộ sản phẩm đang kinh doanh
+        }
+    </p>
+</div>
+
+<section class="category-filter">
+    <a class="category @(ViewBag.CurrentCategoryId == null ? "active" : "")"
+       data-id=""
+       data-name="Tất cả sản phẩm">
+        Tất cả
+    </a>
+
+    @foreach (var c in (ViewBag.Categories as List<WebApplication10.Models.Categories>))
+    {
+        <a class="category @(ViewBag.CurrentCategoryId == c.CategoryId ? "active" : "")"
+           data-id="@c.CategoryId"
+           data-name="@c.CategoryName">
+            @c.CategoryName
+        </a>
+    }
+</section>
+
+<section class="products">
+    <div class="product-grid" id="productGrid">
+        @Html.Partial("_ProductGrid", Model)
+    </div>
+</section>
+
+<section class="category-description"
+         id="categoryDescription"
+         data-category-id="@ViewBag.CurrentCategoryId">
+</section>
+
+@section Scripts {
+
+    <script src="~/Scripts/product/category-description.js"></script>
+
+    <script>
+        $(document).on('click', '.category', function (e) {
+            e.preventDefault();
+
+            let $this = $(this);
+
+            $('.category').removeClass('active');
+            $this.addClass('active');
+
+            let categoryId = $this.data('id') || '';
+            let categoryName = $this.data('name') || 'Tất cả sản phẩm';
+
+            if (categoryId) {
+                history.pushState(null, '', '/Products?categoryId=' + categoryId);
+            } else {
+                history.pushState(null, '', '/Products');
+            }
+
+            $('.menu a').removeClass('active');
+            if (categoryId) {
+                $('.menu a[href*="categoryId=' + categoryId + '"]').addClass('active');
+            }
+
+            $('#categoryDescription').attr('data-category-id', categoryId);
+
+            let $container = $('#productGrid');
+            $container.addClass('fade-out');
+            $('#ajaxLoader').fadeIn(150);
+
+            $.ajax({
+                url: '/Products/LoadByCategory',
+                data: { categoryId: categoryId },
+                type: 'GET',
+                success: function (res) {
+                    $container.html(res.html);
+                    $container.removeClass('fade-out').addClass('fade-in');
+                    $('#ajaxLoader').fadeOut(200);
+
+                    $('#pageHeaderTitle').text(categoryName);
+                    $('#pageHeaderSubText').text(
+                        categoryId
+                            ? 'Danh sách sản phẩm theo danh mục'
+                            : 'Khám phá toàn bộ sản phẩm đang kinh doanh'
+                    );
+
+                    $(document).trigger('category:changed', [categoryId]);
+                },
+                error: function () {
+                    $container.html('<p>Lỗi tải sản phẩm.</p>');
+                    $('#ajaxLoader').fadeOut(200);
+                }
+            });
+        });
+    </script>
+}

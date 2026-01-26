@@ -21,7 +21,7 @@ namespace WebApplication10.Controllers
         [HttpGet]
         public ActionResult Login()
         {
-            ViewBag.RightPanel = "AuthPartials/_RightPanel_Login";
+            ViewBag.RightPanel = "AuthPartials/_LoginRight";
             return View();
         }
 
@@ -259,7 +259,7 @@ namespace WebApplication10.Controllers
             if (Request.IsAjaxRequest())
                 return PartialView("Profile/_ProfileContent", user);
 
-            return View(user);
+            return View("Profile/_ProfileContent", user);
         }
 
         [HttpGet]
