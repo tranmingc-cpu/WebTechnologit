@@ -1,0 +1,68 @@
+﻿@model WebApplication10.Models.Users
+
+@Html.Partial(
+    "~/Views/Account/Profile/_EditProfileModal.cshtml",
+    Model
+)
+
+@Html.Partial(
+    "~/Views/Account/Profile/_ChangePasswordModal.cshtml",
+    new WebApplication10.ViewModels.ChangePasswordVM()
+)
+
+<div id="successModal" class="profile-modal">
+    <div class="profile-modal-content success">
+        <span class="profile-close">&times;</span>
+        <h3>Thành công!</h3>
+        <p id="successMessage"></p>
+        <button id="btnCloseSuccess" class="btn btn-primary">Đóng</button>
+    </div>
+</div>
+
+<script>
+    $(document).on("submit", "#editProfileForm", function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+
+        $.ajax({
+            url: form.attr("action"),
+            type: "POST",
+            data: form.serialize(),
+            success: function (res) {
+                if (res.success) {
+                    $("#editProfileModal").hide();
+                    $("#successMessage").text("Cập nhật thông tin thành công!");
+                    $("#successModal").show();
+                } else {
+                    $("#editProfileModal").replaceWith(res);
+                }
+            }
+        });
+    });
+
+    $(document).on("submit", "#changePasswordForm", function (e) {
+        e.preventDefault();
+
+        const form = $(this);
+
+        $.ajax({
+            url: form.attr("action"),
+            type: "POST",
+            data: form.serialize(),
+            success: function (res) {
+                if (res.success) {
+                    $("#changePasswordModal").hide();
+                    $("#successMessage").text("Đổi mật khẩu thành công!");
+                    $("#successModal").show();
+                } else {
+                    $("#changePasswordModal").replaceWith(res);
+                }
+            }
+        });
+    });
+
+    $(document).on("click", ".profile-close, #btnCloseSuccess", function () {
+        $(".profile-modal").hide();
+    });
+</script>

@@ -84,7 +84,7 @@ namespace WebApplication10.Controllers
         [HttpGet]
         public ActionResult Register()
         {
-            ViewBag.RightPanel = "AuthPartials/_RightPanel_Register";
+            ViewBag.RightPanel = "AuthPartials/_RegisterRight";
             return View();
         }
 
@@ -231,13 +231,14 @@ namespace WebApplication10.Controllers
             Session.Abandon();
             return RedirectToAction("Login", "Account");
         }
-
-        // PROFILE
         [HttpGet]
         public ActionResult UserProfile()
         {
             if (Session["UserId"] == null)
             {
+                if (Request.IsAjaxRequest())
+                    return Json(new { redirect = Url.Action("Login", "Account") }, JsonRequestBehavior.AllowGet);
+
                 return RedirectToAction("Login", "Account");
             }
 
@@ -254,6 +255,9 @@ namespace WebApplication10.Controllers
                 .Any(x => x.Email == user.Email && x.IsActive == true);
 
             ViewBag.IsNewsletterSubscribed = isSubscribed;
+
+            if (Request.IsAjaxRequest())
+                return PartialView("Profile/_ProfileContent", user);
 
             return View(user);
         }
@@ -280,16 +284,49 @@ namespace WebApplication10.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ChangePassword(string oldPassword, string newPassword)
+        public ActionResult ChangePassword(ChangePasswordVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            k => k.Key,
+                            v => v.Value.Errors.First().ErrorMessage
+                        )
+                });
+            }
+
             int userId = (int)Session["UserId"];
-            bool success = _userDao.ChangePassword(userId, oldPassword, newPassword);
-            return Json(new { success = success, message = success ? "Đổi mật khẩu thành công!" : "Mật khẩu cũ không đúng!" });
+
+            bool success = _userDao.ChangePassword(
+                userId,
+                model.OldPassword,
+                model.NewPassword
+            );
+
+            if (!success)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Mật khẩu cũ không đúng"
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                message = "Đổi mật khẩu thành công!"
+            });
         }
 
         protected bool IsAjax()
         {
-            return Request.IsAjaxRequest();
+            return Request.IsAjaxRequest() || Request.Headers["X-Requested-With"] == "XMLHttpRequest";
         }
 
         public ActionResult AccessDenied()
@@ -301,34 +338,119 @@ namespace WebApplication10.Controllers
         [HttpGet]
         public ActionResult Orders()
         {
-            if (Session["UserId"] == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            var orders = new List<OrderViewModel>();
 
-            int userId = (int)Session["UserId"];
-            
-            var orders = db.Orders
-                .Where(o => o.UserId == userId)
-                .OrderByDescending(o => o.OrderDate)
-                .Select(o => new OrderViewModel
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== Orders Action Started ===");
+                
+                if (Session["UserId"] != null)
                 {
-                    OrderId = o.OrderId,
-                    OrderDate = o.OrderDate ?? DateTime.Now,
-                    TotalAmount = o.TotalAmount ?? 0,
-                    Status = o.Status,
-                    ShippingAddress = o.ShippingAddress,
-                    OrderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                    // User đã đăng nhập - lấy tất cả đơn hàng
+                    int userId = (int)Session["UserId"];
+                    System.Diagnostics.Debug.WriteLine($"Logged-in user: {userId}");
+                    
+                    var userOrders = db.Orders
+                        .Where(o => o.UserId == userId)
+                        .OrderByDescending(o => o.OrderDate)
+                        .ToList();
+
+                    System.Diagnostics.Debug.WriteLine($"Found {userOrders.Count} orders for user {userId}");
+
+                    foreach (var o in userOrders)
                     {
-                        ProductId = od.ProductId,
-                        ProductName = od.Products.ProductName,
-                        ImageUrl = od.Products.ImageUrl,
-                        Quantity = od.Quantity,
-                        UnitPrice = od.UnitPrice,
-                        TotalPrice = od.Quantity * od.UnitPrice
-                    }).ToList()
-                })
-                .ToList();
+                        try
+                        {
+                            var orderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                            {
+                                ProductId = od.ProductId,
+                                ProductName = od.Products != null ? od.Products.ProductName : "N/A",
+                                ImageUrl = od.Products != null ? od.Products.ImageUrl : "",
+                                Quantity = od.Quantity,
+                                UnitPrice = od.UnitPrice,
+                                TotalPrice = od.Quantity * od.UnitPrice
+                            }).ToList();
+
+                            orders.Add(new OrderViewModel
+                            {
+                                OrderId = o.OrderId,
+                                OrderDate = o.OrderDate ?? DateTime.Now,
+                                TotalAmount = o.TotalAmount ?? 0,
+                                Status = o.Status,
+                                ShippingAddress = o.ShippingAddress,
+                                OrderDetails = orderDetails
+                            });
+                        }
+                        catch (Exception orderEx)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error processing order {o.OrderId}: {orderEx.Message}");
+                            // Skip this order and continue
+                        }
+                    }
+                }
+                else if (Session["GuestOrders"] != null)
+                {
+                    // Guest user - lấy đơn hàng từ session
+                    var guestOrderIds = Session["GuestOrders"] as List<int>;
+                    System.Diagnostics.Debug.WriteLine($"Guest orders: {string.Join(", ", guestOrderIds ?? new List<int>())}");
+                    
+                    if (guestOrderIds != null && guestOrderIds.Any())
+                    {
+                        var guestOrders = db.Orders
+                            .Where(o => guestOrderIds.Contains(o.OrderId))
+                            .OrderByDescending(o => o.OrderDate)
+                            .ToList();
+
+                        System.Diagnostics.Debug.WriteLine($"Found {guestOrders.Count} guest orders");
+
+                        foreach (var o in guestOrders)
+                        {
+                            try
+                            {
+                                var orderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                                {
+                                    ProductId = od.ProductId,
+                                    ProductName = od.Products != null ? od.Products.ProductName : "N/A",
+                                    ImageUrl = od.Products != null ? od.Products.ImageUrl : "",
+                                    Quantity = od.Quantity,
+                                    UnitPrice = od.UnitPrice,
+                                    TotalPrice = od.Quantity * od.UnitPrice
+                                }).ToList();
+
+                                orders.Add(new OrderViewModel
+                                {
+                                    OrderId = o.OrderId,
+                                    OrderDate = o.OrderDate ?? DateTime.Now,
+                                    TotalAmount = o.TotalAmount ?? 0,
+                                    Status = o.Status,
+                                    ShippingAddress = o.ShippingAddress,
+                                    OrderDetails = orderDetails
+                                });
+                            }
+                            catch (Exception orderEx)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error processing guest order {o.OrderId}: {orderEx.Message}");
+                                // Skip this order and continue
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No user session and no guest orders");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Total orders to display: {orders.Count}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Orders Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+            }
 
             return View(orders);
         }
@@ -337,40 +459,115 @@ namespace WebApplication10.Controllers
         [HttpGet]
         public ActionResult OrderDetail(int id)
         {
-            if (Session["UserId"] == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            int userId = (int)Session["UserId"];
+            System.Diagnostics.Debug.WriteLine($"=== OrderDetail called with id: {id} ===");
             
-            var order = db.Orders
-                .Where(o => o.OrderId == id && o.UserId == userId)
-                .Select(o => new OrderViewModel
-                {
-                    OrderId = o.OrderId,
-                    OrderDate = o.OrderDate ?? DateTime.Now,
-                    TotalAmount = o.TotalAmount ?? 0,
-                    Status = o.Status,
-                    ShippingAddress = o.ShippingAddress,
-                    OrderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
-                    {
-                        ProductId = od.ProductId,
-                        ProductName = od.Products.ProductName,
-                        ImageUrl = od.Products.ImageUrl,
-                        Quantity = od.Quantity,
-                        UnitPrice = od.UnitPrice,
-                        TotalPrice = od.Quantity * od.UnitPrice
-                    }).ToList()
-                })
-                .FirstOrDefault();
-
-            if (order == null)
+            try
             {
-                return HttpNotFound();
-            }
+                // Check quyền xem đơn hàng
+                bool canView = false;
+                
+                if (Session["UserId"] != null)
+                {
+                    int userId = (int)Session["UserId"];
+                    var checkOrder = db.Orders.FirstOrDefault(o => o.OrderId == id && o.UserId == userId);
+                    canView = (checkOrder != null);
+                }
+                else if (Session["GuestOrders"] != null)
+                {
+                    var guestOrderIds = Session["GuestOrders"] as List<int>;
+                    canView = (guestOrderIds != null && guestOrderIds.Contains(id));
+                }
 
-            return View(order);
+                if (!canView)
+                {
+                    if (IsAjax())
+                    {
+                        return Json(new { success = false, message = "Bạn không có quyền xem đơn hàng này" }, JsonRequestBehavior.AllowGet);
+                    }
+                    return RedirectToAction("Login", "Account");
+                }
+
+                // Load order
+                var orderEntity = db.Orders.Find(id);
+
+                if (orderEntity == null)
+                {
+                    if (IsAjax())
+                    {
+                        return Json(new { success = false, message = "Không tìm thấy đơn hàng" }, JsonRequestBehavior.AllowGet);
+                    }
+                    return HttpNotFound();
+                }
+
+                // Map to ViewModel
+                var orderDetailsList = new List<OrderDetailViewModel>();
+                
+                if (orderEntity.OrderDetails != null)
+                {
+                    foreach (var od in orderEntity.OrderDetails)
+                    {
+                        orderDetailsList.Add(new OrderDetailViewModel
+                        {
+                            ProductId = od.ProductId,
+                            ProductName = od.Products?.ProductName ?? "Sản phẩm không tồn tại",
+                            ImageUrl = od.Products?.ImageUrl ?? "",
+                            Quantity = od.Quantity,
+                            UnitPrice = od.UnitPrice,
+                            TotalPrice = od.Quantity * od.UnitPrice
+                        });
+                    }
+                }
+
+                var orderViewModel = new OrderViewModel
+                {
+                    OrderId = orderEntity.OrderId,
+                    OrderDate = orderEntity.OrderDate ?? DateTime.Now,
+                    TotalAmount = orderEntity.TotalAmount ?? 0,
+                    Status = orderEntity.Status ?? "Pending",
+                    ShippingAddress = orderEntity.ShippingAddress ?? "",
+                    OrderDetails = orderDetailsList
+                };
+
+                // Return JSON for AJAX request
+                if (IsAjax())
+                {
+                    return Json(new 
+                    { 
+                        success = true,
+                        order = new
+                        {
+                            orderId = orderViewModel.OrderId,
+                            orderDate = orderViewModel.OrderDate.ToString("dd/MM/yyyy HH:mm"),
+                            totalAmount = orderViewModel.TotalAmount,
+                            status = orderViewModel.Status,
+                            shippingAddress = orderViewModel.ShippingAddress,
+                            orderDetails = orderViewModel.OrderDetails.Select(od => new
+                            {
+                                productId = od.ProductId,
+                                productName = od.ProductName,
+                                imageUrl = string.IsNullOrEmpty(od.ImageUrl) ? "/Content/images/no-image.png" : "/Content/images/" + od.ImageUrl,
+                                quantity = od.Quantity,
+                                unitPrice = od.UnitPrice,
+                                totalPrice = od.TotalPrice
+                            }).ToList()
+                        }
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                return View(orderViewModel);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in OrderDetail: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                if (IsAjax())
+                {
+                    return Json(new { success = false, message = "Lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+                
+                return Content($"Error: {ex.Message}");
+            }
         }
 
         // Hủy đơn hàng
@@ -411,6 +608,53 @@ namespace WebApplication10.Controllers
             db.SaveChanges();
 
             return Json(new { success = true, message = "Đã hủy đơn hàng thành công" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProfileAjax(Users model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("Profile/_EditProfileModal", model);
+            }
+
+            _userDao.Update(model);
+
+            return Json(new { success = true });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePasswordAjax(ChangePasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(
+                    "Profile/_ChangePasswordModal",
+                    model
+                );
+            }
+
+            int userId = (int)Session["UserId"];
+
+            bool success = _userDao.ChangePassword(
+                userId,
+                model.OldPassword,
+                model.NewPassword
+            );
+
+            if (!success)
+            {
+                ModelState.AddModelError(
+                    "OldPassword",
+                    "Mật khẩu cũ không đúng"
+                );
+
+                return PartialView("Profile/_ChangePasswordModal", model);
+            }
+            return Json(new { success = true });
         }
     }
 }

@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using WebApplication10.DAO;
+using WebApplication10.Filters;
 using WebApplication10.Models;
 using WebApplication10.Services;
 using WebApplication10.ViewModels;
 
 namespace WebApplication10.Controllers
 {
+    [RoleAuthorize("Admin")]
     public class AdminController : BaseController
     {
         private readonly AdminDao _adminDao;
@@ -101,8 +103,6 @@ namespace WebApplication10.Controllers
 
         public ActionResult AdminActionsPartial()
         {
-            if (Session["UserRole"]?.ToString() != "Admin")
-                return new HttpUnauthorizedResult();
 
             var about = db.InfoPages.FirstOrDefault(p => p.Slug == "about");
             var contact = db.InfoPages.FirstOrDefault(p => p.Slug == "contact");

@@ -15,7 +15,6 @@ namespace WebApplication10.Filters
         {
             var session = filterContext.HttpContext.Session;
 
-            // ❌ Chưa login
             if (session["UserId"] == null)
             {
                 filterContext.Result =
@@ -25,7 +24,6 @@ namespace WebApplication10.Filters
 
             var userRole = session["UserRole"]?.ToString();
 
-            // ❌ Login nhưng sai role
             if (userRole != _role)
             {
                 filterContext.Result =

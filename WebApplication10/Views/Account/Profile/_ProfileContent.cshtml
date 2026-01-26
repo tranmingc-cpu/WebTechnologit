@@ -1,0 +1,86 @@
+﻿@model WebApplication10.Models.Users
+
+<div class="account-page">
+    <div class="profile-wrapper">
+
+        <div class="profile-sidebar">
+            <div class="avatar">
+                <i class="fa fa-user"></i>
+            </div>
+
+            <h3 id="sidebarFullName">@Model.FullName</h3>
+            <p class="email">@Model.Email</p>
+
+            <span class="status @(Model.IsActive == true ? "active" : "inactive")">
+                @(Model.IsActive == true ? "Hoạt động" : "Bị khóa")
+            </span>
+
+            <ul class="profile-menu">
+                <li class="active">
+                    <i class="fa fa-id-card"></i> Hồ sơ
+                </li>
+                <li>
+                    <a href="/Account/Orders">
+                        <i class="fa fa-box"></i> Đơn hàng
+                    </a>
+                </li>
+                <li>
+                    <form action="/Account/Logout" method="post" id="logoutForm">
+                        @Html.AntiForgeryToken()
+                        <a href="#" onclick="document.getElementById('logoutForm').submit();">
+                            <i class="fa fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <div class="profile-content">
+            <h2>Thông tin cá nhân</h2>
+
+            <div class="info-grid">
+                <div>
+                    <label>Họ tên</label>
+                    <span id="fullnameDisplay">@Model.FullName</span>
+                </div>
+                <div>
+                    <label>Email</label>
+                    <span>@Model.Email</span>
+                </div>
+                <div>
+                    <label>Số điện thoại</label>
+                    <span id="phoneDisplay">@Model.Phone</span>
+                </div>
+                <div>
+                    <label>Địa chỉ</label>
+                    <span id="addressDisplay">@Model.Address</span>
+                </div>
+                <div>
+                    <label>Vai trò</label>
+                    <span class="badge">@Model.Role</span>
+                </div>
+                <div>
+                    <label>Ngày tạo</label>
+                    <span>@Model.CreatedAt</span>
+                </div>
+            </div>
+
+            @Html.Partial(
+                "~/Views/Shared/_NewsletterSection.cshtml",
+                (bool)(ViewBag.IsNewsletterSubscribed ?? false)
+            )
+
+            <div class="profile-actions">
+                <a href="#" class="btn btn-primary" id="btnEditProfile">
+                    <i class="fa fa-pen"></i> Cập nhật thông tin
+                </a>
+                <a href="#" class="btn btn-outline" id="btnChangePassword">
+                    <i class="fa fa-lock"></i> Đổi mật khẩu
+                </a>
+            </div>
+
+    @Html.Partial("~/Views/Account/Profile/_ProfileModals.cshtml", Model)
+
+        </div>
+    </div>
+</div>
