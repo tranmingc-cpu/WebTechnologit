@@ -371,6 +371,7 @@ body {
     }
 }
 
+
 .delete-confirm-form {
     max-width: 520px;
     margin: 0 auto;
@@ -460,11 +461,23 @@ body {
 }
 
 .users-header {
+}
+.admin-chart-box {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-top: 40px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.chart-header {
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
 }
+
 
 .users-title h3 {
     margin: 0;
@@ -500,48 +513,68 @@ body {
         width: 100%;
         justify-content: center;
     }
-}
-.admin-table-wrapper {
-    overflow-x: auto;
-}
 
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #2f3147;
-    border-radius: 14px;
-    overflow: hidden;
-}
-
-    .admin-table th,
-    .admin-table td {
-        padding: 14px 16px;
-        text-align: left;
-        vertical-align: top !important;
-        border-bottom: 1px solid #3b3c55;
-        color: #e5e7eb;
+    .chart-header h3 {
+        font-size: 18px;
+        font-weight: 700;
     }
 
-    .admin-table th {
-        background: #1f2130;
-        font-weight: 600;
+    .chart-header span {
         font-size: 14px;
+        color: #6b7280;
     }
 
-.message-cell {
-    max-width: 420px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.6;
-    color: #d1d5db;
-}
+    .chart-wrapper {
+        height: 380px; 
+        position: relative;
+    }
 
-.empty-row {
-    text-align: center;
-    padding: 24px;
-    color: #9ca3af;
-    font-style: italic;
-}
-.admin-table tr {
-    height: auto;
+    .admin-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #2f3147;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 14px 16px;
+            text-align: left;
+            vertical-align: top !important;
+            border-bottom: 1px solid #3b3c55;
+            color: #e5e7eb;
+        }
+
+        .admin-table th {
+            background: #1f2130;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+    .message-cell {
+        max-width: 420px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.6;
+        color: #d1d5db;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 24px;
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    .admin-table tr {
+        height: auto;
+    }
+
+   
+
 }

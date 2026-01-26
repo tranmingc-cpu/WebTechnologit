@@ -1,77 +1,26 @@
-﻿@model IEnumerable<WebApplication10.Models.Products>
-
-@{
-    ViewBag.Title = "Admin - Product Management";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+﻿@{
+    ViewBag.Title = "Manage Products";
+    Layout = null; 
 }
 
-<h2>📦 Quản lý sản phẩm</h2>
+<div id="productListContainer"></div>
 
-<p>
-    <a href="@Url.Action("Create", "AdminProducts")"
-       class="btn btn-success">
-        ➕ Thêm sản phẩm
-    </a>
-</p>
+<script>
+    console.log(' AdminProducts Index loaded');
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tên sản phẩm</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Trạng thái</th>
-            <th width="280">Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.ProductId</td>
-                <td>@item.ProductName</td>
-                <td>@String.Format("{0:N0} đ", item.Price)</td>
-                <td>@item.Quantity</td>
-                <td>
-                    @if (item.Status == "Active")
-                    {
-                        <span class="badge bg-success">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Inactive</span>
-                    }
-                </td>
-                <td>
-                    <a href="@Url.Action("Edit", "AdminProducts", new { id = item.ProductId })"
-                       class="btn btn-primary btn-sm">
-                        ✏️ Sửa
-                    </a>
+    $(function () {
+        loadProductList();
+    });
 
-                    <a href="@Url.Action("Delete", "AdminProducts", new { id = item.ProductId })"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Bạn có chắc muốn xoá sản phẩm này?')">
-                        🗑️ Xoá
-                    </a>
+    function loadProductList() {
+        console.log('➡️ load ProductListPartial');
 
-                    <br /><br />
-
-                    <a href="@Url.Action("TestSendNewProductMail",
-                            "AdminProducts",
-                            new { productId = item.ProductId })"
-                       class="btn btn-warning btn-sm">
-                        📧 Test Email Queue
-                    </a>
-
-                    <a href="@Url.Action("TestSendMailNow",
-                            "AdminProducts",
-                            new { productId = item.ProductId })"
-                       class="btn btn-dark btn-sm">
-                        🚀 Send Mail Now
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        $.get('/AdminProducts/ProductListPartial')
+            .done(function (html) {
+                $('#productListContainer').html(html);
+            })
+            .fail(function (xhr) {
+                console.error('❌ Load ProductListPartial fail', xhr.status);
+            });
+    }
+</script>

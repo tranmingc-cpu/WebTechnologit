@@ -14,5 +14,8 @@ namespace WebApplication10.ViewModels
         public InfoPages Shipping { get; set; }
         public InfoPages Payment { get; set; }
         public List<InfoPages> OtherPages { get; set; } = new List<InfoPages>();
+
+  
+
     }
 }

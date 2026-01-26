@@ -1,0 +1,78 @@
+h2 {
+    color: #facc15;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(250, 204, 21, 0.6), 0 0 16px rgba(250, 204, 21, 0.3);
+}
+
+.table {
+    background: #0f1115;
+    color: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-bordered > :not(caption) > * {
+    border-color: rgba(255,255,255,.08);
+}
+
+.table thead th {
+    background: #111827;
+    color: #9ca3af;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: rgba(255,255,255,.04);
+}
+
+.table tbody td:first-child {
+    font-weight: 600;
+    color: #60a5fa;
+}
+
+.badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+}
+
+.bg-success {
+    background-color: rgba(34,197,94,.15) !important;
+    color: #22c55e !important;
+}
+
+.bg-info {
+    background-color: rgba(14,165,233,.15) !important;
+    color: #0ea5e9 !important;
+}
+
+.bg-warning {
+    background-color: rgba(234,179,8,.15) !important;
+    color: #eab308 !important;
+}
+
+.btn-primary {
+    background: #ef4444;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-primary:hover {
+        background: #dc2626;
+    }
+
+
+h4 {
+    color: #fbbf24;
+    margin-top: 20px;
+}

@@ -1,34 +1,15 @@
-﻿@model WebApplication10.ViewModels.AdminActionsViewModel
+﻿﻿@model WebApplication10.ViewModels.DashboardViewModel
 @{
-    bool isPartial = ViewBag.IsPartial ?? false;
-    if (!isPartial)
-    {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     ViewBag.Title = "Admin Dashboard";
 }
-
-<div class="admin-box">
-    <div class="admin-header">
-        <h2>👋 Welcome, @Session["UserName"]!</h2>
-        <p>Overview of your Tech Store system</p>
-    </div>
-
-    <div class="admin-stats">
-        <div class="stat-card">
-            <div class="stat-icon">👤</div>
-            <h3>Users</h3>
-            <p>@((ViewBag.UserCount ?? 0).ToString("N0"))</p>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">🛒</div>
-            <h3>Orders</h3>
-            <p>@((ViewBag.OrderCount ?? 0).ToString("N0"))</p>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📦</div>
-            <h3>Products</h3>
-            <p>@((ViewBag.ProductCount ?? 0).ToString("N0"))</p>
-        </div>
-    </div>
+<div id="dashboardContent">
+    @Html.Partial("_DashBoard", Model)
 </div>
+@section Scripts {
+    <script src="~/Scripts/users/admin-navigation.js"></script>
+}
+
+

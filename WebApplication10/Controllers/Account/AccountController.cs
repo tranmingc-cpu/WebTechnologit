@@ -232,7 +232,7 @@ namespace WebApplication10.Controllers
             return RedirectToAction("Login", "Account");
         }
         [HttpGet]
-        public ActionResult Profile()
+        public ActionResult UserProfile()
         {
             if (Session["UserId"] == null)
             {
