@@ -155,13 +155,15 @@
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function (response) {
+                        console.log('Checkout response:', response);
+                        
                         if (response.success) {
                             currentOrderId = response.orderId;
                             $('#successMessage').text(response.message);
                             $('#orderIdDisplay').text('#' + response.orderId);
-                            $('#checkoutModal').fadeOut(300, function() {
-                                $('#successModal').fadeIn(300);
-                            });
+                            
+                            // Hiển thị success modal
+                            $('#successModal').fadeIn(300);
                             
                             // Update cart badge
                             $('.cart-badge').text('0').hide();
@@ -179,99 +181,28 @@
                 });
             });
 
-            // View Order Details (AJAX)
+            // View Order Details
             $('#btnViewOrder').on('click', function() {
-                if (!currentOrderId) return;
+                if (!currentOrderId) {
+                    window.location.href = '@Url.Action("Orders", "Account")';
+                    return;
+                }
                 
-                loadOrderDetail(currentOrderId);
-                $('#successModal').fadeOut(300, function() {
-                    $('#orderDetailModal').fadeIn(300);
-                });
+                // Chuyển đến trang orders
+                window.location.href = '@Url.Action("Orders", "Account")';
             });
 
-            // Continue Shopping (AJAX)
+            // Continue Shopping
             $('#btnContinueShopping').on('click', function() {
-                $('#successModal').fadeOut(300);
-                // Clear cart and reload page to show empty cart
                 window.location.href = '@Url.Action("Index", "Products")';
             });
 
-            // Close order detail modal
-            $('.order-close').on('click', function() {
-                $('#orderDetailModal').fadeOut(300);
+            // Close success modal on outside click
+            $('#successModal').on('click', function(e) {
+                if ($(e.target).is('#successModal')) {
+                    // Không đóng modal khi click ngoài - buộc user chọn action
+                }
             });
-
-            // Load order detail via AJAX
-            function loadOrderDetail(orderId) {
-                $.ajax({
-                    url: '@Url.Action("OrderDetail", "Account")',
-                    type: 'GET',
-                    data: { id: orderId },
-                    success: function(html) {
-                        $('#orderDetailContent').html(html);
-                        
-                        // Bind cancel button
-                        bindCancelOrderButton();
-                    },
-                    error: function() {
-                        alert('Không thể tải thông tin đơn hàng');
-                    }
-                });
-            }
-
-            // Bind cancel order button in modal
-            function bindCancelOrderButton() {
-                $('#orderDetailContent').on('click', '.btn-cancel-order', function() {
-                    var orderId = $(this).data('order-id');
-                    
-                    if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
-                        return;
-                    }
-                    
-                    $.ajax({
-                        url: '@Url.Action("CancelOrder", "Account")',
-                        type: 'POST',
-                        data: { orderId: orderId },
-                        success: function(response) {
-                            if (response.success) {
-                                showNotification(response.message, 'success');
-                                // Reload order detail
-                                loadOrderDetail(orderId);
-                            } else {
-                                showNotification(response.message, 'error');
-                            }
-                        },
-                        error: function() {
-                            showNotification('Có lỗi xảy ra', 'error');
-                        }
-                    });
-                });
-            }
-
-            function showNotification(message, type) {
-                var bgColor = type === 'success' ? '#4caf50' : '#f44336';
-                var notification = $('<div class="cart-notification">' + message + '</div>');
-                notification.css({
-                    'position': 'fixed',
-                    'top': '20px',
-                    'right': '20px',
-                    'background': bgColor,
-                    'color': 'white',
-                    'padding': '15px 25px',
-                    'border-radius': '8px',
-                    'box-shadow': '0 4px 12px rgba(0,0,0,0.3)',
-                    'z-index': '10002',
-                    'animation': 'slideInRight 0.3s ease-out'
-                });
-                
-                $('body').append(notification);
-                
-                setTimeout(function () {
-                    notification.fadeOut(300, function () {
-                        $(this).remove();
-                    });
-                }, 3000);
-            }
         });
     </script>
     
@@ -340,6 +271,8 @@
             font-weight: 700;
             text-decoration: none;
             transition: .3s;
+            cursor: pointer;
+            border: none;
         }
 
         .success-actions .btn-primary {
