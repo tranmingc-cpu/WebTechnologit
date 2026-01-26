@@ -232,6 +232,8 @@
     <Compile Include="Services\ResetPasswordMailService.cs" />
     <Compile Include="Services\EmailQueueProcessor.cs" />
     <Compile Include="Services\EmailSenderService.cs" />
+    <Compile Include="ViewModels\ChangePasswordVM.cs" />
+    <Compile Include="ViewModels\EditProfileVM.cs" />
     <Compile Include="ViewModels\AdminContactListViewModel.cs" />
     <Compile Include="ViewModels\ContactFormViewModel.cs" />
     <Compile Include="ViewModels\AdminEditUserVM.cs" />
@@ -286,6 +288,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\account\profile.js" />
     <Content Include="Scripts\auth\auth-navigation.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -392,6 +395,10 @@
     <Content Include="Views\Account\Orders.cshtml" />
     <Content Include="Views\Account\OrderDetail.cshtml" />
     <Content Include="Views\Account\_OrderDetailPartial.cshtml" />
+    <Content Include="Views\Account\Profile\_ProfileContent.cshtml" />
+    <Content Include="Views\Account\Profile\_ProfileModals.cshtml" />
+    <Content Include="Views\Account\Profile\_ChangePasswordModal.cshtml" />
+    <Content Include="Views\Account\Profile\_EditProfileModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -83,5 +83,4 @@
             loadAuth(e.state.url, false);
         }
     };
-
 });

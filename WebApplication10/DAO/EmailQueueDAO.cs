@@ -64,7 +64,7 @@ namespace WebApplication10.DAO
             var email = _db.EmailQueue.Find(emailQueueId);
             if (email == null) return;
 
-            email.Status = 1;     // Sent
+            email.Status = 1;
             email.SentAt = DateTime.Now;
 
             _db.SaveChanges();

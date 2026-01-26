@@ -1,0 +1,33 @@
+﻿@model WebApplication10.Models.Users
+
+<div id="editProfileModal" class="profile-modal">
+    <div class="profile-modal-content">
+        <span class="profile-close">&times;</span>
+        <h3>Cập nhật thông tin</h3>
+
+        @using (Html.BeginForm(
+            "EditProfileAjax",
+            "Account",
+            FormMethod.Post,
+            new { id = "editProfileForm", autocomplete = "off" }
+        ))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.UserId)
+
+            <label>Họ tên</label>
+            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+
+            <label>Số điện thoại</label>
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger" })
+
+            <label>Địa chỉ</label>
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        }
+    </div>
+</div>
