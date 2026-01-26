@@ -71,12 +71,12 @@ namespace WebApplication10.Controllers.Admin
         public ActionResult Create()
         {
             LoadCategoryBrand();
-            return PartialView("_CreateProduct", new AdminCreateProductVM());
+            return PartialView("_CreateProduct", new AdminProductsFormVM());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(AdminCreateProductVM model)
+        public ActionResult Create(AdminProductsFormVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -122,7 +122,7 @@ namespace WebApplication10.Controllers.Admin
                 return HttpNotFound();
             LoadCategoryBrand();
 
-            var vm = new AdminEditProductsVM
+            var vm = new AdminProductsFormVM
             {
                 ProductId = product.ProductId,
                 ProductName = product.ProductName,
@@ -141,7 +141,7 @@ namespace WebApplication10.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(AdminEditProductsVM model)
+        public ActionResult Edit(AdminProductsFormVM model)
         {
             if (!ModelState.IsValid) { 
                 LoadCategoryBrand();
@@ -175,7 +175,7 @@ namespace WebApplication10.Controllers.Admin
             catch
             {
                 ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật sản phẩm.");
-                return PartialView("_EditProduct", model);
+                return PartialView("_EditProducts", model);
             }
         }
 

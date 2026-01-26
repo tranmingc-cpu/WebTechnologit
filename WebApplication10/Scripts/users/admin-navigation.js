@@ -75,84 +75,6 @@ function loadMain(url) {
         });
 }
 
-   /* if (url.startsWith('/Admin') && !url.includes('partial=true')) {
-        url += (url.includes("?") ? "&" : "?") + "partial=true";
-    }
-
-    history.pushState({}, '', url.replace('?partial=true', ''));
-
-    $.get(url).done(function (html) {
-        $('#mainContent').html(html);
-
-        if (url.startsWith('/Admin/Dashboard')) {
-            initDashboardChart();
-        }
-    });
-}
-
-    /*function loadMain(url) {
-        console.log('➡️ LOAD:', url);
-
-        // MỌI TRANG ADMIN ĐỀU LÀ PARTIAL
-        if (!url.includes("partial=true")) {
-            url += (url.includes("?") ? "&" : "?") + "partial=true";
-        }
-
-        currentAdminUrl = url;
-
-        $.get(url)
-            .done(function (html) {
-                $('#mainContent').html(html);
-
-                // chỉ init chart nếu có
-                setTimeout(initDashboardChart, 0);
-
-                initCKEditor();
-                bindValidation('#mainContent');
-                highlightActiveMenu(url);
-                scrollToTop();
-            })
-            .fail(function (xhr) {
-                console.error('AJAX FAIL:', url, xhr.status, xhr.responseText);
-            });
-    } 
-function loadMain(url) {
-    console.log('➡️ LOAD:', url);
-
-    // luôn gọi partial
-    let ajaxUrl = url;
-    if (!ajaxUrl.includes("partial=true")) {
-        ajaxUrl += (ajaxUrl.includes("?") ? "&" : "?") + "partial=true";
-    }
-
-    // 🔒GIẤU URL – LUÔN LÀ /Admin
-    history.pushState(
-        { adminUrl: url },
-        '',
-        '/Admin'
-    );
-
-    currentAdminUrl = url;
-
-    $.get(ajaxUrl)
-        .done(function (html) {
-            $('#mainContent').html(html);
-
-            if (url.startsWith('/Admin/Dashboard')) {
-                setTimeout(initDashboardChart, 0);
-            }
-
-            initCKEditor();
-            bindValidation('#mainContent');
-            highlightActiveMenu(url);
-            scrollToTop();
-        })
-        .fail(function (xhr) {
-            console.error('AJAX FAIL:', ajaxUrl, xhr.status);
-        });
-}
-*/
-
     function showGlobalModal(type, title, message) {
         const $modal = $('#globalAlertModal');
 
@@ -300,76 +222,93 @@ function initDashboardChart() {
     }
     const ctx = canvas.getContext('2d');
 
-   
+    // Gradient luxury
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, 'rgba(59,130,246,0.95)');
-    gradient.addColorStop(1, 'rgba(59,130,246,0.35)');
+    gradient.addColorStop(0, 'rgba(34,197,94,0.95)');
+    gradient.addColorStop(1, 'rgba(22,163,74,0.4)');
 
+    // Shadow plugin
     const shadowPlugin = {
         id: 'shadow',
         beforeDraw(chart) {
-            const ctx = chart.ctx;
+            const { ctx } = chart;
             ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.25)';
-            ctx.shadowBlur = 12;
-            ctx.shadowOffsetY = 6;
+            ctx.shadowColor = 'rgba(0,0,0,0.35)';
+            ctx.shadowBlur = 18;
+            ctx.shadowOffsetY = 8;
         },
         afterDraw(chart) {
             chart.ctx.restore();
         }
     };
-  
-    window.revenueChartInstance = new Chart(canvas.getContext('2d'), {
+
+    window.revenueChartInstance?.destroy();
+
+    window.revenueChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels,
             datasets: [{
                 data: revenues,
-                borderRadius: 12,
-                borderSkipped: false,
                 backgroundColor: gradient,
-                hoverBackgroundColor: 'rgba(59,130,246,1)',
-                barPercentage: 0.6,
-                categoryPercentage: 0.7
+                borderRadius: 14,
+                borderSkipped: false,
+                barPercentage: 0.55,
+                categoryPercentage: 0.7,
+                hoverBackgroundColor: 'rgba(34,197,94,1)'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
-                duration: 1200,
-                easing: 'easeOutExpo'
+                duration: 1600,
+                easing: 'easeOutQuart'
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
             },
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#0F172A',
-                    cornerRadius: 10,
-                    padding: 14,
-                    titleFont: { size: 13, weight: 'bold' },
-                    bodyFont: { size: 13 },
+                    backgroundColor: '#020617',
+                    padding: 16,
+                    cornerRadius: 14,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 14
+                    },
+                    displayColors: false,
                     callbacks: {
                         label(ctx) {
-                            return ' ' + ctx.raw.toLocaleString('vi-VN') + ' ₫';
+                            return ' 💰 ' + ctx.raw.toLocaleString('vi-VN') + ' ₫';
                         }
                     }
                 }
             },
             scales: {
                 x: {
-                    grid: { display: false },
+                    grid: {
+                        display: false
+                    },
                     ticks: {
                         color: '#CBD5E1',
                         font: { size: 12 }
                     }
                 },
                 y: {
+                    beginAtZero: true,
                     grid: {
-                        color: 'rgba(255,255,255,0.06)',
+                        color: 'rgba(255,255,255,0.05)',
                         drawBorder: false
                     },
                     ticks: {
                         color: '#CBD5E1',
+                        padding: 10,
                         font: { size: 12 },
                         callback: v => v.toLocaleString('vi-VN') + ' ₫'
                     }

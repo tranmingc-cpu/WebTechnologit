@@ -1,16 +1,16 @@
 ﻿
-  @model IEnumerable<WebApplication10.ViewModels.ProductListVM>
+@model IEnumerable<WebApplication10.ViewModels.ProductListVM>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Quản lý sản phẩm</h4>
+    <h4 class="admin-title">Quản lý sản phẩm</h4>
+</div>
 
-    
+
 <a href="/AdminProducts/Create"
    class="btn btn-success"
    data-admin-partial="true">
     + Thêm sản phẩm
 </a>
-</div>
 
 <table class="table table-dark table-bordered align-middle">
     <thead>
@@ -61,6 +61,18 @@
                        class="btn btn-sm btn-danger"
                        data-admin-partial="true">
                         Xóa
+                    </a>
+                    <a href="/AdminProducts/TestSendNewProductMail?productId=@item.ProductId"
+                       class="btn btn-warning btn-sm"
+                       data-admin-partial="true">
+                        📧 Email
+                    </a>
+
+                    <a href="/AdminProducts/TestSendMailNow?productId=@item.ProductId"
+                       class="btn btn-dark btn-sm"
+                       data-admin-partial="true"
+                       onclick="return confirm('Gửi mail NGAY cho toàn bộ subscriber?')">
+                        🚀 Send Mail Now
                     </a>
                 </td>
             </tr>

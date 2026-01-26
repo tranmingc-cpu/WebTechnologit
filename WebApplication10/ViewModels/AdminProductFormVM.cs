@@ -1,16 +1,19 @@
-﻿
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebApplication10.Models;
 
 namespace WebApplication10.ViewModels
 {
-    public class AdminEditProductsVM
+    public class AdminProductsFormVM
     {
+
         [Required]
         public string ProductName { get; set; }
 
-        [Required] public string ProductDescription { get;
+        [Required]
+        public string ProductDescription
+        {
+            get;
             set;
         }
         public int ProductId { get; set; }
@@ -24,7 +27,7 @@ namespace WebApplication10.ViewModels
         public decimal Price { get; set; }
 
         public decimal? Discount { get; set; }
-        public int?  Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         public string Description { get; set; }
         public string ImageUrl { get; set; }
@@ -34,5 +37,6 @@ namespace WebApplication10.ViewModels
         // dropdown
         public IEnumerable<Categories> Categories { get; set; }
         public IEnumerable<Brands> Brands { get; set; }
+
     }
 }

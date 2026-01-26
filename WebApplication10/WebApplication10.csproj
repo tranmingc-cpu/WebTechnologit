@@ -466,7 +466,6 @@
   <ItemGroup>
     <Compile Include="Controllers\AdminOrder\AdminOrders.cs" />
     <Compile Include="Controllers\AdminOrder\OrdersController.cs" />
-    <Compile Include="Controllers\AdminProducts\ProductsController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -569,9 +568,8 @@
     <Compile Include="Services\EmailQueueProcessor.cs" />
     <Compile Include="Services\EmailSenderService.cs" />
     <Compile Include="ViewModels\AdminContactListViewModel.cs" />
+    <Compile Include="ViewModels\AdminProductFormVM.cs" />
     <Compile Include="ViewModels\ContactFormViewModel.cs" />
-    <Compile Include="ViewModels\AdminCreateProductVM.cs" />
-    <Compile Include="ViewModels\AdminEditProductsVM.cs" />
     <Compile Include="ViewModels\AdminEditUserVM.cs" />
     <Compile Include="ViewModels\AdminCreateUserVM.cs" />
     <Compile Include="ViewModels\AdminActionsViewModel.cs" />
@@ -581,7 +579,6 @@
   <ItemGroup>
     <Content Include="Content\css\account\order-detail.css" />
     <Content Include="Content\css\account\orders.css" />
-
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
     <Compile Include="ViewModels\ProductsListVM.cs" />
   </ItemGroup>
@@ -626,6 +623,8 @@
     <Content Include="Content\css\cart.css" />
     <Content Include="Content\css\checkout.css" />
     <Content Include="Content\css\order-success.css" />
+    <Content Include="Content\css\orders\detail.css" />
+    <Content Include="Content\css\orders\orders.css" />
     <Content Include="Content\css\pages\info.css" />
     <Content Include="Content\css\products.css" />
     <Content Include="Content\css\product\product-cart.css" />
@@ -700,6 +699,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\product\category-description.js" />
+    <Content Include="Scripts\product\products.js" />
     <Content Include="Scripts\users\admin-navigation.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -726,8 +726,6 @@
     <Content Include="Views\Users\_EditUser.cshtml" />
     <Content Include="Views\Users\_DeleteUser.cshtml" />
     <Content Include="Views\Shared\_ProductCard.cshtml" />
-    <Content Include="Views\Products\Index22.cshtml" />
-    <Content Include="Views\Products\Details.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
     <Content Include="Views\Cart\OrderSuccess.cshtml" />
@@ -761,17 +759,10 @@
     <Content Include="Views\AdminContacts\_AdminContactListPartial.cshtml" />
     <Content Include="Views\Account\Orders.cshtml" />
     <Content Include="Views\Account\OrderDetail.cshtml" />
-
     <Content Include="Views\Admin\_DashBoard.cshtml" />
     <Content Include="Views\Orders\Index.cshtml" />
     <Content Include="Views\Orders\_OrdersPartial.cshtml" />
     <Content Include="Views\Orders\Details.cshtml" />
-    <Content Include="Views\Products\_ProductsPartial.cshtml" />
-    <Content Include="Views\Products\_CreateProduct.cshtml" />
-    <Content Include="Views\Products\_EditProducts.cshtml" />
-    <Content Include="Views\Products\_DeleteProduct.cshtml" />
-    <Content Include="Views\Products\Index.cshtml" />
-    <Content Include="Views\Products\_ProductDetails.cshtml" />
     <Content Include="Views\AdminProducts\_ProductsPartial.cshtml" />
     <Content Include="Views\AdminProducts\_ProductDetails.cshtml" />
     <Content Include="Views\AdminProducts\_EditProducts.cshtml" />

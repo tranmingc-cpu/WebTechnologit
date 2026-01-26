@@ -311,10 +311,10 @@
         text-align: center;
     }
 
-    .product-info img {
-        width: 60px;
-        height: 60px;
-    }
+        .product-info img {
+            width: 60px;
+            height: 60px;
+        }
 
     .product-details h3 {
         font-size: 14px;
@@ -322,5 +322,51 @@
 
     .quantity-controls {
         justify-content: center;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 480px;
+    }
+
+    .card {
+        background: linear-gradient(180deg, #0f172a, #020617);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 18px 24px;
+    }
+
+        .card-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #facc15;
+            text-shadow: 0 0 12px rgba(250,204,21,0.35);
+        }
+
+    .chart-body {
+        position: relative;
+        height: 420px;
+        padding: 20px 24px 26px;
+    }
+
+        .chart-body canvas {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 14px;
+        }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 28px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+        transition: all 0.35s ease;
     }
 }

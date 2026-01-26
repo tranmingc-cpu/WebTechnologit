@@ -9,6 +9,7 @@
     <link href="~/Content/css/admin/admin-user.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/admin/admin-editUser.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/css/orders/orders.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/site.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
     <link href="~/Content/css/account/profile.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -57,7 +58,6 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content" id="modalContent">
-                <!-- PartialView sẽ được load vào đây -->
             </div>
         </div>
     </div>
@@ -77,24 +77,23 @@
                         return (currentController == controller && (action == null || currentAction == action)) ? "active-link" : "";
                     };
                 }
-<
-      <nav class="header-actions">
-                    <a href="/Admin/Dashboard"
-                       data-admin-partial="true"
-                       class="@((currentController=="Admin" && currentAction=="Dashboard") ? "active-link" : "")">
-                        Dashboard
-                    </a>
-                    <a href="/Users/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Users") ? "active-link" : "")" data-admin-partial="true">Users</a>
+                
+            <nav class="header-actions">
+                <a href="/Admin/Dashboard"
+                   data-admin-partial="true"
+                   class="@((currentController=="Admin" && currentAction=="Dashboard") ? "active-link" : "")">
+                    Dashboard
+                </a>
+                <a href="/Users/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Users") ? "active-link" : "")" data-admin-partial="true">Users</a>
 
-                    <!--<a href="/Products"
-                       data-admin-partial
-                       class="header-link">
-                        Products
-                    </a>-->
-                    <a href="/Products/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Products") ? "active-link" : "")" data-admin-partial="true">Products</a>
-                    <a href="/Orders/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Orders") ? "active-link" : "")" data-admin-partial="true">Orders</a>
-                    <a href="@Url.Action("Logout", "Account")">Logout</a>
-                </nav>
+                <a href="/AdminProducts/Index"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminProducts" ? "active-link" : "")"
+                   data-admin-partial="true">
+                    Products
+                </a>
+                <a href="/Orders/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Orders") ? "active-link" : "")" data-admin-partial="true">Orders</a>
+                <a href="@Url.Action("Logout", "Account")">Logout</a>
+            </nav>
 
             </div>
         </header>
@@ -117,7 +116,6 @@
 
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -136,6 +134,9 @@
             });
         }
     </script>
+
+    <script src="~/Scripts/product/products.js?v=@DateTime.Now.Ticks"></script>
+    <script src="~/Scripts/product/category-description.js?v=@DateTime.Now.Ticks"></script>
 
 
 </body>

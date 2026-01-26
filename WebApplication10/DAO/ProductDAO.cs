@@ -90,20 +90,7 @@ namespace WebApplication10.DAO
 
         public bool Update(Products product)
         {
-            var existing = _context.Products.Find(product.ProductId);
-            if (existing == null)
-                return false;
-
-            existing.ProductName = product.ProductName;
-            existing.CategoryId = product.CategoryId;
-            existing.BrandId = product.BrandId;
-            existing.Price = product.Price;
-            existing.Discount = product.Discount;
-            existing.Quantity = product.Quantity;
-            existing.Description = product.Description;
-            existing.ImageUrl = product.ImageUrl;
-            existing.Status = product.Status;
-
+            _context.Entry(product).State = EntityState.Modified;
             _context.SaveChanges();
             return true;
         }

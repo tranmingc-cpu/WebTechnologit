@@ -461,7 +461,7 @@ body {
 }
 
 .users-header {
-
+}
 .admin-chart-box {
     background: #ffffff;
     border-radius: 20px;
@@ -524,52 +524,57 @@ body {
         color: #6b7280;
     }
 
-.chart-wrapper {
-    height: 380px; /* 🔥 BẮT BUỘC */
-    position: relative;
-
-}
-.admin-table-wrapper {
-    overflow-x: auto;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #2f3147;
-    border-radius: 14px;
-    overflow: hidden;
-}
-
-    .admin-table th,
-    .admin-table td {
-        padding: 14px 16px;
-        text-align: left;
-        vertical-align: top !important;
-        border-bottom: 1px solid #3b3c55;
-        color: #e5e7eb;
+    .chart-wrapper {
+        height: 380px; 
+        position: relative;
     }
 
-    .admin-table th {
-        background: #1f2130;
-        font-weight: 600;
-        font-size: 14px;
+    .admin-table-wrapper {
+        overflow-x: auto;
     }
 
-.message-cell {
-    max-width: 420px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.6;
-    color: #d1d5db;
-}
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #2f3147;
+        border-radius: 14px;
+        overflow: hidden;
+    }
 
-.empty-row {
-    text-align: center;
-    padding: 24px;
-    color: #9ca3af;
-    font-style: italic;
-}
-.admin-table tr {
-    height: auto;
+        .admin-table th,
+        .admin-table td {
+            padding: 14px 16px;
+            text-align: left;
+            vertical-align: top !important;
+            border-bottom: 1px solid #3b3c55;
+            color: #e5e7eb;
+        }
+
+        .admin-table th {
+            background: #1f2130;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+    .message-cell {
+        max-width: 420px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.6;
+        color: #d1d5db;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 24px;
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    .admin-table tr {
+        height: auto;
+    }
+
+   
+
 }
