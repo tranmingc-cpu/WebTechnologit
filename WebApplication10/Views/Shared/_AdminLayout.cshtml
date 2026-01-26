@@ -51,6 +51,16 @@
             </div>
         </div>
     </div>
+    <div class="modal fade"
+         id="mainModal"
+         tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" id="modalContent">
+                <!-- PartialView sẽ được load vào đây -->
+            </div>
+        </div>
+    </div>
 
     <div class="admin-wrapper">
         <header class="header">
@@ -75,6 +85,12 @@
                         Dashboard
                     </a>
                     <a href="/Users/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Users") ? "active-link" : "")" data-admin-partial="true">Users</a>
+
+                    <!--<a href="/Products"
+                       data-admin-partial
+                       class="header-link">
+                        Products
+                    </a>-->
                     <a href="/Products/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Products") ? "active-link" : "")" data-admin-partial="true">Products</a>
                     <a href="/Orders/Index" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Orders") ? "active-link" : "")" data-admin-partial="true">Orders</a>
                     <a href="@Url.Action("Logout", "Account")">Logout</a>
@@ -111,6 +127,16 @@
     <!-- <script src="~/Scripts/users/admin-navigation.js"></script>-->
 
     @RenderSection("Scripts", required: false)
+
+    <script>
+        function loadModal(url) {
+            $.get(url, function (html) {
+                $('#modalContent').html(html);
+                $('#mainModal').modal('show');
+            });
+        }
+    </script>
+
 
 </body>
 </html>

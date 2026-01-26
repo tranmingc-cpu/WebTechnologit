@@ -27,20 +27,25 @@
             <div class="action-icon">👥</div>
             <div class="action-text">Manage Users</div>
         </a>
-      </a>
-            <a href="@Url.Action("Index","AdminProducts")"
-               data-admin-partial="true"
-               class="action-card @isActive("AdminProducts","Index")">
-                <div class="action-icon">📦</div>
-                <div class="action-text">Manage Products</div>
-            </a>
 
-            <a href="@Url.Action("Index","Orders")"
-               data-admin-partial="true"
-               class="action-card @isActive("Orders","Index")">
-                <div class="action-icon">🧾</div>
-                <div class="action-text">Manage Orders</div>
-            </a>
+   <a href="@Url.Action("Index","AdminProducts")"
+        data-admin-partial="true"
+        class="action-card @isActive("AdminProducts","Index")">
+         <div class="action-icon">📦</div>
+         <div class="action-text">Manage Products</div>
+     </a>
+
+        <a href="@Url.Action("Index","Orders")"
+           data-admin-partial="true"
+           class="action-card @isActive("Orders","Index")">
+            <div class="action-icon">🧾</div>
+            <div class="action-text">Manage Orders</div>
+        </a>
+        <div class="action-card disabled-card">
+            <div class="action-icon">💬</div>
+            <div class="action-text">Manage Reviews (Coming Soon)</div>
+        </div>
+
 
         <a href="@Url.Action("Index","AdminContacts")"
            class="action-card @isActive("AdminContacts","Index")"

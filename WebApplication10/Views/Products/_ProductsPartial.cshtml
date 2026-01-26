@@ -1,0 +1,70 @@
+﻿
+  @model IEnumerable<WebApplication10.ViewModels.ProductListVM>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>📦Quản lý sản phẩm</h4>
+
+    
+<a href="/AdminProducts/Create"
+   class="btn btn-success"
+   data-admin-partial="true">
+    + Thêm sản phẩm
+</a>
+</div>
+
+<table class="table table-dark table-bordered align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Thương hiệu</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Trạng thái</th>
+            <th width="240">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProductId</td>
+                <td>@item.ProductName</td>
+                <td>@item.CategoryName</td>
+                <td>@item.BrandName</td>
+                <td>@item.Price.ToString("N0") ₫</td>
+                <td>@item.Quantity</td>
+                <td>
+                    <span class="badge @(item.Status == "Available" ? "bg-success" : "bg-secondary")">
+                        @item.Status
+                    </span>
+                </td>
+                <td>
+                    <!-- CHI TIẾT -->
+                    <a href="/AdminProducts/ProductDetails/@item.ProductId"
+                       class="btn btn-sm btn-info"
+                       data-admin-partial="true">
+                        Chi tiết
+                    </a>
+
+                    <!-- SỬA -->
+                    <a href="/AdminProducts/Edit/@item.ProductId"
+                       class="btn btn-sm btn-warning"
+                       data-admin-partial="true">
+                        Sửa
+                    </a>
+
+                    <!-- XÓA -->
+                    <a href="/AdminProducts/Delete/@item.ProductId"
+                       class="btn btn-sm btn-danger"
+                       data-admin-partial="true">
+                        Xóa
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

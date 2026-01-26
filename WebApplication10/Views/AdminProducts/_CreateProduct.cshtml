@@ -1,0 +1,82 @@
+﻿@model WebApplication10.ViewModels.AdminCreateProductVM
+
+<h4>Thêm sản phẩm</h4>
+
+<form class="ajax-form"
+      method="post"
+      action="/AdminProducts/Create">
+
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label>Tên sản phẩm</label>
+        @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ProductName)
+    </div>
+
+    <!-- CATEGORY -->
+    <div class="mb-3">
+        <label>Danh mục</label>
+        <select name="CategoryId" class="form-select">
+            <option value="">-- Chọn danh mục --</option>
+            @foreach (var c in ViewBag.Categories)
+            {
+                <option value="@c.CategoryId">@c.CategoryName</option>
+            }
+        </select>
+        @Html.ValidationMessageFor(m => m.CategoryId)
+    </div>
+
+    <!-- BRAND -->
+    <div class="mb-3">
+        <label>Thương hiệu</label>
+        <select name="BrandId" class="form-select">
+            <option value="">-- Chọn thương hiệu --</option>
+            @foreach (var b in ViewBag.Brands)
+            {
+                <option value="@b.BrandId">@b.BrandName</option>
+            }
+        </select>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            <label>Giá</label>
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+        </div>
+        <div class="col">
+            <label>Số lượng</label>
+            @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        @Html.TextAreaFor(m => m.Description,
+            new { @class = "form-control ckeditor", rows = 5 })
+    </div>
+
+    <div class="mb-3">
+        <label>Trạng thái</label>
+        @Html.DropDownListFor(
+            m => m.Status,
+            new SelectList(new[] { "Available", "Inactive" }),
+            new { @class = "form-select" }
+        )
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <button type="button"
+            id="btnBackToList"
+            class="btn btn-secondary">
+        Quay lại
+    </button>
+</form>
+
+@section Scripts {
+    <script>
+    $('#btnBackToList').click(function () {
+        loadMain('/AdminProducts/ProductListPartial');
+    });
+    </script>
+}

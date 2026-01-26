@@ -464,8 +464,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminOrder\AdminOrders.cs" />
-    <Compile Include="AdminOrder\OrdersController.cs" />
+    <Compile Include="Controllers\AdminOrder\AdminOrders.cs" />
+    <Compile Include="Controllers\AdminOrder\OrdersController.cs" />
+    <Compile Include="Controllers\AdminProducts\ProductsController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -482,12 +483,13 @@
     <Compile Include="Controllers\ProductsController\AdminProductsController.cs" />
     <Compile Include="Controllers\ProductsController\SearchController.cs" />
     <Compile Include="Controllers\ProductsController\ProductsController.cs" />
+    <Compile Include="DAO\BrandDAO.cs" />
     <Compile Include="DAO\CategoryDAO.cs" />
-    <Compile Include="DAO\OrdersDAIO.cs" />
     <Compile Include="DAO\EmailQueueDAO.cs" />
     <Compile Include="DAO\NewsletterDAO.cs" />
     <Compile Include="DAO\InfoPagesDAO.cs" />
     <Compile Include="DAO\AboutDAO.cs" />
+    <Compile Include="DAO\OrdersDAO.cs" />
     <Compile Include="DAO\ProductDAO.cs" />
     <Compile Include="DAO\AdminDAO.cs" />
     <Compile Include="DAO\UserDAO.cs" />
@@ -568,6 +570,8 @@
     <Compile Include="Services\EmailSenderService.cs" />
     <Compile Include="ViewModels\AdminContactListViewModel.cs" />
     <Compile Include="ViewModels\ContactFormViewModel.cs" />
+    <Compile Include="ViewModels\AdminCreateProductVM.cs" />
+    <Compile Include="ViewModels\AdminEditProductsVM.cs" />
     <Compile Include="ViewModels\AdminEditUserVM.cs" />
     <Compile Include="ViewModels\AdminCreateUserVM.cs" />
     <Compile Include="ViewModels\AdminActionsViewModel.cs" />
@@ -579,6 +583,7 @@
     <Content Include="Content\css\account\orders.css" />
 
     <Compile Include="ViewModels\DashBoardViewModel.cs" />
+    <Compile Include="ViewModels\ProductsListVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -721,7 +726,7 @@
     <Content Include="Views\Users\_EditUser.cshtml" />
     <Content Include="Views\Users\_DeleteUser.cshtml" />
     <Content Include="Views\Shared\_ProductCard.cshtml" />
-    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\Index22.cshtml" />
     <Content Include="Views\Products\Details.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
@@ -761,6 +766,17 @@
     <Content Include="Views\Orders\Index.cshtml" />
     <Content Include="Views\Orders\_OrdersPartial.cshtml" />
     <Content Include="Views\Orders\Details.cshtml" />
+    <Content Include="Views\Products\_ProductsPartial.cshtml" />
+    <Content Include="Views\Products\_CreateProduct.cshtml" />
+    <Content Include="Views\Products\_EditProducts.cshtml" />
+    <Content Include="Views\Products\_DeleteProduct.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\_ProductDetails.cshtml" />
+    <Content Include="Views\AdminProducts\_ProductsPartial.cshtml" />
+    <Content Include="Views\AdminProducts\_ProductDetails.cshtml" />
+    <Content Include="Views\AdminProducts\_EditProducts.cshtml" />
+    <Content Include="Views\AdminProducts\_DeleteProduct.cshtml" />
+    <Content Include="Views\AdminProducts\_CreateProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

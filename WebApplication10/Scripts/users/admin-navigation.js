@@ -47,7 +47,48 @@ $(function () {
         $form.removeData('unobtrusiveValidation');
 
         $.validator.unobtrusive.parse($form);
+
+
+
     }
+function loadMain(url) {
+    console.log('➡️ LOAD:', url);
+
+    if (url.includes("/Admin/Dashboard") && !url.includes("partial=true")) {
+        url += (url.includes("?") ? "&" : "?") + "partial=true";
+    }
+
+    currentAdminUrl = url;
+
+    $.get(url)
+        .done(function (html) {
+            $('#mainContent').html(html);
+
+            initCKEditor();
+            initDashboardChart(),
+            bindValidation('#mainContent');
+            highlightActiveMenu(url);
+            scrollToTop();
+        })
+        .fail(function (xhr) {
+            console.error('AJAX FAIL:', url, xhr.status);
+        });
+}
+
+   /* if (url.startsWith('/Admin') && !url.includes('partial=true')) {
+        url += (url.includes("?") ? "&" : "?") + "partial=true";
+    }
+
+    history.pushState({}, '', url.replace('?partial=true', ''));
+
+    $.get(url).done(function (html) {
+        $('#mainContent').html(html);
+
+        if (url.startsWith('/Admin/Dashboard')) {
+            initDashboardChart();
+        }
+    });
+}
 
     /*function loadMain(url) {
         console.log('➡️ LOAD:', url);
@@ -74,7 +115,7 @@ $(function () {
             .fail(function (xhr) {
                 console.error('AJAX FAIL:', url, xhr.status, xhr.responseText);
             });
-    } */
+    } 
 function loadMain(url) {
     console.log('➡️ LOAD:', url);
 
@@ -84,7 +125,7 @@ function loadMain(url) {
         ajaxUrl += (ajaxUrl.includes("?") ? "&" : "?") + "partial=true";
     }
 
-    // 🔒 GIẤU URL – LUÔN LÀ /Admin
+    // 🔒GIẤU URL – LUÔN LÀ /Admin
     history.pushState(
         { adminUrl: url },
         '',
@@ -110,7 +151,7 @@ function loadMain(url) {
             console.error('AJAX FAIL:', ajaxUrl, xhr.status);
         });
 }
-
+*/
 
     function showGlobalModal(type, title, message) {
         const $modal = $('#globalAlertModal');
@@ -135,24 +176,23 @@ function loadMain(url) {
         bootstrap.Modal.getOrCreateInstance($modal[0]).show();
     }
 
-    function highlightActiveMenu(url) {
-        $('#adminActionsContainer a.action-card').removeClass('active-link');
-        $('#adminActionsContainer a.action-card').each(function () {
-            const href = $(this).attr('href');
-            if (href && url.startsWith(href)) {
-                $(this).addClass('active-link');
-            }
-        });
+function highlightActiveMenu(url) {
+    $('#adminActionsContainer a.action-card').removeClass('active-link');
+    $('#adminActionsContainer a.action-card').each(function () {
+        const href = $(this).attr('href');
+        if (href && url.startsWith(href)) {
+            $(this).addClass('active-link');
+        }
+    });
 
-        $('nav.header-actions a').removeClass('active-link');
-        $('nav.header-actions a').each(function () {
-            const href = $(this).attr('href');
-            if (href && url.startsWith(href)) {
-                $(this).addClass('active-link');
-            }
-        });
-    }
-
+    $('nav.header-actions a').removeClass('active-link');
+    $('nav.header-actions a').each(function () {
+        const href = $(this).attr('href');
+        if (href && url.startsWith(href)) {
+            $(this).addClass('active-link');
+        }
+    });
+}
     function scrollToTop() {
         $('html, body').animate({ scrollTop: 0 }, 300);
     }

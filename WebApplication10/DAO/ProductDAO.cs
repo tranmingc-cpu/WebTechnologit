@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebApplication10.Models;
 using System.Data.Entity;
+using WebApplication10.ViewModels;
+
 
 namespace WebApplication10.DAO
 {
@@ -106,21 +108,35 @@ namespace WebApplication10.DAO
             return true;
         }
 
-        public bool Delete(int productId)
+        public bool Delete(int productId, out string message)
         {
-            var product = _context.Products.Find(productId);
-            if (product == null)
-                return false;
+            message = "";
 
-            product.Status = "Deleted";
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                var product = _context.Products.Find(productId);
+                if (product == null)
+                {
+                    message = "Sản phẩm không tồn tại.";
+                    return false;
+                }
+
+                product.Status = "Unavailable";
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = "Không thể xóa sản phẩm. Sản phẩm có thể đang được sử dụng.";
+                return false;
+            }
         }
+
         public IQueryable<Products> GetAll()
         {
-            return _context.Products
-                           .Include(p => p.Brands)
-                           .Include(p => p.Categories);
+            return _context.Products;
+                           
         }
         public Products GetByIdAdmin(int id)
         {
@@ -128,6 +144,55 @@ namespace WebApplication10.DAO
                            .Include(p => p.Brands)
                            .Include(p => p.Categories)
                            .FirstOrDefault(p => p.ProductId == id);
+        }
+        public List<ProductListVM> GetAllWithCategoryBrand()
+        {
+            return _context.Products
+                .Select(p => new ProductListVM
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Categories.CategoryName,
+
+                    BrandId = p.BrandId,
+                    BrandName = p.Brands != null ? p.Brands.BrandName : "",
+
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    Quantity = p.Quantity,
+
+                    Status = p.Status
+                })
+                .OrderByDescending(p => p.ProductId)
+                .ToList();
+        }
+        public void Add(Products product)
+        {
+            _context.Products.Add(product);
+            _context.SaveChanges();
+        }
+        public ProductListVM GetProductDetails(int productId)
+        {
+            return _context.Products
+       .Where(p => p.ProductId == productId)
+       .Select(p => new ProductListVM
+       {
+           ProductId = p.ProductId,
+           ProductName = p.ProductName,
+           Price = p.Price,
+           Discount = p.Discount,
+           Quantity = p.Quantity,
+           Description = p.Description,
+           ImageUrl = p.ImageUrl,
+           Status = p.Status,
+           CreatedAt = p.CreatedAt,
+
+           CategoryName = p.Categories.CategoryName,
+           BrandName = p.Brands != null ? p.Brands.BrandName : ""
+       })
+       .FirstOrDefault();
         }
 
     }
