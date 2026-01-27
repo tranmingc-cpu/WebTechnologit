@@ -9,9 +9,11 @@
 
     <div class="modal-body">
         <div class="row">
-            <div class="col-md-4 text-center">
-                <img src="@Model.ImageUrl" class="img-fluid rounded" />
-            </div>
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+        ? "/Content/images/no-image.png"
+        : "/Content/images/" + Model.ImageUrl)"
+                 class="img-fluid rounded"
+                 alt="@Model.ProductName" />
 
             <div class="col-md-8">
                 <p><strong>Tên sản phẩm:</strong> @Model.ProductName</p>

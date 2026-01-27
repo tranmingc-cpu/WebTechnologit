@@ -704,6 +704,36 @@
     <Content Include="Content\css\product\product-detail.css" />
     <Content Include="Content\css\product\product-index.css" />
     <Content Include="Content\css\site.css" />
+    <Content Include="Content\images\970evo.jpg" />
+    <Content Include="Content\images\asus_pn.jpg" />
+    <Content Include="Content\images\banner-main.jpg" />
+    <Content Include="Content\images\envy13.jpg" />
+    <Content Include="Content\images\g102.jpg" />
+    <Content Include="Content\images\gk50.jpg" />
+    <Content Include="Content\images\gladius.jpg" />
+    <Content Include="Content\images\gm20.jpg" />
+    <Content Include="Content\images\gpro.jpg" />
+    <Content Include="Content\images\gprox.jpg" />
+    <Content Include="Content\images\i7_12700k.jpg" />
+    <Content Include="Content\images\inspiron15.jpg" />
+    <Content Include="Content\images\katana.jpg" />
+    <Content Include="Content\images\kb216.jpg" />
+    <Content Include="Content\images\mxmaster3.jpg" />
+    <Content Include="Content\images\pavilion.jpg" />
+    <Content Include="Content\images\pavilion14.jpg" />
+    <Content Include="Content\images\payments\mastercard.png" />
+    <Content Include="Content\images\payments\momo.png" />
+    <Content Include="Content\images\payments\visa.jpg" />
+    <Content Include="Content\images\payments\vnpay.jpg" />
+    <Content Include="Content\images\pc_i5.jpg" />
+    <Content Include="Content\images\pc_rtx3060.jpg" />
+    <Content Include="Content\images\pc_rtx4060.jpg" />
+    <Content Include="Content\images\ram16gb.jpg" />
+    <Content Include="Content\images\rog_strix.jpg" />
+    <Content Include="Content\images\rtx3060.jpg" />
+    <Content Include="Content\images\tuf.jpg" />
+    <Content Include="Content\images\vivobook14.jpg" />
+    <Content Include="Content\images\xps13.jpg" />
     <Content Include="Database\TechStore.sql" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -887,7 +917,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\images\payments\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
