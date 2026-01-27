@@ -808,6 +808,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\product\category-description.js" />
+    <Content Include="Scripts\product\products.js" />
     <Content Include="Scripts\users\admin-navigation.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -882,6 +883,7 @@
     <Content Include="Views\Orders\_OrdersPartial.cshtml" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\Details.cshtml" />
+    <Content Include="Views\Admin\_DashBoard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

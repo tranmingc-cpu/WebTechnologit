@@ -58,6 +58,16 @@ namespace WebApplication10.DAO
                 .OrderBy(x => x.Month)
                 .ToList();
         }
+        public decimal GetTotalRevenue()
+        {
+            return _context.Orders
+                .Where(o =>
+                    o.Status == "Paid" ||
+                    o.Status == "Completed"
+                )
+                .Sum(o => (decimal?)o.TotalAmount) ?? 0;
+        }
+
     }
 
 }

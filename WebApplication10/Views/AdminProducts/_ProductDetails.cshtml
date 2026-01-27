@@ -1,33 +1,164 @@
 ﻿@model WebApplication10.ViewModels.ProductListVM
 
-<div class="modal-header">
-    <h5 class="modal-title">Chi tiết sản phẩm</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
+<div class="product-detail-modal">
 
-<div class="modal-body">
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="@Model.ImageUrl" class="img-fluid rounded" />
-        </div>
-
-        <div class="col-md-8">
-            <p><strong>Tên sản phẩm:</strong> @Model.ProductName</p>
-            <p><strong>Danh mục:</strong> @Model.CategoryName</p>
-            <p><strong>Thương hiệu:</strong> @Model.BrandName</p>
-            <p><strong>Giá:</strong> @Model.Price.ToString("N0") đ</p>
-            <p><strong>Giảm giá:</strong> @Model.Discount %</p>
-            <p><strong>Số lượng:</strong> @Model.Quantity</p>
-            <p><strong>Trạng thái:</strong> @Model.Status</p>
-            <p>
-                <strong>Ngày tạo:</strong>   @(Model.CreatedAt.HasValue
-        ? Model.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm")
-        : "—")
-            </p>
-        </div>
+    <div class="modal-header">
+        <h5 class="modal-title">Chi tiết sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
     </div>
 
-    <hr />
-    <p><strong>Mô tả:</strong></p>
-    <div>@Html.Raw(Model.Description)</div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="@Model.ImageUrl" class="img-fluid rounded" />
+            </div>
+
+            <div class="col-md-8">
+                <p><strong>Tên sản phẩm:</strong> @Model.ProductName</p>
+                <p><strong>Danh mục:</strong> @Model.CategoryName</p>
+                <p><strong>Thương hiệu:</strong> @Model.BrandName</p>
+                <p><strong>Giá:</strong> @Model.Price.ToString("N0") đ</p>
+                <p><strong>Giảm giá:</strong> @Model.Discount %</p>
+                <p><strong>Số lượng:</strong> @Model.Quantity</p>
+                <p><strong>Trạng thái:</strong> @Model.Status</p>
+                <p>
+                    <strong>Ngày tạo:</strong>
+                    @(Model.CreatedAt.HasValue
+                        ? Model.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                        : "—")
+                </p>
+            </div>
+        </div>
+
+        <hr />
+        <p><strong>Mô tả:</strong></p>
+        <div>@Html.Raw(Model.Description)</div>
+    </div>
+
 </div>
+<style>
+/* ===== PRODUCT DETAIL MODAL – ADMIN THEME ===== */
+.product-detail-modal {
+    background: linear-gradient(160deg, #1f2130, #1a1c2a);
+    color: #e5e7eb;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.75),
+                inset 0 1px 0 rgba(255,255,255,0.04);
+    overflow: hidden;
+    animation: productModalIn 0.28s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Header */
+.product-detail-modal .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.product-detail-modal .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #f3f4f6;
+}
+
+.product-detail-modal .btn-close {
+    filter: invert(1);
+    opacity: 0.75;
+}
+
+/* Body */
+.product-detail-modal .modal-body {
+    padding: 22px 24px 26px;
+    font-size: 14px;
+    color: #d1d5db;
+}
+
+/* Image */
+.product-detail-modal img {
+    max-height: 240px;
+    width: 100%;
+    object-fit: contain;
+    background: #111217;
+    padding: 14px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+/* Info rows */
+.product-detail-modal p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    display: flex;
+    gap: 6px;
+}
+
+.product-detail-modal p strong {
+    min-width: 130px;
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+/* Highlight price */
+.product-detail-modal p strong:contains("Giá") {
+    color: #ff5c5c;
+}
+
+/* Divider */
+.product-detail-modal hr {
+    margin: 20px 0;
+    border-color: rgba(255,255,255,0.08);
+}
+
+/* Description */
+.product-detail-modal .modal-body > div {
+    background: rgba(255,255,255,0.03);
+    border-radius: 14px;
+    padding: 16px 18px;
+    line-height: 1.7;
+    color: #d1d5db;
+}
+
+/* Status text */
+.product-detail-modal p:last-of-type {
+    font-style: italic;
+    color: #9ca3af;
+}
+
+/* Animation */
+@@keyframes productModalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .product-detail-modal img {
+        max-height: 180px;
+        margin-bottom: 16px;
+    }
+
+    .product-detail-modal .modal-title {
+        font-size: 16px;
+    }
+
+    .product-detail-modal p {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .product-detail-modal p strong {
+        min-width: unset;
+    }
+}
+</style>

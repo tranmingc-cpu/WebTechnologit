@@ -142,6 +142,11 @@ function highlightActiveMenu(url) {
         loadMain('/Users/Edit/' + $(this).data('id'));
     });
 
+    $(document).on('click', '.btn-create-product', function (e) {
+        e.preventDefault();
+        loadMain('/AdminProducts/Create');
+    });
+
     $(document).on('click', '.btn-delete', function (e) {
         e.preventDefault();
         loadMain('/Users/Delete/' + $(this).data('id'));
@@ -158,9 +163,9 @@ function highlightActiveMenu(url) {
 
         const $form = $(this);
 
-        if (!$form.valid()) {
-            return;
-        }
+        //if (!$form.valid()) {
+        //    return;
+        //}
 
         if (typeof CKEDITOR !== 'undefined') {
             for (let i in CKEDITOR.instances) {
@@ -183,14 +188,16 @@ function highlightActiveMenu(url) {
                 }
 
                 if (res.success) {
-                    showGlobalModal(
-                        'success',
-                        'Thành công',
-                        res.message || 'Thao tác thành công!'
-                    );
-                    loadMain('/Users/Index');
+                    showGlobalModal('success', 'Thành công', res.message);
+
+                    if ($form.attr('action').includes('AdminProducts')) {
+                        loadMain('/AdminProducts/Index');
+                    } else {
+                        loadMain('/Users/Index');
+                    }
                     return;
                 }
+
 
                 if (res.success === false) {
                     showGlobalModal(
