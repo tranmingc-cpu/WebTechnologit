@@ -1,82 +1,75 @@
-﻿
-@model IEnumerable<WebApplication10.ViewModels.ProductListVM>
+﻿@model IEnumerable<WebApplication10.ViewModels.ProductListVM>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="admin-title">Quản lý sản phẩm</h4>
+<div id="products-partial">
+    <div class="table-responsive">
+        <table class="table table-striped table-dark table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Thương hiệu</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProductId</td>
+                        <td>@item.ProductName</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.BrandName</td>
+                        <td>@item.Price.ToString("N0") ₫</td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            <span class="badge @(item.Status == "Available" ? "bg-success" : "bg-secondary")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="user-table-actions">
+
+                                <a href="/AdminProducts/ProductDetails/@item.ProductId"
+                                   class="btn btn-sm btn-info"
+                                   data-admin-partial="true">
+                                    <i class="bi bi-eye-fill"></i> View
+                                </a>
+
+                                <a href="/AdminProducts/Edit/@item.ProductId"
+                                   class="btn btn-sm btn-warning"
+                                   data-admin-partial="true">
+                                    <i class="bi bi-pencil-fill"></i> Edit
+                                </a>
+
+                                <a href="/AdminProducts/Delete/@item.ProductId"
+                                   class="btn btn-sm btn-danger"
+                                   data-admin-partial="true">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </a>
+
+                                <a href="/AdminProducts/TestSendNewProductMail?productId=@item.ProductId"
+                                   class="btn btn-sm btn-warning"
+                                   data-admin-partial="true">
+                                    <i class="bi bi-trash-fill"></i> Email
+                                </a>
+
+                                <a href="/AdminProducts/TestSendMailNow?productId=@item.ProductId"
+                                   class="btn btn-sm btn-dark"
+                                   data-admin-partial="true"
+                                   onclick="return confirm('Gửi mail NGAY cho toàn bộ subscriber?')">
+                                    <i class="bi bi-trash-fill"></i> Send
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-
-
-<a href="/AdminProducts/Create"
-   class="btn btn-success"
-   data-admin-partial="true">
-    + Thêm sản phẩm
-</a>
-
-<table class="table table-dark table-bordered align-middle">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tên sản phẩm</th>
-            <th>Danh mục</th>
-            <th>Thương hiệu</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Trạng thái</th>
-            <th width="240">Thao tác</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.ProductId</td>
-                <td>@item.ProductName</td>
-                <td>@item.CategoryName</td>
-                <td>@item.BrandName</td>
-                <td>@item.Price.ToString("N0") ₫</td>
-                <td>@item.Quantity</td>
-                <td>
-                    <span class="badge @(item.Status == "Available" ? "bg-success" : "bg-secondary")">
-                        @item.Status
-                    </span>
-                </td>
-                <td>
-                    <!-- CHI TIẾT -->
-                    <a href="/AdminProducts/ProductDetails/@item.ProductId"
-                       class="btn btn-sm btn-info"
-                       data-admin-partial="true">
-                        Chi tiết
-                    </a>
-
-                    <!-- SỬA -->
-                    <a href="/AdminProducts/Edit/@item.ProductId"
-                       class="btn btn-sm btn-warning"
-                       data-admin-partial="true">
-                        Sửa
-                    </a>
-
-                    <!-- XÓA -->
-                    <a href="/AdminProducts/Delete/@item.ProductId"
-                       class="btn btn-sm btn-danger"
-                       data-admin-partial="true">
-                        Xóa
-                    </a>
-                    <a href="/AdminProducts/TestSendNewProductMail?productId=@item.ProductId"
-                       class="btn btn-warning btn-sm"
-                       data-admin-partial="true">
-                        📧 Email
-                    </a>
-
-                    <a href="/AdminProducts/TestSendMailNow?productId=@item.ProductId"
-                       class="btn btn-dark btn-sm"
-                       data-admin-partial="true"
-                       onclick="return confirm('Gửi mail NGAY cho toàn bộ subscriber?')">
-                        🚀 Send Mail Now
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-

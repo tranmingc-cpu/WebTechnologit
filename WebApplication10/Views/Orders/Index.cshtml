@@ -1,24 +1,31 @@
 ﻿@{
-    Layout = null ;
-    ViewBag.Title = "Manage Orders";
+    ViewBag.Title = "Orders";
+    Layout = null;
 }
 
-<h2>Quản lý đơn hàng </h2>
+<div class="users-page">
+    <div class="users-header">
+        <div class="users-title">
+            <h3>Đơn hàng</h3>
+            <span class="users-subtitle">Quản lý đơn hàng hệ thống</span>
+        </div>
+    </div>
 
-<div id="orders-container">
-    @Html.Action("OrdersListPartial")
+    <div id="users-partial-container">
+        @Html.Action("OrdersListPartial")
+    </div>
 </div>
 
 <script>
     function loadOrderDetails(id) {
         $.get('/Orders/Details/' + id, function (html) {
-            $('#orders-container').html(html);
+            $('#users-partial-container').html(html);
         });
     }
 
     function backToOrders() {
         $.get('/Orders/OrdersListPartial', function (html) {
-            $('#orders-container').html(html);
+            $('#users-partial-container').html(html);
         });
     }
 </script>

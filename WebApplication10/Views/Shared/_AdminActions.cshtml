@@ -58,115 +58,104 @@
 
     <h3 class="section-title">✏️ Edit Pages</h3>
     <div class="actions-grid">
-        @if (actionsModel.About != null)
-        {
-            <a href="@Url.Action("Edit","Pages", new { id=actionsModel.About.InfoPageId })"
-               class="action-card @isActive("Pages","Edit")"
-               data-admin-partial="true">
+            @if (actionsModel.About != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.About.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
 
-                <div class="action-icon">📄</div>
-                <div class="action-text">About Page</div>
-
-            </a>
-            }
-                @if (actionsModel.About != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.About.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">📄</div>
-                        <div class="action-text">About Page</div>
-                    </a>
-                }
-                @if (actionsModel.Contact != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Contact.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">📄</div>
-                        <div class="action-text">Contact Page</div>
-                    </a>
-                }
-                @if (actionsModel.Warranty != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Warranty.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">📄</div>
-                        <div class="action-text">Warranty Page</div>
-                    </a>
-                }
-                @if (actionsModel.News != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.News.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">📰</div>
-                        <div class="action-text">News Page</div>
-                    </a>
-                }
-
-                @if (actionsModel.Careers != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Careers.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">💼</div>
-                        <div class="action-text">Careers Page</div>
-                    </a>
-                }
-                @if (actionsModel.Returns != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Returns.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">↩️</div>
-                        <div class="action-text">Returns Page</div>
-                    </a>
-                }
-                @if (actionsModel.Shipping != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Shipping.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">🚚</div>
-                        <div class="action-text">Shipping Page</div>
-                    </a>
-                }
-                @if (actionsModel.Payment != null)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Payment.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">💳</div>
-                        <div class="action-text">Payment Page</div>
-                    </a>
-                }
-
-                @foreach (var page in actionsModel.OtherPages)
-                {
-                    <a href="@Url.Action("Edit","Pages", new { id = page.InfoPageId })"
-                       class="action-card @isActive("Pages","Edit")"
-                       data-admin-partial="true">
-
-                        <div class="action-icon">📄</div>
-                        <div class="action-text">@page.Title</div>
-                    </a>
-                }
-            </div>
-
-            <div class="logout-wrapper">
-                <a href="@Url.Action("Logout","Account")" class="logout-link">
-                    <div class="action-icon">🚪</div>
-                    <div class="action-text">Logout</div>
+                    <div class="action-icon">📄</div>
+                    <div class="action-text">About Page</div>
                 </a>
-            </div>
+            }
+            @if (actionsModel.Contact != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Contact.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">📄</div>
+                    <div class="action-text">Contact Page</div>
+                </a>
+            }
+            @if (actionsModel.Warranty != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Warranty.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">📄</div>
+                    <div class="action-text">Warranty Page</div>
+                </a>
+            }
+            @if (actionsModel.News != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.News.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">📰</div>
+                    <div class="action-text">News Page</div>
+                </a>
+            }
+
+            @if (actionsModel.Careers != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Careers.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">💼</div>
+                    <div class="action-text">Careers Page</div>
+                </a>
+            }
+            @if (actionsModel.Returns != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Returns.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">↩️</div>
+                    <div class="action-text">Returns Page</div>
+                </a>
+            }
+            @if (actionsModel.Shipping != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Shipping.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">🚚</div>
+                    <div class="action-text">Shipping Page</div>
+                </a>
+            }
+            @if (actionsModel.Payment != null)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id=actionsModel.Payment.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">💳</div>
+                    <div class="action-text">Payment Page</div>
+                </a>
+            }
+
+            @foreach (var page in actionsModel.OtherPages)
+            {
+                <a href="@Url.Action("Edit","Pages", new { id = page.InfoPageId })"
+                    class="action-card @isActive("Pages","Edit")"
+                    data-admin-partial="true">
+
+                    <div class="action-icon">📄</div>
+                    <div class="action-text">@page.Title</div>
+                </a>
+            }
+        </div>
+
+        <div class="logout-wrapper">
+            <a href="@Url.Action("Logout","Account")" class="logout-link">
+                <div class="action-icon">🚪</div>
+                <div class="action-text">Logout</div>
+            </a>
+        </div>
 </div>

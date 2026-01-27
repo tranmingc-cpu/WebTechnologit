@@ -16,15 +16,16 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    background: #1f2130;
-    border-bottom: 1px solid #2f3145;
+    background: linear-gradient(135deg, #111217, #1b1d2b);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.55);
     z-index: 1000;
 }
 
     .header .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 14px 24px;
+        padding: 16px 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -33,7 +34,7 @@ body {
 .logo a {
     font-size: 22px;
     font-weight: 700;
-    color: #fff;
+    color: #e5e7eb;
     text-decoration: none;
 }
 
@@ -44,27 +45,25 @@ body {
 .header-actions a {
     margin-left: 18px;
     text-decoration: none;
-    color: #cfd2dc; 
+    color: #cfd2dc;
     font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
 }
 
     .header-actions a:hover {
         color: #ff5c5c;
+        background: rgba(255,92,92,0.12);
         font-weight: 600;
-        background: rgba(255,92,92,0.1);
     }
 
     .header-actions a.active-link {
-        color: #ff5c5c; 
+        color: #ff5c5c;
         font-weight: 700;
-        background: rgba(255,92,92,0.15);
-        box-shadow: 0 4px 12px rgba(255,92,92,0.3);
-        border-radius: 10px;
+        background: rgba(255,92,92,0.18);
+        box-shadow: 0 6px 18px rgba(255,92,92,0.35);
     }
-
 
 .admin-body {
     display: flex;
@@ -558,11 +557,30 @@ body {
 
     .message-cell {
         max-width: 420px;
+        max-height: 90px;
+        overflow: hidden;
         white-space: pre-wrap;
         word-break: break-word;
-        line-height: 1.6;
-        color: #d1d5db;
+        position: relative;
     }
+
+        /* hiệu ứng mờ */
+        .message-cell::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: linear-gradient( transparent, rgba(31,33,48,0.95) );
+        }
+
+        /* hover để xem full */
+        .message-cell:hover {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
 
     .empty-row {
         text-align: center;
@@ -574,7 +592,4 @@ body {
     .admin-table tr {
         height: auto;
     }
-
-   
-
 }

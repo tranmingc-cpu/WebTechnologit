@@ -1,12 +1,30 @@
 ﻿@{
-    ViewBag.Title = "Manage Products";
-    Layout = null; 
+    ViewBag.Title = "Products";
+    Layout = null;
 }
 
-<div id="productListContainer"></div>
+<div class="users-page">
+    <div class="users-header">
+        <div class="users-title">
+            <h3>Sản phẩm</h3>
+            <span class="users-subtitle">Quản lý danh sách sản phẩm</span>
+        </div>
+
+        <div class="users-actions">
+            <a href="/AdminProducts/Create"
+               class="btn btn-primary"
+               data-admin-partial="true">
+                Thêm sản phẩm
+            </a>
+        </div>
+    </div>
+
+    <div id="users-partial-container">
+    </div>
+</div>
 
 <script>
-    console.log(' AdminProducts Index loaded');
+    console.log('AdminProducts Index loaded');
 
     $(function () {
         loadProductList();
@@ -17,7 +35,7 @@
 
         $.get('/AdminProducts/ProductListPartial')
             .done(function (html) {
-                $('#productListContainer').html(html);
+                $('#users-partial-container').html(html);
             })
             .fail(function (xhr) {
                 console.error('❌ Load ProductListPartial fail', xhr.status);

@@ -80,35 +80,43 @@ namespace WebApplication10.Controllers.Admin
         {
             if (!ModelState.IsValid)
             {
-                LoadCategoryBrand(); 
-                return PartialView("_CreateProduct", model);
+                LoadCategoryBrand();
+
+                if (IsAjax())
+                    return PartialView("_CreateProduct", model);
+
+                return View(model);
             }
-            try
+
+            var product = new Models.Products
             {
-                var product = new Models.Products
+                ProductName = model.ProductName,
+                CategoryId = model.CategoryId,
+                BrandId = model.BrandId,
+                Price = model.Price,
+                Discount = model.Discount,
+                Quantity = model.Quantity,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl,
+                Status = model.Status ?? "Available",
+                CreatedAt = DateTime.Now
+            };
+
+            _productDao.Add(product);
+
+            if (IsAjax())
+            {
+                return Json(new
                 {
-                    ProductName = model.ProductName,
-                    CategoryId = model.CategoryId,
-                    BrandId = model.BrandId,
-                    Price = model.Price,
-                    Discount = model.Discount,
-                    Quantity = model.Quantity,
-                    Description = model.Description,
-                    ImageUrl = model.ImageUrl,
-                    Status = model.Status ?? "Available",
-                    CreatedAt = DateTime.Now
-                };
-
-                _productDao.Add(product);
-
-                return Json(new { success = true, message = "Thêm sản phẩm thành công!" });
+                    success = true,
+                    message = "Thêm sản phẩm thành công!"
+                });
             }
-            catch
-            {
-                ModelState.AddModelError("", "Có lỗi xảy ra khi thêm sản phẩm.");
-                return PartialView("_CreateProduct", model);
-            }
+
+            TempData["Success"] = "Thêm sản phẩm thành công!";
+            return RedirectToAction("Index");
         }
+
 
         // ================= EDIT =================
         [HttpGet]
@@ -143,40 +151,51 @@ namespace WebApplication10.Controllers.Admin
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AdminProductsFormVM model)
         {
-            if (!ModelState.IsValid) { 
+            if (!ModelState.IsValid)
+            {
                 LoadCategoryBrand();
-            return PartialView("_EditProducts", model);
-        }
+
+                if (IsAjax())
+                    return PartialView("_EditProducts", model);
+
+                return View(model);
+            }
+
             var product = _productDao.GetById(model.ProductId);
             if (product == null)
             {
+                ModelState.AddModelError("", "Sản phẩm không tồn tại");
                 LoadCategoryBrand();
 
-                ModelState.AddModelError("", "Sản phẩm không tồn tại.");
-                return PartialView("_EditProducts", model);
+                if (IsAjax())
+                    return PartialView("_EditProducts", model);
+
+                return View(model);
             }
 
-            try
+            product.ProductName = model.ProductName;
+            product.CategoryId = model.CategoryId;
+            product.BrandId = model.BrandId;
+            product.Price = model.Price;
+            product.Discount = model.Discount;
+            product.Quantity = model.Quantity;
+            product.Description = model.Description;
+            product.ImageUrl = model.ImageUrl;
+            product.Status = model.Status;
+
+            _productDao.Update(product);
+
+            if (IsAjax())
             {
-                product.ProductName = model.ProductName;
-                product.CategoryId = model.CategoryId;
-                product.BrandId = model.BrandId;
-                product.Price = model.Price;
-                product.Discount = model.Discount;
-                product.Quantity = model.Quantity;
-                product.Description = model.Description;
-                product.ImageUrl = model.ImageUrl;
-                product.Status = model.Status;
-
-                _productDao.Update(product);
-
-                return Json(new { success = true, message = "Cập nhật sản phẩm thành công!" });
+                return Json(new
+                {
+                    success = true,
+                    message = "Cập nhật sản phẩm thành công!"
+                });
             }
-            catch
-            {
-                ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật sản phẩm.");
-                return PartialView("_EditProducts", model);
-            }
+
+            TempData["Success"] = "Cập nhật sản phẩm thành công!";
+            return RedirectToAction("Index");
         }
 
         // ================= DELETE =================
@@ -193,17 +212,27 @@ namespace WebApplication10.Controllers.Admin
             return PartialView("_DeleteProduct", product);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int productId)
+        public ActionResult Delete(int productId)
         {
             if (_productDao.Delete(productId, out string message))
             {
-                return Json(new { success = true, message = "Xóa sản phẩm thành công!" });
+                return Json(new
+                {
+                    success = true,
+                    message = "Xóa sản phẩm thành công!",
+                    redirectUrl = "/AdminProducts/ProductListPartial"
+                });
             }
 
-            return Json(new { success = false, message });
+            return Json(new
+            {
+                success = false,
+                message = message ?? "Không thể xóa sản phẩm!"
+            });
         }
+
         [HttpGet]
         public ActionResult ProductDetails(int? id)
         {
@@ -313,5 +342,11 @@ namespace WebApplication10.Controllers.Admin
             TempData["Success"] = "🚀 Đã gửi mail trực tiếp";
             return RedirectToAction("Index");
         }
+        protected bool IsAjax()
+        {
+            return Request.IsAjaxRequest()
+                || Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
+
     }
 }

@@ -30,19 +30,6 @@ namespace WebApplication10.Controllers
         public ActionResult Dashboard(bool partial = false)
         {
             ViewBag.IsPartial = partial;
-            // Chưa đăng nhập
-            if (Session["UserId"] == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            // Không phải admin
-            if (Session["UserRole"]?.ToString() != "Admin")
-            {
-                return RedirectToAction("AccessDenied", "Account");
-            }
-
-            ViewBag.IsPartial = partial;
             LoadAdminActions();
 
             int year = DateTime.Now.Year;
@@ -51,11 +38,13 @@ namespace WebApplication10.Controllers
             var chartData = _adminDao.GetRevenueByYear(year);
 
             var model = new DashboardViewModel
-           /* {
+            {
                 UserCount = _adminDao.GetUserCount(),
                 OrderCount = _adminDao.GetOrderCount(),
                 ProductCount = _adminDao.GetProductCount(),
+
                 CurrentMonthRevenue = _adminDao.GetRevenueByMonth(year, month),
+
                 Months = Enumerable.Range(1, 12).ToList(),
                 Revenues = Enumerable.Range(1, 12)
                     .Select(m =>
@@ -70,36 +59,7 @@ namespace WebApplication10.Controllers
                 return PartialView("_Dashboard", model);
 
             return View(model);
-        } */
-
-
-            {
-                     UserCount = 120,
-                     OrderCount = 340,
-                     ProductCount = 58,
-
-                     CurrentMonthRevenue = 12500000,
-
-                     // test chart
-                     Months = new List<int> { 1, 2, 3, 4, 5, 6 },
-                     Revenues = new List<decimal?>
-          {
-              8000000,
-              9500000,
-              7200000,
-              11000000,
-              9800000,
-              12500000
-          }
-                 };
-
-                 if (partial)
-                     return PartialView("_Dashboard", model);
-
-                 return View(model);
-
-             }
-  
+        }
 
         public ActionResult AdminActionsPartial()
         {
@@ -137,10 +97,5 @@ namespace WebApplication10.Controllers
             _emailQueueProcessor.Process(20);
             return Content("OK");
         }
-     
-
-
     }
-
-
 }

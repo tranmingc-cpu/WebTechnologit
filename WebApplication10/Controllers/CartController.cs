@@ -189,7 +189,7 @@ namespace WebApplication10.Controllers
                     UserId = userId ?? 0,
                     OrderDate = DateTime.Now,
                     TotalAmount = cart.Sum(c => c.TotalPrice),
-                    Status = "Pending",
+                    Status = "Paid",
                     ShippingAddress = address
                 };
 

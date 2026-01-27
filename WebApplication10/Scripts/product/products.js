@@ -7,83 +7,78 @@
         return wrapper.data("product-id");
     }
 
-    function destroyAllEditors() {
-        if (window.CKEDITOR) {
-            for (let name in CKEDITOR.instances) {
-                CKEDITOR.instances[name].destroy(true);
-            }
-        }
-        wrapper.find("textarea.product-editor").removeAttr("id");
-    }
+    function reParseValidation() {
+        const form = wrapper.find("form");
+        if (!form.length) return;
 
-    function initEditor() {
-        const textarea = wrapper.find("textarea.product-editor");
-        if (!textarea.length) return;
-
-        const editorId = "product_editor_" + Date.now();
-        textarea.attr("id", editorId);
-
-        CKEDITOR.replace(editorId);
+        form.removeData("validator");
+        form.removeData("unobtrusiveValidation");
+        $.validator.unobtrusive.parse(form);
     }
 
     function loadEdit(productId) {
-        destroyAllEditors();
-
         if (!productId) {
             wrapper.empty();
             return;
         }
 
-        wrapper.load("/Products/Edit", { id: productId }, function () {
-            initEditor();
+        wrapper.load("/AdminProducts/Edit", { id: productId }, function () {
+            reParseValidation();
+
+            // ✅ init CKEditor GLOBAL
+            if (typeof initCKEditor === 'function') {
+                initCKEditor();
+            }
         });
     }
 
-    // INIT
     loadEdit(getCurrentProductId());
 
-    // CLICK EDIT
-    $(document).on("click", "#btnEditProduct", function () {
-        const id = getCurrentProductId();
-        if (id) loadEdit(id);
-    });
-
-    // SUBMIT EDIT PRODUCT
     $(document).on("submit", ".product-edit-form", function (e) {
         e.preventDefault();
 
-        const form = $(this);
-        const textareaId = form.find("textarea.product-editor").attr("id");
+        const $form = $(this);
 
-        if (CKEDITOR.instances[textareaId]) {
-            CKEDITOR.instances[textareaId].updateElement();
+        // ✅ Sync CKEditor
+        if (typeof CKEDITOR !== 'undefined') {
+            for (let i in CKEDITOR.instances) {
+                CKEDITOR.instances[i].updateElement();
+            }
         }
 
+        if (!$form.valid()) return;
+
         $.ajax({
-            url: form.attr("action") || "/Products/Edit",
+            url: $form.attr("action"),
             type: "POST",
-            data: form.serialize(),
+            data: $form.serialize(),
             success: function (res) {
 
-                // SERVER TRẢ VIEW (VALIDATION FAIL)
                 if (typeof res === "string") {
                     wrapper.html(res);
-                    initEditor();
+                    reParseValidation();
+                    initCKEditor();
                     return;
                 }
 
-                // SUCCESS
                 if (res.success) {
-                    wrapper.data("product-id", res.productId);
-                    loadEdit(res.productId);
+                    showGlobalModal(
+                        'success',
+                        'Thành công',
+                        res.message || 'Cập nhật thành công'
+                    );
+                    loadEdit(getCurrentProductId());
                 }
+            },
+            error: function (xhr) {
+                console.error("❌ 500:", xhr.responseText);
+                showGlobalModal(
+                    'error',
+                    'Lỗi',
+                    'Lỗi server (500)'
+                );
             }
         });
-    });
-
-    // CANCEL
-    $(document).on("click", "#btnCancelEditProduct", function () {
-        loadEdit(getCurrentProductId());
     });
 
 });

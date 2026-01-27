@@ -1,13 +1,34 @@
-﻿
-@model WebApplication10.Models.Products
-<h4>Xóa sản phẩm</h4>
+﻿@model WebApplication10.Models.Products
 
-<p>Bạn có chắc muốn xóa sản phẩm <strong>@Model.ProductName</strong>?</p>
+<h4>Xác nhận xóa sản phẩm</h4>
 
-<form class="ajax-form" method="post" action="/Products/DeleteConfirmed">
+<p>
+    Bạn có chắc chắn muốn xóa sản phẩm
+    <strong>@Model.ProductName</strong> không?
+</p>
+
+<form method="post"
+      action="/AdminProducts/Delete"
+      class="ajax-form delete-confirm-form">
+
     @Html.AntiForgeryToken()
-    <input type="hidden" name="id" value="@Model.ProductId" />
+    @Html.HiddenFor(m => m.ProductId)
 
-    <button type="submit" class="btn btn-danger">Xóa</button>
-    <button id="btnBackToList" class="btn btn-secondary">Hủy</button>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-danger">
+            <i class="fa-solid fa-trash"></i> Xóa
+        </button>
+
+        <button type="button"
+                id="btnBackToList"
+                class="btn btn-secondary">
+            Hủy
+        </button>
+    </div>
 </form>
+
+<script>
+    $('#btnBackToList').click(function () {
+        loadMain('/AdminProducts/ProductListPartial');
+    });
+</script>
